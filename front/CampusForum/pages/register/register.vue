@@ -1,6 +1,6 @@
 <template>
 	<view>
-		主页
+		注册页面
 	</view>
 </template>
 
@@ -11,14 +11,12 @@
 				
 			}
 		},
-		onLoad() {
-
-		},
 		methods: {
-
+			
 		}
 	}
 </script>
 
 <style>
+
 </style>

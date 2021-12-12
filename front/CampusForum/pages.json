@@ -5,14 +5,29 @@
 		},
 		{
             "path" : "pages/person/person"
-            
         },
 		{
             "path" : "pages/album/album"
-            
         },
 		{
             "path" : "pages/state/state"
+        },
+		{
+            "path" : "pages/login/login",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "登陆",
+                "enablePullDownRefresh": false
+            }
+            
+        },
+		{
+            "path" : "pages/register/register",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "注册",
+                "enablePullDownRefresh": false
+            }
             
         }
     ],
