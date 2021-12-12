@@ -1,0 +1,171 @@
+@charset "UTF-8";
+/**
+ * 这里是uni-app内置的常用样式变量
+ *
+ * uni-app 官方扩展插件及插件市场（https://ext.dcloud.net.cn）上很多三方插件均使用了这些样式变量
+ * 如果你是插件开发者，建议你使用scss预处理，并在插件代码中直接使用这些变量（无需 import 这个文件），方便用户通过搭积木的方式开发整体风格一致的App
+ *
+ */
+/**
+ * 如果你是App开发者（插件使用者），你可以通过修改这些变量来定制自己的插件主题，实现自定义主题功能
+ *
+ * 如果你的项目同样使用了scss预处理，你也可以直接在你的 scss 代码中使用如下变量，同时无需 import 这个文件
+ */
+/* 颜色变量 */
+/* 行为相关颜色 */
+/* 文字基本颜色 */
+/* 背景颜色 */
+/* 边框颜色 */
+/* 尺寸变量 */
+/* 文字尺寸 */
+/* 图片尺寸 */
+/* Border Radius */
+/* 水平间距 */
+/* 垂直间距 */
+/* 透明度 */
+/* 文章场景相关 */
+.uni-fab.data-v-7d5a6316 {
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  border-radius: 45px;
+  box-shadow: 0 1px 5px 2px rgba(0, 0, 0, 0.3);
+}
+.uni-fab--active.data-v-7d5a6316 {
+  opacity: 1;
+}
+.uni-fab--leftBottom.data-v-7d5a6316 {
+  left: 15px;
+  bottom: 30px;
+}
+.uni-fab--leftTop.data-v-7d5a6316 {
+  left: 15px;
+  top: 30px;
+}
+.uni-fab--rightBottom.data-v-7d5a6316 {
+  right: 15px;
+  bottom: 30px;
+}
+.uni-fab--rightTop.data-v-7d5a6316 {
+  right: 15px;
+  top: 30px;
+}
+.uni-fab__circle.data-v-7d5a6316 {
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 55px;
+  height: 55px;
+  background-color: #3c3e49;
+  border-radius: 45px;
+  z-index: 11;
+}
+.uni-fab__circle--leftBottom.data-v-7d5a6316 {
+  left: 15px;
+  bottom: 30px;
+}
+.uni-fab__circle--leftTop.data-v-7d5a6316 {
+  left: 15px;
+  top: 30px;
+}
+.uni-fab__circle--rightBottom.data-v-7d5a6316 {
+  right: 15px;
+  bottom: 30px;
+}
+.uni-fab__circle--rightTop.data-v-7d5a6316 {
+  right: 15px;
+  top: 30px;
+}
+.uni-fab__circle--left.data-v-7d5a6316 {
+  left: 0;
+}
+.uni-fab__circle--right.data-v-7d5a6316 {
+  right: 0;
+}
+.uni-fab__circle--top.data-v-7d5a6316 {
+  top: 0;
+}
+.uni-fab__circle--bottom.data-v-7d5a6316 {
+  bottom: 0;
+}
+.uni-fab__plus.data-v-7d5a6316 {
+  font-weight: bold;
+}
+.fab-circle-icon.data-v-7d5a6316 {
+  -webkit-transform: rotate(0deg);
+          transform: rotate(0deg);
+  transition: -webkit-transform 0.3s;
+  transition: transform 0.3s;
+  transition: transform 0.3s, -webkit-transform 0.3s;
+  font-weight: 200;
+}
+.uni-fab__plus--active.data-v-7d5a6316 {
+  -webkit-transform: rotate(135deg);
+          transform: rotate(135deg);
+}
+.uni-fab__content.data-v-7d5a6316 {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  border-radius: 55px;
+  overflow: hidden;
+  transition-property: width, height;
+  transition-duration: 0.2s;
+  width: 55px;
+  border-color: #DDDDDD;
+  border-width: 1rpx;
+  border-style: solid;
+}
+.uni-fab__content--other-platform.data-v-7d5a6316 {
+  border-width: 0px;
+  box-shadow: 0 1px 5px 2px rgba(0, 0, 0, 0.3);
+}
+.uni-fab__content--left.data-v-7d5a6316 {
+  justify-content: flex-start;
+}
+.uni-fab__content--right.data-v-7d5a6316 {
+  justify-content: flex-end;
+}
+.uni-fab__content--flexDirection.data-v-7d5a6316 {
+  flex-direction: column;
+  justify-content: flex-end;
+}
+.uni-fab__content--flexDirectionStart.data-v-7d5a6316 {
+  flex-direction: column;
+  justify-content: flex-start;
+}
+.uni-fab__content--flexDirectionEnd.data-v-7d5a6316 {
+  flex-direction: column;
+  justify-content: flex-end;
+}
+.uni-fab__item.data-v-7d5a6316 {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 55px;
+  height: 55px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.uni-fab__item--active.data-v-7d5a6316 {
+  opacity: 1;
+}
+.uni-fab__item-image.data-v-7d5a6316 {
+  width: 20px;
+  height: 20px;
+  margin-bottom: 4px;
+}
+.uni-fab__item-text.data-v-7d5a6316 {
+  color: #FFFFFF;
+  font-size: 12px;
+  line-height: 12px;
+  margin-top: 2px;
+}
+.uni-fab__item--first.data-v-7d5a6316 {
+  width: 55px;
+}
+
