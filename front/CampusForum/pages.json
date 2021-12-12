@@ -1,16 +1,46 @@
 {
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
-			"path": "pages/index/index",
-			"style": {
-				"navigationBarTitleText": "uni-app"
-			}
-		}
-	],
+			"path": "pages/index/index"
+		},
+		{
+            "path" : "pages/person/person"
+            
+        },
+		{
+            "path" : "pages/album/album"
+            
+        },
+		{
+            "path" : "pages/state/state"
+            
+        }
+    ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
-		"navigationBarTitleText": "uni-app",
-		"navigationBarBackgroundColor": "#F8F8F8",
-		"backgroundColor": "#F8F8F8"
+		"navigationBarTitleText": "XMU校园论坛",
+		"navigationBarBackgroundColor": "#07AFFF",
+		"backgroundColor": "#FFFFFF",
+		"enablePullDownRefresh": true // 开启下拉刷新
+	},
+	"tabBar": {
+		"list": [
+			{
+				"text": "主页",
+				"pagePath": "pages/index/index"
+			},
+			{
+				"text": "相册",
+				"pagePath": "pages/album/album"
+			},
+			{
+				"text": "状态",
+				"pagePath": "pages/state/state"
+			},
+			{
+				"text": "我的",
+				"pagePath": "pages/person/person"
+			}
+		]
 	}
 }
