@@ -1,30 +1,26 @@
 {
-	"id": "hello-uniapp",
-	"name": "hello-uniapp",
-	"displayName": "hello-uniapp 示例工程",
-	"version": "3.2.11",
-	"description": "uni-app 框架示例，一套代码，同时发行到iOS、Android、H5、小程序等多个平台，请使用手机扫码快速体验 uni-app 的强大功能",
-	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1"
-	},
-	"repository": "https://github.com/dcloudio/hello-uniapp.git",
+	"id": "uni-popup",
+	"displayName": "uni-popup 弹出层",
+	"version": "1.7.0",
+	"description": " Popup 组件，提供常用的弹层",
 	"keywords": [
-        "hello-uniapp",
-        "uni-app",
         "uni-ui",
-        "示例工程"
+        "弹出层",
+        "弹窗",
+        "popup",
+        "弹框"
     ],
-	"author": "",
-	"license": "MIT",
-	"bugs": {
-		"url": "https://github.com/dcloudio/hello-uniapp/issues"
+	"repository": "https://github.com/dcloudio/uni-ui",
+	"engines": {
+		"HBuilderX": ""
 	},
-	"homepage": "https://github.com/dcloudio/hello-uniapp#readme",
-	"dependencies": {},
+	"directories": {
+		"example": "../../temps/example_temps"
+	},
 	"dcloudext": {
 		"category": [
-			"前端页面模板",
-			"uni-app前端项目模板"
+			"前端组件",
+			"通用组件"
 		],
 		"sale": {
 			"regular": {
@@ -42,10 +38,13 @@
 			"data": "无",
 			"permissions": "无"
 		},
-		"npmurl": ""
+		"npmurl": "https://www.npmjs.com/package/@dcloudio/uni-ui"
 	},
 	"uni_modules": {
-		"dependencies": [],
+		"dependencies": [
+			"uni-scss",
+			"uni-transition"
+		],
 		"encrypt": [],
 		"platforms": {
 			"cloud": {
@@ -85,20 +84,6 @@
                     "vue2": "y",
                     "vue3": "y"
                 }
-			}
-		}
-	},
-
-	"uni-app": {
-		"scripts": {
-			"mp-dingtalk": {
-				"title": "钉钉小程序",
-				"env": {
-					"UNI_PLATFORM": "mp-alipay"
-				},
-				"define": {
-					"MP-DINGTALK": true
-				}
 			}
 		}
 	}
