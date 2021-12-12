@@ -4,13 +4,28 @@
 			"path": "pages/index/index"
 		},
 		{
-            "path" : "pages/person/person"
+            "path" : "pages/person/person",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "个人主页",
+                "enablePullDownRefresh": false
+            }
         },
 		{
-            "path" : "pages/album/album"
+            "path" : "pages/album/album",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "我的相册",
+                "enablePullDownRefresh": false
+            }
         },
 		{
-            "path" : "pages/state/state"
+            "path" : "pages/state/state",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "我的状态",
+                "enablePullDownRefresh": false
+            }
         },
 		{
             "path" : "pages/login/login",
@@ -35,8 +50,7 @@
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "XMU校园论坛",
 		"navigationBarBackgroundColor": "#07AFFF",
-		"backgroundColor": "#FFFFFF",
-		"enablePullDownRefresh": true // 开启下拉刷新
+		"backgroundColor": "#FFFFFF"
 	},
 	"tabBar": {
 		"list": [
