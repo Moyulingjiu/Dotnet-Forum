@@ -5,7 +5,7 @@
 </template>
 
 <script>
-	import * as config from '../../utils/config.js'
+	import * as userApi from "../../api/user.js"
 	
 	export default {
 		data() {
@@ -14,7 +14,7 @@
 			}
 		},
 		onLoad() {
-
+			
 		},
 		methods: {
 
