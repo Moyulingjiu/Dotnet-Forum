@@ -1,4 +1,4 @@
-import * as config from '../../utils/config.js'
+import * as config from '../utils/config.js'
 
 // 通过评论id获取评论
 export function getCommentById(id) {

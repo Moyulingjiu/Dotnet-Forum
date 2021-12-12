@@ -1,4 +1,4 @@
-import * as config from '../../utils/config.js'
+import * as config from '../utils/config.js'
 
 // 根据用户id获取其相册
 export function getAlbumByUserId(id) {

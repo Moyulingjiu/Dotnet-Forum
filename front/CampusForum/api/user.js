@@ -1,10 +1,15 @@
-import * as config from '../../utils/config.js'
+import * as config from '../utils/config.js'
 
 // 根据id获取用户数据
 export function getUserById(id) {
 	return {
 		name: "用户名"
 	}
+}
+
+// 根据token获取用户数据
+export function getUserByToken(token) {
+	return null
 }
 
 

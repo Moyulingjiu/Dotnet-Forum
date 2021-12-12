@@ -1,4 +1,4 @@
-import * as config from '../../utils/config.js'
+import * as config from '../utils/config.js'
 
 // 根据用户id获取其状态
 export function getStateListById(id, page, pageSize=20) {
