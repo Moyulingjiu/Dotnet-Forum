@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Y0wPzVuU7hwXrsnfvA3KBJEYNoSJjveViUWbwCDqdfUEnDGBakRvrh/z/+vB8N1UzIjJ9qlWAetn+/9a0TVJRg==",
+  "dgSpecHash": "HNKTNxBqA9JlxaFQDeTmuWKdZOIFOohsPmZlFVp0lA0DyFIaHJGF4j4yD/dL2NcLTryx+G9WVkiSpOf7PTnPmA==",
   "success": true,
-  "projectFilePath": "E:\\GitHub项目\\ASPNET实验\\CampusForum\\CampusForum\\CampusForum.csproj",
+  "projectFilePath": "E:\\厦门大学\\大学四年的学习资料\\大三\\大三上\\.Net平台技术-杨律青\\大作业\\项目\\back\\CampusForum\\CampusForum\\CampusForum.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\BeforeDawn\\.nuget\\packages\\microsoft.extensions.apidescription.server\\3.0.0\\microsoft.extensions.apidescription.server.3.0.0.nupkg.sha512",
     "C:\\Users\\BeforeDawn\\.nuget\\packages\\microsoft.openapi\\1.2.3\\microsoft.openapi.1.2.3.nupkg.sha512",
