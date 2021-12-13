@@ -13,10 +13,14 @@
 
 <script>
 	import * as userApi from "../../api/user.js"
+	import * as stateApi from "../../api/state.js"
+	import * as config from "../../utils/config.js"
 	
 	export default {
 		data() {
 			return {
+				token: null,
+				page: 1,
 				stateList: [
 					{
 						title: '测试状态',
@@ -28,10 +32,18 @@
 			}
 		},
 		onLoad() {
-			
+			this.token = config.getToken()
+			if (this.token === null) {
+				this.login()
+			} else {
+				// 获取状态列表
+				// this.stateList = stateApi.getStateById(this.token, this.page) 
+			}
 		},
 		methods: {
-
+			login() {
+				// 跳转到登陆页面
+			}
 		}
 	}
 </script>
