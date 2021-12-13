@@ -35,7 +35,7 @@ export function getUserByToken(token) {
 export function login(id, password) {
 	let url = config.baseUrl + `/login/${id}`
 	let data = {
-		password: password
+		password: config.encode(password)
 	}
 	return null
 }
