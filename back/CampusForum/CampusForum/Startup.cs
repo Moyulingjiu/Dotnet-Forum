@@ -11,6 +11,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CampusForum.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace CampusForum
 {
@@ -26,7 +28,7 @@ namespace CampusForum
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.AddDbContext<CoreDbContext>(options =>options.UseMySQL(Configuration.GetConnectionString("DefaultConnection")));
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
