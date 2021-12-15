@@ -1,22 +1,266 @@
 <template>
 	<view>
-		注册页面
+		<view class="avater_container">
+			<image class="avater" :src="user.avater" mode="aspectFill"></image>
+			<input maxlength="9" class="name" type="text" v-model="user.name" />
+		</view>
+		
+		<view class="person_card">
+			<view class="information_card flex_box">
+				<view class="information_container">
+					<view class="information_title">
+						<uni-badge size="small" text=" " absolute="rightTop" type="error">
+							<text>学号</text>
+						</uni-badge>
+					</view>
+					<view class="information_text">
+						<input maxlength=20 type="text" placeholder="请输入学号" v-model="user.studentId" />
+					</view>
+				</view>
+				<view>
+					<image class="information_edit" src="../../static/state.png" mode="aspectFill"></image>
+				</view>
+			</view>
+			<view class="information_card flex_box">
+				<view class="information_container">
+					<view class="information_title">
+						<uni-badge size="small" text=" " absolute="rightTop" type="error">
+							<text>密码</text>
+						</uni-badge>
+					</view>
+					<view class="information_text">
+						<input maxlength=20 type="text" password="true" placeholder="请输入密码" v-model="user.password" />
+					</view>
+				</view>
+				<view>
+					<image class="information_edit" src="../../static/state.png" mode="aspectFill"></image>
+				</view>
+			</view>
+			<view class="information_card flex_box">
+				<view class="information_container">
+					<view class="information_title">
+						<text>学院</text>
+					</view>
+					<view class="information_text">
+						<input maxlength=20 type="text" placeholder="请输入学院" v-model="user.collegeName" />
+					</view>
+				</view>
+				<view>
+					<image class="information_edit" src="../../static/state.png" mode="aspectFill"></image>
+				</view>
+			</view>
+			<view class="information_card flex_box">
+				<view class="information_container">
+					<view class="information_title">
+						<text>性别</text>
+					</view>
+					<view class="information_text">
+						<view class="uni-list-cell-db">
+							<picker @change="bindGenderChange" :value="user.gender" :range="genderArray">
+								<view class="uni-input">{{ genderArray[user.gender] }}</view>
+							</picker>
+						</view>
+					</view>
+				</view>
+				<view>
+					<image class="information_edit" src="../../static/state.png" mode="aspectFill"></image>
+				</view>
+			</view>
+			<view class="information_card flex_box">
+				<view class="information_container">
+					<view class="information_title">
+						<text>电话</text>
+					</view>
+					<view class="information_text">
+						<input maxlength=20 type="text" placeholder="请输入电话" v-model="user.phone" />
+					</view>
+				</view>
+				<view>
+					<image class="information_edit" src="../../static/state.png" mode="aspectFill"></image>
+				</view>
+			</view>
+			<view class="information_card flex_box">
+				<view class="information_container">
+					<view class="information_title">
+						<text>邮箱</text>
+					</view>
+					<view class="information_text">
+						<input maxlength=50 type="text" placeholder="请输入邮箱" v-model="user.email" />
+					</view>
+				</view>
+				<view>
+					<image class="information_edit" src="../../static/state.png" mode="aspectFill"></image>
+				</view>
+			</view>
+			<view class="information_card flex_box">
+				<view class="information_container">
+					<view class="information_title">
+						<text>生日</text>
+					</view>
+					<view class="information_text">
+						<view class="uni-list-cell-db">
+							<picker mode="date"  :value="user.brithday" @change="bindDateChange">
+								<view class="uni-input">{{ user.brithday }}</view>
+							</picker>
+						</view>
+					</view>
+				</view>
+				<view>
+					<image class="information_edit" src="../../static/state.png" mode="aspectFill"></image>
+				</view>
+			</view>
+		</view>
+		<button class="register_button" @click="register()">注 册</button>
+		<uni-popup ref="popup_error" type="message">
+			<uni-popup-message type="error" message="学号、密码、用户名不能为空" :duration="3000"></uni-popup-message>
+		</uni-popup>
+		<uni-popup ref="popup_error_password" type="message">
+			<uni-popup-message type="error" message="密码长度需在6-16之间" :duration="3000"></uni-popup-message>
+		</uni-popup>
+		
 	</view>
 </template>
 
 <script>
+	import * as config from "../../utils/config.js"
+	
 	export default {
 		data() {
+			
 			return {
-				
+				genderArray: [
+					'保密',
+					'男',
+					'女'
+				],
+				college: [
+					{
+						id: 1
+					}
+				],
+				user: {
+					studentId: '',
+					password: '',
+					name: '用户名',
+					avater: '../../static/avater.jpg',
+					gender: 0,
+					phone: '',
+					email: '',
+					collegeName: '',
+					description: '来时山有雪，归时雪满山。',
+					brithday: this.getToday(),
+				}
 			}
 		},
 		methods: {
-			
+			getGender() {
+				return config.getGender(this.user.gender)
+			},
+			register() {
+				if (this.user.studentId == '' || this.user.password == '' || this.user.name == '') {
+					this.$refs.popup_error.open('top')
+				} else if (this.user.password.length < 6 || this.user.password > 16) {
+					this.$refs.popup_error_password.open('top')
+				} else {
+					console.log(this.user)
+					console.log('试图注册')
+				}
+			},
+			bindDateChange(e) { // 改变日期
+				this.user.brithday = e.target.value
+			},
+			getToday() { // 获取今天
+				const date = new Date();
+				let year = date.getFullYear();
+				let month = date.getMonth() + 1;
+				let day = date.getDate();
+				month = month > 9 ? month : '0' + month;
+				day = day > 9 ? day : '0' + day;
+				return `${year}-${month}-${day}`;
+			},
+			bindGenderChange(e) { // 改变性别
+				this.user.gender = e.target.value
+			}
 		}
 	}
 </script>
 
 <style>
-
+	.flex_box {
+		display: flex;
+	}
+	
+	.avater_container {
+		margin-top: 20rpx;
+		text-align: center;
+	}
+	
+	.avater {
+		width: 300rpx;
+		height: 300rpx;
+		border-radius: 50%;
+	}
+	
+	.name {
+		width: 30%;
+		margin-left: 35%;
+		font-size: 40rpx;
+		font-weight: bold;
+		/* border-bottom: 2rpx solid #A0A0A0; */
+		border-bottom: none;
+	}
+	
+	.name:hover {
+		border-bottom: 2rpx solid #A0C2E7;
+	}
+	
+	.register_button {
+		width: 90%;
+		margin: 30rpx 5%;
+		background-image: linear-gradient(to top, #48c6ef 0%, #6f86d6 100%);
+		font-weight: bold;
+		border-radius: 40rpx;
+		box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+	}
+	
+	
+	.person_card {
+		width: 90%;
+		margin-left: 5%;
+		margin-right: 5%;
+		margin-top: 40rpx;
+		/* height: 160rpx; */
+		background-color: #FFFFFF;
+		padding-left: 10rpx;
+		padding-top: 10rpx;
+		padding-bottom: 10rpx;
+		border-radius: 10rpx;
+		box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+	}
+	
+	.information_card {
+		margin: 0;
+		padding: 10rpx;
+	}
+	
+	.information_container {
+		display: flex;
+		width: 95%;
+	}
+	
+	.information_title {
+		color: #606060;
+		font-size: 35rpx;
+	}
+	
+	.information_text {
+		margin-left: 20rpx;
+		font-size: 35rpx;
+	}
+	
+	.information_edit {
+		height: 30rpx;
+		width: 30rpx;
+		margin-top: 10rpx;
+	}
 </style>

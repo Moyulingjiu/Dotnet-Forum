@@ -95,10 +95,16 @@
 				</view>
 			</view>
 		</view>
+
+		<view class="bottom_tips">
+			<text>{{ '- 到底了 -' }}</text>
+		</view>
 	</view>
 </template>
 
 <script>
+	import * as config from "../../utils/config.js"
+	
 	export default {
 		data() {
 			return {
@@ -120,11 +126,7 @@
 		},
 		methods: {
 			getGender() {
-				if (this.user.gender == 0)
-					return '保密'
-				else if (this.user.gender == 1)
-					return '男'
-				return '女'
+				return config.getGender(this.user.gender)
 			}
 		}
 	}
@@ -204,5 +206,16 @@
 		height: 40rpx;
 		width: 40rpx;
 		margin-top: 30rpx;
+	}
+	
+	.bottom_tips {
+		margin-top: 30rpx;
+		text-align: center;
+		height: 200rpx;
+	}
+
+	.bottom_tips text {
+		color: #A8A8A8;
+		bottom: 0;
 	}
 </style>

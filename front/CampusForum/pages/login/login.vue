@@ -8,10 +8,10 @@
 		</view>
 		<view class="login_box">
 			<view class="input_box">
-				<input type="text" placeholder="请输入学号" v-model="studentId" />
+				<input maxlength=30 type="text" placeholder="请输入学号" v-model="studentId" />
 			</view>
 			<view class="input_box flex_box">
-				<input type="text" password="true" placeholder="请输入密码" v-model="password" />
+				<input maxlength=20 type="text" password="true" placeholder="请输入密码" v-model="password" />
 				<image class="cancel_icon" v-if="password.length!=0" src="../../static/cancel.png"
 					@click="clearPassword()"></image>
 			</view>
@@ -127,16 +127,17 @@
 	
 	.login_button {
 		margin: 30rpx 10rpx;
-		background-color: #A0C2E7;
-		/* font-size: 40rpx; */
+		background-image: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);
 		font-weight: bold;
 		border-radius: 40rpx;
+		box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 	}
 	
 	.register {
 		border-width: 3rpx;
 		border-style: solid;
 		border-color: #A0A0A0;
+		background-image: none;
 		background-color: #FFF;
 	}
 </style>

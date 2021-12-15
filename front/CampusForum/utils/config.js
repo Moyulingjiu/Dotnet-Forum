@@ -1,6 +1,14 @@
 // 全局常量配置
 export const baseUrl = 'localhost:8080'
 
+// 检查登陆
+export function checkToken() {
+	let token = uni.getStorageSync('token')
+	if (token == '')
+		return false
+	return true
+}
+
 // 保存token
 export function saveToken(token) {
 	try {
@@ -42,4 +50,12 @@ export function encode(plaintext) {
 // 解密
 export function decode(ciphertext) {
 	return ""
+}
+
+export function getGender(gender) {
+	if (gender == 0)
+		return '保密'
+	else if (gender == 1)
+		return '男'
+	return '女'
 }
