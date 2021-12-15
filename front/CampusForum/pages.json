@@ -49,8 +49,8 @@
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "XMU校园论坛",
-		"navigationBarBackgroundColor": "#07AFFF",
-		"backgroundColor": "#FFFFFF"
+		"navigationBarBackgroundColor": "#A0C2E7",
+		"backgroundColor": "#FDE590"
 	},
 	"tabBar": {
 		"list": [

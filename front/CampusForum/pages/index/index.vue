@@ -93,7 +93,8 @@
 		},
 		onLoad() {
 			this.token = config.getToken()
-			if (this.token === null) {
+			console.log(this.token)
+			if (this.token == '') {
 				this.login()
 			} else {
 				// 获取状态列表
@@ -102,9 +103,9 @@
 		},
 		methods: {
 			login() {
-				// 跳转到登陆页面
-				console.log('模拟登陆')
-				this.token = '123456'
+				uni.redirectTo({
+				    url: '/pages/login/login'
+				});
 			},
 			search() {
 				// 搜索

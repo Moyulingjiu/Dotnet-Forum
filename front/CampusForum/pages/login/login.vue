@@ -1,22 +1,142 @@
 <template>
 	<view>
-		登陆页面
+		<view class="logo_container">
+			<image class="logo" src="../../static/logo.png" mode="aspectFill"></image>
+		</view>
+		<view class="name_container">
+			<text class="name">XMU校园论坛</text>
+		</view>
+		<view class="login_box">
+			<view class="input_box">
+				<input type="text" placeholder="请输入学号" v-model="studentId" />
+			</view>
+			<view class="input_box flex_box">
+				<input type="text" password="true" placeholder="请输入密码" v-model="password" />
+				<image class="cancel_icon" v-if="password.length!=0" src="../../static/cancel.png"
+					@click="clearPassword()"></image>
+			</view>
+			<button class="login_button" @click="login()">登 陆</button>
+			<button class="login_button register" @click="register()">注 册</button>
+		</view>
+		<uni-popup ref="popup_error" type="message">
+			<uni-popup-message type="error" message="学号或密码错误" :duration="2000"></uni-popup-message>
+		</uni-popup>
+		<uni-popup ref="popup_error_unknown" type="message">
+			<uni-popup-message type="error" message="发生未知错误,请重试" :duration="2000"></uni-popup-message>
+		</uni-popup>
 	</view>
 </template>
 
 <script>
+	import * as userApi from "../../api/user.js"
+	import * as stateApi from "../../api/state.js"
+	import * as config from "../../utils/config.js"
+	
 	export default {
 		data() {
 			return {
-				
+				studentId: '',
+				password: ''
 			}
 		},
-		methods: {
+		onLoad() {
 			
+		},
+		methods: {
+			clearPassword() {
+				this.password = ''
+			},
+			login() {
+				if (this.studentId === '123' && this.password === '123') {
+					if (config.saveToken('123')) {
+						uni.switchTab({
+							url: '/pages/index/index'
+						});
+					} else {
+						this.$refs.popup_error_unknown.open('top')
+					}
+				} else {
+					this.$refs.popup_error.open('top')
+				}
+			},
+			register() {
+				console.log('注册')
+				uni.redirectTo({
+				    url: '/pages/register/register'
+				});
+			}
 		}
 	}
 </script>
 
-<style>
+<style>	
+	.flex_box {
+		display: flex;
+	}
 
+	.logo_container {
+		margin: auto;
+		margin-top: 200rpx;
+		width: 90%;
+		height: 300rpx;
+		text-align: center;
+	}
+	
+	.logo {
+		width: 300rpx;
+		height: 100%;
+	}
+	
+	.name_container {
+		margin-top: 40rpx;
+		text-align: center;
+	}
+	
+	.name {
+		font-size: 50rpx;
+		font-weight: bold;
+	}
+
+	.login_box {
+		margin: auto;
+		margin-top: 75rpx;
+		width: 90%;
+	}
+	
+	.input_box {
+		margin: 0rpx 10rpx 30rpx 10rpx;
+		padding: 10rpx;
+		padding-left: 40rpx;
+		height: 60rpx;
+		border-width: 3rpx;
+		border-style: solid;
+		border-color: #A0A0A0;
+		border-radius: 40rpx;
+	}
+	
+	.input_box input {
+		font-size: 40rpx;
+		width: 92%;
+	}
+	
+	.cancel_icon {
+		width: 30rpx;
+		height: 30rpx;
+		margin-top: 15rpx;
+	}
+	
+	.login_button {
+		margin: 30rpx 10rpx;
+		background-color: #A0C2E7;
+		/* font-size: 40rpx; */
+		font-weight: bold;
+		border-radius: 40rpx;
+	}
+	
+	.register {
+		border-width: 3rpx;
+		border-style: solid;
+		border-color: #A0A0A0;
+		background-color: #FFF;
+	}
 </style>
