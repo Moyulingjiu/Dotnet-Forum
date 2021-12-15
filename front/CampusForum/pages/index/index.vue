@@ -25,7 +25,7 @@
 				<text>{{ item.userName }}</text>
 			</view>
 			<view class="state_text">
-				<text>{{ item.text }}</text>
+				<text space="emsp">{{ item.text }}</text>
 			</view>
 			<view class="state_bottom">
 				<text class="state_date">{{ item.gmtCreate }}</text>
@@ -114,7 +114,7 @@
 		methods: {
 			login() {
 				uni.redirectTo({
-				    url: '/pages/login/login'
+					url: '/pages/login/login'
 				});
 			},
 			search() {

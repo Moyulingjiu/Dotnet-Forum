@@ -4,48 +4,51 @@
 			"path": "pages/index/index"
 		},
 		{
-            "path" : "pages/person/person",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "个人主页",
-                "enablePullDownRefresh": false
-            }
-        },
+			"path": "pages/person/person",
+			"style": {
+				"navigationBarTitleText": "个人主页",
+				"enablePullDownRefresh": false
+			}
+		},
 		{
-            "path" : "pages/album/album",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "我的相册",
-                "enablePullDownRefresh": false
-            }
-        },
+			"path": "pages/album/album",
+			"style": {
+				"navigationBarTitleText": "我的相册",
+				"enablePullDownRefresh": false
+			}
+		},
 		{
-            "path" : "pages/state/state",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "我的状态",
-                "enablePullDownRefresh": false
-            }
-        },
+			"path": "pages/state/state",
+			"style": {
+				"navigationBarTitleText": "我的状态",
+				"enablePullDownRefresh": false
+			}
+		},
 		{
-            "path" : "pages/login/login",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "登陆",
-                "enablePullDownRefresh": false
-            }
-            
-        },
+			"path": "pages/login/login",
+			"style": {
+				"navigationBarTitleText": "登陆",
+				"enablePullDownRefresh": false
+			}
+
+		},
 		{
-            "path" : "pages/register/register",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "注册",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-    ],
+			"path": "pages/register/register",
+			"style": {
+				"navigationBarTitleText": "注册",
+				"enablePullDownRefresh": false
+			}
+
+		}, 
+		{
+			"path": "pages/stateDetail/stateDetail",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}
+	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "XMU校园论坛",
@@ -53,8 +56,7 @@
 		"backgroundColor": "#FDE590"
 	},
 	"tabBar": {
-		"list": [
-			{
+		"list": [{
 				"text": "主页",
 				"pagePath": "pages/index/index",
 				"iconPath": "static/home.png",

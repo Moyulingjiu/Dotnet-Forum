@@ -96,7 +96,7 @@
 			</view>
 		</view>
 		
-		<button class="bottom_button function" @click="manage()">管理页面</button>
+		<button v-if="power" class="bottom_button function" @click="manage()">管理页面</button>
 		<button class="bottom_button logout" @click="logout()">退出登陆</button>
 
 		<view class="bottom_tips">
@@ -116,7 +116,7 @@
 		data() {
 			return {
 				token: '',
-				power: true,
+				power: true, // 是否拥有看见管理页面的权利
 				user: {
 					studentId: 22920191234,
 					name: '墨羽翎玖',
@@ -187,6 +187,15 @@
 	.person_name {
 		font-size: 50rpx;
 		font-weight: bold;
+		width: 400rpx;
+		display: -webkit-box;
+		/*弹性伸缩盒子模型显示*/
+		-webkit-box-orient: vertical;
+		/*排列方式*/
+		-webkit-line-clamp: 1;
+		/*显示文本行数*/
+		overflow: hidden;
+		/*溢出隐藏*/
 	}
 
 	.person_follow {
@@ -198,7 +207,21 @@
 		/* margin-top: 10rpx; */
 		/* margin-left: 20rpx; */
 		/* margin-right: 20rpx; */
+		width: 400rpx;
 		color: #909090;
+	}
+	
+	.person_description text {
+		width: 100%;
+		font-size: 30rpx;
+		display: -webkit-box;
+		/*弹性伸缩盒子模型显示*/
+		-webkit-box-orient: vertical;
+		/*排列方式*/
+		-webkit-line-clamp: 1;
+		/*显示文本行数*/
+		overflow: hidden;
+		/*溢出隐藏*/
 	}
 	
 	.information_card {

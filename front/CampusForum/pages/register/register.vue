@@ -2,7 +2,7 @@
 	<view>
 		<view class="avater_container">
 			<image class="avater" :src="user.avater" mode="aspectFill"></image>
-			<input placeholder="请输入用户名" maxlength="9" class="name" type="text" v-model="user.name" />
+			<input placeholder="请输入用户名" maxlength="6" class="name" type="text" v-model="user.name" />
 		</view>
 		
 		<view class="person_card">
@@ -131,11 +131,6 @@
 					'保密',
 					'男',
 					'女'
-				],
-				college: [
-					{
-						id: 1
-					}
 				],
 				user: {
 					studentId: '',
