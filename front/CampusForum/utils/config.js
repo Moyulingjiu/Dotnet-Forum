@@ -42,6 +42,26 @@ export function getToken() {
 	}
 }
 
+// 保存用户
+export function saveUser(user) {
+	try {
+		uni.setStorageSync('user', user)
+		return true
+	} catch (e) {
+		console.log(e);
+		return false
+	}
+}
+
+export function getUser() {
+	try {
+		return uni.getStorageSync('user')
+	} catch (e) {
+		console.log(e)
+		return null
+	}
+}
+
 // 加密
 export function encode(plaintext) {
 	return ""

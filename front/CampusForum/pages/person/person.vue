@@ -95,10 +95,17 @@
 				</view>
 			</view>
 		</view>
+		
+		<button class="bottom_button function" @click="manage()">管理页面</button>
+		<button class="bottom_button logout" @click="logout()">退出登陆</button>
 
 		<view class="bottom_tips">
 			<text>{{ '- 到底了 -' }}</text>
 		</view>
+		
+		<uni-popup ref="popup_success" type="message">
+			<uni-popup-message type="success" message="登出成功" :duration="3000"></uni-popup-message>
+		</uni-popup>
 	</view>
 </template>
 
@@ -109,6 +116,7 @@
 		data() {
 			return {
 				token: '',
+				power: true,
 				user: {
 					studentId: 22920191234,
 					name: '墨羽翎玖',
@@ -127,6 +135,15 @@
 		methods: {
 			getGender() {
 				return config.getGender(this.user.gender)
+			},
+			manage() {
+				console.log('管理页面')
+			},
+			logout() {
+				console.log('登陆')
+				config.saveToken('')
+				this.user = {}
+				this.$refs.popup_success.open('top')
 			}
 		}
 	}
@@ -217,5 +234,19 @@
 	.bottom_tips text {
 		color: #A8A8A8;
 		bottom: 0;
+	}
+	
+	.bottom_button {
+		width: 90%;
+		margin: 30rpx 5%;
+		box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+	}
+	
+    .function {
+		background-image: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);
+	}
+	
+	.logout {
+		background-image: linear-gradient(to right, #f78ca0 0%, #f9748f 19%, #fd868c 60%, #fe9a8b 100%);
 	}
 </style>
