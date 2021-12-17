@@ -1,107 +1,151 @@
 /*
  Navicat MySQL Data Transfer
 
- Source Server         : localhost_3306
+ Source Server         : dotnet_forum
  Source Server Type    : MySQL
  Source Server Version : 80027
  Source Host           : localhost:3306
- Source Schema         : dotnet_for`dotnet_forum`um
+ Source Schema         : dotnet_forum
 
  Target Server Type    : MySQL
  Target Server Version : 80027
  File Encoding         : 65001
 
- Date: 13/12/2021 14:01:49
+ Date: 15/12/2021 22:24:11
 */
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ----------------------------
+-- Table structure for album
+-- ----------------------------
+DROP TABLE IF EXISTS `album`;
+CREATE TABLE `album`  (
+  `id` int NOT NULL,
+  `user_id` int NULL DEFAULT NULL,
+  `name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '相册名',
+  `description` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '相册描述',
+  `cover` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '封面的url',
+  `disable` int NULL DEFAULT NULL,
+  `gmt_create` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `gmt_modified` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of album
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for album_picture
+-- ----------------------------
+DROP TABLE IF EXISTS `album_picture`;
+CREATE TABLE `album_picture`  (
+  `id` int NOT NULL,
+  `album_id` int NULL DEFAULT NULL,
+  `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `url` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `gmt_create` datetime NULL DEFAULT NULL,
+  `gmt_modified` datetime NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of album_picture
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for banner
+-- ----------------------------
+DROP TABLE IF EXISTS `banner`;
+CREATE TABLE `banner`  (
+  `id` int NOT NULL,
+  `create_id` int NULL DEFAULT NULL,
+  `url` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `comment` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `state_id` int NULL DEFAULT NULL,
+  `disable` int NULL DEFAULT NULL,
+  `gmt_create` datetime NULL DEFAULT NULL,
+  `gmt_modified` datetime NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of banner
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for comment
 -- ----------------------------
 DROP TABLE IF EXISTS `comment`;
 CREATE TABLE `comment`  (
-  `id` INT NOT NULL,
-  `state_id` INT NULL DEFAULT NULL,
-  `comment_id` INT NULL DEFAULT NULL COMMENT '父评论id，可以没有',
-  `user_id` INT NULL DEFAULT NULL,
-  `text` VARCHAR(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `id` int NOT NULL,
+  `state_id` int NULL DEFAULT NULL,
+  `user_id` int NULL DEFAULT NULL,
+  `father_id` int NULL DEFAULT NULL COMMENT '父评论id，可以没有',
+  `text` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `disable` int NULL DEFAULT NULL,
+  `reply_id` int NULL DEFAULT NULL COMMENT '回复评论id',
+  `gmt_create` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `gmt_modified` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = INNODB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of comment
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for password
+-- Table structure for follow
 -- ----------------------------
-DROP TABLE IF EXISTS `password`;
-CREATE TABLE `password`  (
-  `id` int NOT NULL,
-  `password` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `student_id` int NULL DEFAULT NULL,
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of password
--- ----------------------------
-
--- ----------------------------
--- Table structure for photo
--- ----------------------------
-DROP TABLE IF EXISTS `photo`;
-CREATE TABLE `photo`  (
+DROP TABLE IF EXISTS `follow`;
+CREATE TABLE `follow`  (
   `id` int NOT NULL,
   `user_id` int NULL DEFAULT NULL,
-  `album_id` int NULL DEFAULT NULL,
-  `photo_path` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `follower_id` int NULL DEFAULT NULL,
+  `gmt_create` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `gmt_modified` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
--- Records of photo
+-- Records of follow
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for power
+-- Table structure for like_state
 -- ----------------------------
-DROP TABLE IF EXISTS `power`;
-CREATE TABLE `power`  (
+DROP TABLE IF EXISTS `like_state`;
+CREATE TABLE `like_state`  (
   `id` int NOT NULL,
-  `power_path` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `state_id` int NULL DEFAULT NULL,
+  `user_id` int NULL DEFAULT NULL,
+  `disable` int NULL DEFAULT NULL,
+  `gmt_create` datetime NULL DEFAULT NULL,
+  `gmt_modified` datetime NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
--- Records of power
+-- Records of like_state
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for power_role
+-- Table structure for privilege
 -- ----------------------------
-DROP TABLE IF EXISTS `power_role`;
-CREATE TABLE `power_role`  (
+DROP TABLE IF EXISTS `privilege`;
+CREATE TABLE `privilege`  (
   `id` int NOT NULL,
-  `power_id` int NULL DEFAULT NULL,
-  `role_id` int NULL DEFAULT NULL,
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `url` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `gmt_create` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `gmt_modified` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
--- Records of power_role
+-- Records of privilege
 -- ----------------------------
 
 -- ----------------------------
@@ -110,14 +154,36 @@ CREATE TABLE `power_role`  (
 DROP TABLE IF EXISTS `role`;
 CREATE TABLE `role`  (
   `id` int NOT NULL,
-  `role_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `description` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `create_id` int NULL DEFAULT NULL,
+  `modify_id` int NULL DEFAULT NULL,
+  `gmt_create` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `gmt_modified` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of role
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for role_privilege
+-- ----------------------------
+DROP TABLE IF EXISTS `role_privilege`;
+CREATE TABLE `role_privilege`  (
+  `id` int NOT NULL,
+  `privilege_id` int NULL DEFAULT NULL,
+  `role_id` int NULL DEFAULT NULL,
+  `create_id` int NULL DEFAULT NULL,
+  `modify_id` int NULL DEFAULT NULL,
+  `gmt_create` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `gmt_modified` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of role_privilege
 -- ----------------------------
 
 -- ----------------------------
@@ -127,16 +193,34 @@ DROP TABLE IF EXISTS `state`;
 CREATE TABLE `state`  (
   `id` int NOT NULL,
   `user_id` int NULL DEFAULT NULL,
-  `title` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `text` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `share_state` tinyint(1) NULL DEFAULT NULL COMMENT '0未分享1已分享',
+  `title` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `share_state` int NULL DEFAULT NULL COMMENT '0未分享1已分享',
+  `disable` int NULL DEFAULT NULL,
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of state
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for state_text
+-- ----------------------------
+DROP TABLE IF EXISTS `state_text`;
+CREATE TABLE `state_text`  (
+  `id` int NOT NULL,
+  `state_id` int NULL DEFAULT NULL,
+  `text` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `disable` int NOT NULL,
+  `gmt_create` datetime NULL DEFAULT NULL,
+  `gmt_modified` datetime NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
--- Records of state
+-- Records of state_text
 -- ----------------------------
 
 -- ----------------------------
@@ -145,59 +229,43 @@ CREATE TABLE `state`  (
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user`  (
   `id` int NOT NULL,
-  `student_number` bigint NOT NULL,
+  `student_id` bigint NOT NULL,
+  `password` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `college` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `grade` tinyint(1) NULL DEFAULT NULL,
-  `sex` tinyint(1) NULL DEFAULT NULL COMMENT '0保密1男2女',
-  `photo` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `sign` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `gender` int NULL DEFAULT NULL COMMENT '0 保密，1 男，2 女',
+  `avater` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `description` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `birthday` datetime NULL DEFAULT NULL,
-  `judgestate` tinyint(1) NULL DEFAULT NULL COMMENT '0未审核1已审核，审核不通过直接从表里删掉',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`, `student_number`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+  `phone` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `email` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `sign_state` int NULL DEFAULT NULL COMMENT '0 注册待审核，1 正常',
+  `disable` int NULL DEFAULT NULL,
+  `gmt_create` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `gmt_modified` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`, `student_id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES (1, 22920192204228, '李嘉龙', '信息学院', 3, 1, NULL, '测试', '2021-12-12 00:00:00', 1, '2021-12-12 22:56:04', '2021-12-13 13:15:16');
-INSERT INTO `user` VALUES (2, 22920192200000, '工具人', '测试学院', 3, 2, NULL, '测试', '2021-12-12 00:00:00', 1, '2021-12-12 23:06:48', '2021-12-13 13:15:17');
-INSERT INTO `user` VALUES (3, 0, 'string', 'string', 0, 0, 'string', 'string', '2021-12-13 05:32:10', 0, '2021-12-13 05:32:10', '2021-12-13 05:32:10');
 
 -- ----------------------------
--- Table structure for user_album
+-- Table structure for user_check
 -- ----------------------------
-DROP TABLE IF EXISTS `user_album`;
-CREATE TABLE `user_album`  (
+DROP TABLE IF EXISTS `user_check`;
+CREATE TABLE `user_check`  (
   `id` int NOT NULL,
+  `state` int NULL DEFAULT NULL,
   `user_id` int NULL DEFAULT NULL,
-  `album_id` int NULL DEFAULT NULL,
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `reviewer_id` int NULL DEFAULT NULL,
+  `gmt_create` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `gmt_modified` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
--- Records of user_album
--- ----------------------------
-
--- ----------------------------
--- Table structure for user_follower
--- ----------------------------
-DROP TABLE IF EXISTS `user_follower`;
-CREATE TABLE `user_follower`  (
-  `id` int NOT NULL,
-  `user_id` int NULL DEFAULT NULL,
-  `follower_id` int NULL DEFAULT NULL,
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of user_follower
+-- Records of user_check
 -- ----------------------------
 
 -- ----------------------------
@@ -208,30 +276,15 @@ CREATE TABLE `user_role`  (
   `id` int NOT NULL,
   `user_id` int NULL DEFAULT NULL,
   `role_id` int NULL DEFAULT NULL,
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `create_id` int NULL DEFAULT NULL,
+  `modify_id` int NULL DEFAULT NULL,
+  `gmt_create` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `gmt_modified` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of user_role
--- ----------------------------
-
--- ----------------------------
--- Table structure for user_state
--- ----------------------------
-DROP TABLE IF EXISTS `user_state`;
-CREATE TABLE `user_state`  (
-  `id` int NOT NULL,
-  `state_id` int NULL DEFAULT NULL,
-  `user_id` int NULL DEFAULT NULL,
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of user_state
 -- ----------------------------
 
 SET FOREIGN_KEY_CHECKS = 1;
