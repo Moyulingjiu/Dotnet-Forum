@@ -140,7 +140,7 @@
 				console.log('管理页面')
 			},
 			logout() {
-				console.log('登陆')
+				console.log('登出')
 				config.saveToken('')
 				this.user = {}
 				this.$refs.popup_success.open('top')
