@@ -138,9 +138,12 @@
 			},
 			manage() {
 				console.log('管理页面')
+				uni.navigateTo({
+				                url: '/pages/manage/manage',
+				            });
 			},
 			logout() {
-				console.log('登出')
+				console.log('登陆')
 				config.saveToken('')
 				this.user = {}
 				this.$refs.popup_success.open('top')
