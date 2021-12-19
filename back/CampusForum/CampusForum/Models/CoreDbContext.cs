@@ -5,6 +5,11 @@ namespace CampusForum.Models
     public class CoreDbContext : DbContext
     {
         public virtual DbSet<User> User { get; set; }
+        public virtual DbSet<Follow> Follow { get; set; }
+        public virtual DbSet<State> State { get; set; }
+        public virtual DbSet<StateText> State_text { get; set; }
+        public virtual DbSet<Like> like_state { get; set; }
+        public virtual DbSet<Comment> Comment { get; set; }
         
         public CoreDbContext()
         {
