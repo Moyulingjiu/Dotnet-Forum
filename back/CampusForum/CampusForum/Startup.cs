@@ -44,6 +44,7 @@ namespace CampusForum
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "CampusForum v1"));
+                app.UseStaticFiles();
             }
 
             app.UseHttpsRedirection();
