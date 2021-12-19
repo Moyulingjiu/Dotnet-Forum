@@ -7,34 +7,43 @@ namespace CampusForum.Models
 {
     public class User
     {
+        //[Key]
+        //public int id { set; get; }
         [Key]
-        public int id { set; get; }
-        public long student_number { set; get; }
+        public long student_id { set; get; }
+        public string password { get; set; }
         public string name { set; get; }
         public string college { set; get; }
-        public short grade { set; get; }
-        public short sex { set; get; }
-        public string photo { set; get; }
-        public string sign { set; get; }
+        public int gender { set; get; }
+        public string avater { get; set; }
+        public string description { set; get; }
         public DateTime birthday { set; get; }
-        public short judgestate { set; get; }
-        public DateTime create_time { set; get; }
-        public DateTime update_time { set; get; }
+        public string phone { get; set; }
+        public string email { get; set; }
+        public int sign_state { get; set; }
+        public int disable { get; set; }
+        //public DateTime gmt_create { set; get; }
+        //public DateTime gmt_modified { set; get; }
 
-        public void Update(User user)
+
+        public User(User user)
         {
-            this.id = user.id;
-            this.student_number = user.student_number;
+            this.student_id = user.student_id;
+            this.password = user.password;
             this.name = user.name;
             this.college = user.college;
-            this.grade = user.grade;
-            this.sex = user.sex;
-            this.photo = user.photo;
-            this.sign = user.sign;
+            this.gender = user.gender;
+            this.avater = user.avater;
+            this.description = user.description;
             this.birthday = user.birthday;
-            this.judgestate = user.judgestate;
-            this.create_time = user.create_time;
-            this.update_time = user.update_time;
+            this.phone = user.phone;
+            this.email = user.email;
+            this.sign_state = user.sign_state;
+            this.disable = user.disable;
+        }
+
+        public User()
+        {
         }
     }
 }
