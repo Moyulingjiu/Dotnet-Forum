@@ -1,6 +1,9 @@
 <template>
 	<view>
-		<view class="title"><h1>{{ state.title }}</h1></view>
+		<view class="title">
+			<h1>{{ state.title }}</h1>
+			<image :src="state.like?likeIcon:unlikeIcon" @click="like()"></image>
+		</view>
 		<view class="avater">
 			<image :src="state.userAvater" mode="aspectFill"></image>
 			<text>{{ state.userName }}</text>
@@ -22,6 +25,9 @@
 	export default {
 		data() {
 			return {
+				likeIcon: '../../static/like_active.png', // 点赞图标
+				unlikeIcon: '../../static/like.png', // 未点赞图标
+				comment: '', // 用户想要发布的评论
 				state: {
 					id: 2,
 					title: '小石潭记',
@@ -33,11 +39,51 @@
 					gmtCreate: '2021年7月20日 20:00',
 					like: false
 				},
-				comment: ''
+				comments: [
+					{
+						id: 1,
+						State_id: 1,
+						Father_id: 0,
+						Reply_id: 0,
+						Text: '测试评论',
+						userId: 1,
+						username: '测试用户名',
+						userAvater: '../../static/avater.jpg', // 头像
+						sonComments: [
+							{
+								id: 2,
+								State_id: 1,
+								Father_id: 1,
+								Reply_id: 0,
+								Text: '测试评论回复',
+								userId: 1,
+								username: '测试用户名',
+								userAvater: '../../static/avater.jpg', // 头像
+							}
+						]
+					},
+					{
+						id: 3,
+						State_id: 1,
+						Father_id: 0,
+						Reply_id: 0,
+						Text: '测试评论',
+						userId: 1,
+						username: '测试用户名',
+						userAvater: '../../static/avater.jpg', // 头像
+						sonComments: [
+						]
+					}
+				]
 			}
 		},
 		methods: {
-
+			submitComment() {
+				console.log('评论')
+			},
+			like() {
+				this.state.like = !this.state.like
+			}
 		}
 	}
 </script>
@@ -46,6 +92,18 @@
 	.title {
 		margin: 15rpx 5%;
 		width: 90%;
+		display: flex;
+	}
+	
+	.title h1 {
+		font-size: 75rpx;
+	}
+	
+	.title image {
+		margin-top: 20rpx;
+		margin-left: 20rpx;
+		width: 70rpx;
+		height: 70rpx;
 	}
 	
 	.avater {
@@ -81,7 +139,7 @@
 	.new_comment editor {
 		margin-bottom: 30rpx;
 		padding: 10rpx;
-		height: 200rpx;
+		height: 100rpx;
 		border: 3rpx solid #808080;
 		border-radius: 10rpx;
 	}
