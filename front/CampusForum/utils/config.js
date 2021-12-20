@@ -42,7 +42,7 @@ export function getToken() {
 	}
 }
 
-// 保存用户
+// 保存登陆的用户信息
 export function saveUser(user) {
 	try {
 		uni.setStorageSync('user', user)
@@ -53,6 +53,7 @@ export function saveUser(user) {
 	}
 }
 
+// 获取登陆的用户信息
 export function getUser() {
 	try {
 		return uni.getStorageSync('user')
@@ -72,10 +73,30 @@ export function decode(ciphertext) {
 	return ""
 }
 
+// 获取性别
 export function getGender(gender) {
 	if (gender == 0)
 		return '保密'
 	else if (gender == 1)
 		return '男'
 	return '女'
+}
+
+// 检验手机号合法性
+export function checkPhone(str) {
+	let reMobile = /^1\d{10}$/ // 手机号码
+	let reFix = /^0\d{2,3}-?\d{7,8}$/ // 固定座机
+	if (reMobile.test(str))
+		return true
+	if (reFix.test(str))
+		return true
+	return false
+}
+
+// 检验邮箱合法性
+export function checkEmail(str) {
+	let re = /^(\w-*\.*)+@(\w-?)+(\.\w{2,})+$/
+	if (re.test(str))
+		return true
+	return false
 }
