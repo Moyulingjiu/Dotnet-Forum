@@ -1,5 +1,5 @@
 // 全局常量配置
-export const baseUrl = 'localhost:8080'
+export const baseUrl = '/api'
 
 // 检查登陆
 export function checkToken() {

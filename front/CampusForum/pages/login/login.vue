@@ -18,12 +18,6 @@
 			<button class="login_button" @click="login()">登 陆</button>
 			<button class="login_button register" @click="register()">注 册</button>
 		</view>
-		<uni-popup ref="popup_error" type="message">
-			<uni-popup-message type="error" message="学号或密码错误" :duration="2000"></uni-popup-message>
-		</uni-popup>
-		<uni-popup ref="popup_error_unknown" type="message">
-			<uni-popup-message type="error" message="发生未知错误,请重试" :duration="2000"></uni-popup-message>
-		</uni-popup>
 	</view>
 </template>
 
@@ -47,17 +41,38 @@
 				this.password = ''
 			},
 			login() {
-				if (this.studentId === '123' && this.password === '123') {
-					if (config.saveToken('123')) {
-						uni.switchTab({
-							url: '/pages/index/index'
-						});
-					} else {
-						this.$refs.popup_error_unknown.open('top')
-					}
-				} else {
-					this.$refs.popup_error.open('top')
+				if (this.studentId.length === 0 || this.password.length === 0) {
+					uni.showToast({
+						title: '请填写学号和密码',
+						icon:'none',
+						duration: 2000,
+						position: 'top'
+					});
+					return
 				}
+				userApi.login(this.studentId, this.password)
+				.then(data => {
+					let result = true
+					if (typeof data === "undefined") {
+						result = false
+					} else {
+						let token = data.data.token
+						console.log(token)
+						if (config.saveToken(token)) {
+							uni.showToast({
+								title: '登陆成功',
+								icon: "success",
+								mask: true,
+								duration: 2000
+							});
+							uni.switchTab({
+								url: '../index/index'
+							})
+						} else {
+							result = false
+						}
+					}
+				})
 			},
 			register() {
 				console.log('注册')

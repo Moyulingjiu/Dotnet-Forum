@@ -1,6 +1,6 @@
 import * as config from '../utils/config.js'
 
-function request({
+export function service({
 	url,
 	data,
 	method
@@ -9,27 +9,26 @@ function request({
 		//uni.app 发起网络请求
 		uni.request({
 			url: config.baseUrl + url,
-			data,
-			method,
-			sslVerify: true, // 进行ssl验证
-			success: ({
-				data,
-				statusCode,
-				header
-			}) => {
-				if (data.success) {
+			data: data,
+			method: method,
+			sslVerify: false, // 进行ssl验证（我们的访问都是http的不应爱进行检验）
+			success: (res) => {
+				console.log('请求成功')
+				console.log(res)
+				console.log(res.data)
+				if (res.data.code == 200) {
 					//请求成功
-					resolve(data)
+					resolve(res.data)
 				} else {
 					//请求失败 提示用户
 					uni.showToast({
-						title: data.message,
-						icon: "success",
+						title: '用户名或密码错误',
+						icon: "error",
 						mask: true,
 						duration: 2000
 					});
 					//进行失败回调
-					reject(data.message)
+					reject(res)
 				}
 			},
 			fail: (errot) => {
@@ -37,7 +36,7 @@ function request({
 				reject(errot)
 			}
 		})
+	}).catch((e) => {
+		console.log(e)
 	})
 }
-
-export default request

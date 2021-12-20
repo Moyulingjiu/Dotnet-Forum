@@ -1,5 +1,5 @@
 import * as config from '../utils/config.js'
-import request from './request.js'
+import * as request from './request.js'
 export const modelUrl = `/user`
 
 // 注册
@@ -23,14 +23,13 @@ export function login(studentId, password) {
 		studentId: studentId,
 		password: password
 	}
-	request({
+	console.log(url)
+	console.log(data)
+	return request.service({
 		url: url,
 		data: data,
 		method: 'GET'
 	})
-	
-	let token = '123' // 模拟获取token值
-	return config.saveToken(token)
 }
 
 // 登出

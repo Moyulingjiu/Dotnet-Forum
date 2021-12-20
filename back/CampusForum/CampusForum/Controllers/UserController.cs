@@ -76,20 +76,20 @@ namespace WebApi.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("login")]
-        public Code login(long student_id, string password)
+        public Code login(long studentId, string password)
         {
             using(CoreDbContext _coreDbContext = new CoreDbContext())
             {
 
-                User user = _coreDbContext.Set<User>().Find(student_id);
+                User user = _coreDbContext.Set<User>().Find(studentId);
                 if (user != null)
                 {
                     //密码加密
                     RSAKey.createRSAKey();
-                    password = RSAKey.RSAEncrypt(password);
-                    if (user.password == password)
+                    string deCryptPassword = RSAKey.RSADecrypt(user.password);
+                    if (deCryptPassword == password)
                     {
-                        string token = generateToken(student_id, user.name);
+                        string token = generateToken(studentId, user.name);
                         return new Code(200, "成功", new { token = token, gmt_create = user.gmt_create, gmt_modified = user.gmt_modified });
                     }
                     else return new Code(403, "密码错误", null);
