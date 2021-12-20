@@ -4,90 +4,79 @@
         <name>CampusForum</name>
     </assembly>
     <members>
-        <member name="M:CampusForum.Controllers.CommentController.insertComment(System.String,CampusForum.Models.Comment)">
+        <member name="M:CampusForum.Controllers.CommentController.insertComment(CampusForum.Models.Comment)">
             <summary>
             添加评论
             </summary>
-            <param name="token"></param>
             <param name="comment"></param>
             <returns></returns>
         </member>
-        <member name="M:CampusForum.Controllers.CommentController.deleteComment(System.String)">
+        <member name="M:CampusForum.Controllers.CommentController.deleteComment">
             <summary>
             删除评论
             </summary>
-            <param name="token"></param>
             <returns></returns>
         </member>
-        <member name="M:CampusForum.Controllers.CommentController.selectCommentById(System.String)">
+        <member name="M:CampusForum.Controllers.CommentController.selectCommentById">
             <summary>
             根据id获取评论
             </summary>
-            <param name="token"></param>
             <returns></returns>
         </member>
-        <member name="M:CampusForum.Controllers.CommentController.getAllComment(System.String,System.Int32,System.Int32)">
+        <member name="M:CampusForum.Controllers.CommentController.getAllComment(System.Int32,System.Int32)">
             <summary>
             获取一个状态的一级评论
             </summary>
-            <param name="token"></param>
             <param name="page"></param>
             <param name="pageSize"></param>
             <returns></returns>
         </member>
-        <member name="M:CampusForum.Controllers.CommentController.getAllReply(System.String,System.Int32,System.Int32)">
+        <member name="M:CampusForum.Controllers.CommentController.getAllReply(System.Int32,System.Int32)">
             <summary>
             获取一个评论下的所有子评论
             </summary>
-            <param name="token"></param>
             <param name="page"></param>
             <param name="pageSize"></param>
             <returns></returns>
         </member>
-        <member name="M:CampusForum.Controllers.StateController.insert(System.String,CampusForum.Models.StateReq)">
+        <member name="M:CampusForum.Controllers.StateController.insert(CampusForum.Models.StateReq)">
             <summary>
             新建状态
             </summary>
-            <param name="token"></param>
             <param name="stateReq"></param>
             <returns></returns>
         </member>
-        <member name="M:CampusForum.Controllers.StateController.updateState(System.String,CampusForum.Models.StateReq)">
+        <member name="M:CampusForum.Controllers.StateController.updateState(CampusForum.Models.StateReq)">
             <summary>
             修改状态
             </summary>
-            <param name="token"></param>
             <param name="stateReq"></param>
             <returns></returns>
         </member>
-        <member name="M:CampusForum.Controllers.StateController.deleteState(System.String)">
+        <member name="M:CampusForum.Controllers.StateController.deleteState">
             <summary>
             删除状态 存在路由匹配问题
             </summary>
-            <param name="token"></param>
             <returns></returns>
         </member>
-        <member name="M:CampusForum.Controllers.StateController.getStateById(System.String)">
+        <member name="M:CampusForum.Controllers.StateController.getStateById">
             <summary>
             通过id查询状态
             </summary>
-            <param name="token"></param>
             <returns></returns>
         </member>
-        <member name="M:CampusForum.Controllers.StateController.getAllStates(System.String,System.Int32,System.Int32)">
+        <member name="M:CampusForum.Controllers.StateController.getAllStates(System.Int32,System.Int32)">
             <summary>
             查询用户的所有状态
             </summary>
-            <param name="token"></param>
             <param name="page"></param>
             <param name="pageSize"></param>
             <returns></returns>
         </member>
-        <member name="M:CampusForum.Controllers.StateController.getStateByCondition(System.String,System.Int64,System.String,System.String,System.Int32,System.Int32)">
+        <member name="M:CampusForum.Controllers.StateController.getStateByCondition(System.Int64,System.String,System.String,System.Int32,System.Int32)">
             <summary>
             条件查询状态 未测试
             </summary>
-            <param name="token"></param>
             <param name="userId"></param>
             <param name="userName"></param>
             <param name="title"></param>
@@ -95,27 +84,24 @@
             <param name="pageSize"></param>
             <returns></returns>
         </member>
-        <member name="M:CampusForum.Controllers.StateController.getRecommendState(System.String,System.Int32,System.Int32)">
+        <member name="M:CampusForum.Controllers.StateController.getRecommendState(System.Int32,System.Int32)">
             <summary>
             主页推荐的状态 返回关注的状态、关注点赞的状态和点赞数超过平台用户半数的状态 未测试
             </summary>
-            <param name="token"></param>
             <param name="page"></param>
             <param name="pageSize"></param>
             <returns></returns>
         </member>
-        <member name="M:CampusForum.Controllers.StateController.likeState(System.String)">
+        <member name="M:CampusForum.Controllers.StateController.likeState">
             <summary>
             点赞状态
             </summary>
-            <param name="token"></param>
             <returns></returns>
         </member>
-        <member name="M:CampusForum.Controllers.StateController.unlikeState(System.String)">
+        <member name="M:CampusForum.Controllers.StateController.unlikeState">
             <summary>
             取消点赞状态
             </summary>
-            <param name="token"></param>
             <returns></returns>
         </member>
         <member name="M:CampusForum.Models.RSAKey.createRSAKey">
@@ -130,11 +116,11 @@
             <param name="data"></param>
             <returns></returns>
         </member>
-        <member name="M:WebApi.Controllers.UserController.register(CampusForum.Models.User)">
+        <member name="M:WebApi.Controllers.UserController.register(CampusForum.Models.UserReq)">
             <summary>
-            注册 (删除用户后id的增加问题，如删除id=6的用户后，再次增加用户id不会从6开始增加)
+            注册
             </summary>
-            <param name="user"></param>
+            <param name="userReq"></param>
             <returns></returns>
         </member>
         <member name="M:WebApi.Controllers.UserController.login(System.Int64,System.String)">
@@ -143,58 +129,51 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:WebApi.Controllers.UserController.logout(System.String)">
+        <member name="M:WebApi.Controllers.UserController.logout">
             <summary>
             登出
             </summary>
-            <param name="token"></param>
             <returns></returns>
         </member>
-        <member name="M:WebApi.Controllers.UserController.updateInfo(System.String,CampusForum.Models.User)">
+        <member name="M:WebApi.Controllers.UserController.updateInfo(CampusForum.Models.UserReq)">
             <summary>
-            更新用户数据（错误：更新请求时gmt_create不能发生变化）
+            更新用户数据
             </summary>
-            <param name="user"></param>
-            <param name="token"></param>
+            <param name="userReq"></param>
             <returns></returns>
         </member>
-        <member name="M:WebApi.Controllers.UserController.delete(System.String)">
+        <member name="M:WebApi.Controllers.UserController.delete">
             <summary>
             删除用户
             </summary>
-            <param name="token"></param>
             <returns></returns>
         </member>
-        <member name="M:WebApi.Controllers.UserController.getUserById(System.String)">
+        <member name="M:WebApi.Controllers.UserController.getUserById">
             <summary>
-            通过id查询用户 (注意id要改成user_id,目前是student_id)
+            通过id查询用户 
             </summary>
-            <param name="token"></param>
             <returns></returns>
         </member>
-        <member name="M:WebApi.Controllers.UserController.getAllUsers(System.String,System.Int32,System.Int32)">
+        <member name="M:WebApi.Controllers.UserController.getAllUsers(System.Int32,System.Int32)">
             <summary>
             查询所有用户
             </summary>
-            <param name="token"></param>
             <param name="page"></param>
             <param name="pageSize"></param>
             <returns></returns>
         </member>
-        <member name="M:WebApi.Controllers.UserController.getFollowers(System.String,System.Int32,System.Int32)">
+        <member name="M:WebApi.Controllers.UserController.getFollowers(System.Int32,System.Int32)">
             <summary>
             获取粉丝列表
             </summary>
-            <param name="token"></param>
             <param name="page"></param>
             <param name="pageSize"></param>
             <returns></returns>
         </member>
-        <member name="M:WebApi.Controllers.UserController.getUserByCondition(System.String,System.Int64,System.String,System.String,System.Int32,System.Int32,System.Int32)">
+        <member name="M:WebApi.Controllers.UserController.getUserByCondition(System.Int64,System.String,System.String,System.Int32,System.Int32,System.Int32)">
             <summary>
             模糊条件查询用户 测试查询姓名“张”正确返回 其余未测试
             </summary>
-            <param name="token"></param>
             <param name="studentId"></param>
             <param name="name"></param>
             <param name="college"></param>
@@ -203,27 +182,24 @@
             <param name="pageSize"></param>
             <returns></returns>
         </member>
-        <member name="M:WebApi.Controllers.UserController.getFollowings(System.String,System.Int32,System.Int32)">
+        <member name="M:WebApi.Controllers.UserController.getFollowings(System.Int32,System.Int32)">
             <summary>
             获取关注列表
             </summary>
-            <param name="token"></param>
             <param name="page"></param>
             <param name="pageSize"></param>
             <returns></returns>
         </member>
-        <member name="M:WebApi.Controllers.UserController.follow(System.String)">
+        <member name="M:WebApi.Controllers.UserController.follow">
             <summary>
             关注某人
             </summary>
-            <param name="token"></param>
             <returns></returns>
         </member>
-        <member name="M:WebApi.Controllers.UserController.unfollow(System.String)">
+        <member name="M:WebApi.Controllers.UserController.unfollow">
             <summary>
             取关某人
             </summary>
-            <param name="token"></param>
             <returns></returns>
         </member>
     </members>

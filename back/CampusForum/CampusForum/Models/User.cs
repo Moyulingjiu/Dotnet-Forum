@@ -7,9 +7,8 @@ namespace CampusForum.Models
 {
     public class User
     {
-        /*[Key]
-        public int id { set; get; }*/
         [Key]
+        public int id { set; get; }
         public long student_id { set; get; }
         public string password { get; set; }
         public string name { set; get; }
@@ -17,7 +16,8 @@ namespace CampusForum.Models
         public int gender { set; get; }
         public string avater { get; set; }
         public string description { set; get; }
-        public DateTime birthday { set; get; }
+        /*[RegularExpression("d{4}-d{2}-d{2}", ErrorMessage = "日期格式错误，示例2020-02-02")]*/
+        public string birthday { set; get; }
         public string phone { get; set; }
         public string email { get; set; }
         public int sign_state { get; set; }
@@ -44,6 +44,24 @@ namespace CampusForum.Models
             this.email = user.email;
             this.sign_state = user.sign_state;
             this.disable = user.disable;
+        }
+
+        public User(UserReq userReq)
+        {
+            this.student_id = userReq.studentId;
+            this.password = userReq.password;
+            this.name = userReq.name;
+            this.college = userReq.college;
+            this.gender = userReq.gender;
+            this.avater = userReq.avater;
+            this.description = userReq.description;
+            this.birthday = userReq.birthday;
+            this.phone = userReq.phone;
+            this.email = userReq.email;
+
+            this.sign_state = 0;
+            this.disable = 0;
+
         }
 
     }
