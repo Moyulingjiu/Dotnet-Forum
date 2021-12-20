@@ -20,7 +20,7 @@
 			<view class="state_title">
 				<text>{{ item.title }}</text>
 			</view>
-			<view class="state_author">
+			<view class="state_author" @click="userdetail(index)">
 				<image :src="item.userAvater"></image>
 				<text>{{ item.userName }}</text>
 			</view>
@@ -102,11 +102,14 @@
 			}
 		},
 		onLoad() {
-			if (config.checkToken()) {
-				// 获取主页的状态推荐
-			} else {
-				this.login()
-			}
+			this.token = config.getToken()
+			console.log(this.token)
+			// if (this.token == '') {
+			// 	this.login()
+			// } else {
+			// 	// 获取状态列表
+			// 	// this.stateList = stateApi.getStateById(this.token, this.page) 
+			// }
 		},
 		methods: {
 			login() {
@@ -122,6 +125,11 @@
 			},
 			clearCondition() {
 				this.searchCondition = ''
+			},
+			userdetail(index){
+				uni.navigateTo({
+					url: '/pages/otherUsers/otherUsers'
+				});
 			}
 		}
 	}
