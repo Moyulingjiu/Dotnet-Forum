@@ -1,6 +1,9 @@
 <template>
 	<view>
-		<view class="title"><h1>{{ state.title }}</h1></view>
+		<view class="title">
+			<h1>{{ state.title }}</h1>
+			<image :src="state.like?likeIcon:unlikeIcon" @click="like()"></image>
+		</view>
 		<view class="avater">
 			<image :src="state.userAvater" mode="aspectFill"></image>
 			<text>{{ state.userName }}</text>
@@ -22,6 +25,8 @@
 	export default {
 		data() {
 			return {
+				likeIcon: '../../static/like_active.png', // 点赞图标
+				unlikeIcon: '../../static/like.png', // 未点赞图标
 				state: {
 					id: 2,
 					title: '小石潭记',
@@ -37,7 +42,9 @@
 			}
 		},
 		methods: {
-
+			like() {
+				this.state.like = !this.state.like
+			}
 		}
 	}
 </script>
@@ -46,6 +53,18 @@
 	.title {
 		margin: 15rpx 5%;
 		width: 90%;
+		display: flex;
+	}
+	
+	.title h1 {
+		font-size: 75rpx;
+	}
+	
+	.title image {
+		margin-top: 15rpx;
+		margin-left: 20rpx;
+		width: 80rpx;
+		height: 80rpx;
 	}
 	
 	.avater {
