@@ -11,7 +11,7 @@ export function insert(stateId, fatherId, replyId, text) {
 }
 
 // 删除评论
-export function delete(commentId) {
+export function deleteComment(commentId) {
 	let url = modelUrl + `/delete/${commentId}`
 	let token = config.getToken()
 	

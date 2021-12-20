@@ -58,7 +58,7 @@ export function select(id) {
 	// })
 	return {
 		id: 1,
-		studentId: 22920192200000
+		studentId: 22920192200000,
 		name: '用户名',
 		college: '信息学院',
 		gender: 1,

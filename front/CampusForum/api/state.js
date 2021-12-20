@@ -19,7 +19,7 @@ export function update(stateId, data) {
 }
 
 // 删除状态
-export function delete(stateId) {
+export function deleteState(stateId) {
 	let url = modelUrl + `/delete/${stateId}`
 	let token = config.getToken()
 	// 请求
