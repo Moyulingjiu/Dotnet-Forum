@@ -152,3 +152,9 @@ C:\Users\fan\Desktop\.net\dot\back\CampusForum\CampusForum\obj\Debug\net5.0\Camp
 C:\Users\fan\Desktop\.net\dot\back\CampusForum\CampusForum\obj\Debug\net5.0\CampusForum.genruntimeconfig.cache
 C:\Users\fan\Desktop\.net\dot\back\CampusForum\CampusForum\bin\Debug\net5.0\Newtonsoft.Json.dll
 C:\Users\fan\Desktop\.net\dot\back\CampusForum\CampusForum\bin\Debug\net5.0\CampusForum.xml
+E:\厦门大学\大学四年的学习资料\大三\大三上\.Net平台技术-杨律青\大作业\项目\back\CampusForum\CampusForum\bin\Debug\net5.0\CampusForum.xml
+E:\厦门大学\大学四年的学习资料\大三\大三上\.Net平台技术-杨律青\大作业\项目\back\CampusForum\CampusForum\bin\Debug\net5.0\Microsoft.IdentityModel.JsonWebTokens.dll
+E:\厦门大学\大学四年的学习资料\大三\大三上\.Net平台技术-杨律青\大作业\项目\back\CampusForum\CampusForum\bin\Debug\net5.0\Microsoft.IdentityModel.Logging.dll
+E:\厦门大学\大学四年的学习资料\大三\大三上\.Net平台技术-杨律青\大作业\项目\back\CampusForum\CampusForum\bin\Debug\net5.0\Microsoft.IdentityModel.Tokens.dll
+E:\厦门大学\大学四年的学习资料\大三\大三上\.Net平台技术-杨律青\大作业\项目\back\CampusForum\CampusForum\bin\Debug\net5.0\Newtonsoft.Json.dll
+E:\厦门大学\大学四年的学习资料\大三\大三上\.Net平台技术-杨律青\大作业\项目\back\CampusForum\CampusForum\bin\Debug\net5.0\System.IdentityModel.Tokens.Jwt.dll
