@@ -102,13 +102,10 @@
 			}
 		},
 		onLoad() {
-			this.token = config.getToken()
-			console.log(this.token)
-			if (this.token == '') {
-				this.login()
+			if (config.checkToken()) {
+				// 获取主页的状态推荐
 			} else {
-				// 获取状态列表
-				// this.stateList = stateApi.getStateById(this.token, this.page) 
+				this.login()
 			}
 		},
 		methods: {

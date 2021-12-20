@@ -4,7 +4,7 @@
 			<image class="avater" :src="user.avater" mode="aspectFill"></image>
 			<input placeholder="请输入用户名" maxlength="6" class="name" type="text" v-model="user.name" />
 		</view>
-		
+
 		<view class="person_card">
 			<view class="information_card flex_box">
 				<view>
@@ -102,7 +102,7 @@
 					</view>
 					<view class="information_text">
 						<view class="uni-list-cell-db">
-							<picker mode="date"  :value="user.brithday" @change="bindDateChange">
+							<picker mode="date" :value="user.brithday" @change="bindDateChange">
 								<view class="uni-input">{{ user.brithday }}</view>
 							</picker>
 						</view>
@@ -111,6 +111,7 @@
 			</view>
 		</view>
 		<button class="register_button" @click="register()">注 册</button>
+		<button class="login_button" @click="login()">返回登陆</button>
 		<uni-popup ref="popup_error" type="message">
 			<uni-popup-message type="error" message="学号、密码、用户名不能为空" :duration="3000"></uni-popup-message>
 		</uni-popup>
@@ -122,10 +123,11 @@
 
 <script>
 	import * as config from "../../utils/config.js"
-	
+	import * as userApi from "../../api/user.js"
+
 	export default {
 		data() {
-			
+
 			return {
 				genderArray: [
 					'保密',
@@ -153,12 +155,22 @@
 			register() {
 				if (this.user.studentId == '' || this.user.password == '' || this.user.name == '') {
 					this.$refs.popup_error.open('top')
-				} else if (this.user.password.length < 6 || this.user.password > 16) {
+				} else if (this.user.password.length < 6 || this.user.password.length > 16) {
+					console.log(this.user.password)
+					console.log(this.user.password.length)
 					this.$refs.popup_error_password.open('top')
 				} else {
-					console.log(this.user)
-					console.log('试图注册')
+					userApi.register(this.user)
+						.then(data => {
+							console.log('回调函数')
+							console.log(data)
+						})
 				}
+			},
+			login() {
+				uni.redirectTo({
+					url: '/pages/login/login'
+				});
 			},
 			bindDateChange(e) { // 改变日期
 				this.user.brithday = e.target.value
@@ -183,18 +195,18 @@
 	.flex_box {
 		display: flex;
 	}
-	
+
 	.avater_container {
 		margin-top: 20rpx;
 		text-align: center;
 	}
-	
+
 	.avater {
 		width: 300rpx;
 		height: 300rpx;
 		border-radius: 50%;
 	}
-	
+
 	.name {
 		width: 40%;
 		margin-left: 30%;
@@ -203,11 +215,11 @@
 		/* border-bottom: 2rpx solid #A0A0A0; */
 		border-bottom: none;
 	}
-	
+
 	.name:hover {
 		border-bottom: 2rpx solid #A0C2E7;
 	}
-	
+
 	.register_button {
 		width: 90%;
 		margin: 30rpx 5%;
@@ -216,8 +228,17 @@
 		border-radius: 40rpx;
 		box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 	}
-	
-	
+
+	.login_button {
+		width: 90%;
+		margin: 30rpx 5%;
+		background-image: linear-gradient(to right, #ffecd2 0%, #fcb69f 100%);
+		font-weight: bold;
+		border-radius: 40rpx;
+		box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+	}
+
+
 	.person_card {
 		width: 90%;
 		margin-left: 5%;
@@ -231,28 +252,28 @@
 		border-radius: 10rpx;
 		box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 	}
-	
+
 	.information_card {
 		margin: 0;
 		padding: 10rpx;
 	}
-	
+
 	.information_container {
 		display: flex;
 		width: 95%;
 		margin-left: 10rpx;
 	}
-	
+
 	.information_title {
 		color: #606060;
 		font-size: 35rpx;
 	}
-	
+
 	.information_text {
 		margin-left: 20rpx;
 		font-size: 35rpx;
 	}
-	
+
 	.information_edit {
 		height: 30rpx;
 		width: 30rpx;
