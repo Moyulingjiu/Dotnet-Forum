@@ -120,11 +120,11 @@
 			search() {
 				// 搜索
 			},
-			like(index) {
-				this.stateList[index].like = !this.stateList[index].like
-			},
 			clearCondition() {
 				this.searchCondition = ''
+			},
+			like(index) {
+				this.stateList[index].like = !this.stateList[index].like
 			},
 			userdetail(index){
 				uni.navigateTo({
