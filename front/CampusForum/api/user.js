@@ -3,17 +3,38 @@ import * as request from './request.js'
 export const modelUrl = `/user`
 
 // 注册
-export function register(studentId, password, name, college, gender, avater, description, birthday, phone, email) {
+export function register({
+	studentId, 
+	password, 
+	name, 
+	college, 
+	gender, 
+	avater, 
+	description, 
+	birthday, 
+	phone, 
+	email
+}) {
 	let url = modelUrl + `/register`
 	let data = {
-		
+		studentId: studentId,
+		password: password,
+		name: name,
+		college: college,
+		gender: gender,
+		avater: avater,
+		description: description,
+		birthday: birthday,
+		phone: phone,
+		email: email
 	}
-	request({
+	console.log('注册调用')
+	console.log(data)
+	return request.service({
 		url: url,
 		data: data,
 		method: 'POST'
 	})
-	return null
 }
 
 // 登陆
@@ -23,8 +44,6 @@ export function login(studentId, password) {
 		studentId: studentId,
 		password: password
 	}
-	console.log(url)
-	console.log(data)
 	return request.service({
 		url: url,
 		data: data,

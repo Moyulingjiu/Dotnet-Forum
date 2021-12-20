@@ -1,10 +1,9 @@
 // 全局常量配置
-export const baseUrl = '/api'
 
 // 检查登陆
 export function checkToken() {
 	let token = uni.getStorageSync('token')
-	if (token == '')
+	if (token == '') // 这里为什么用两个等号，因为可能是null。
 		return false
 	return true
 }
