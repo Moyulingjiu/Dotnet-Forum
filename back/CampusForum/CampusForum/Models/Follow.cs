@@ -10,8 +10,8 @@ namespace CampusForum.Models
     {
         [Key]
         public int id { get; set; }
-        public long user_id { get; set; }
-        public long follower_id { get; set; }
+        public int user_id { get; set; }
+        public int follower_id { get; set; }
         public DateTime gmt_create { set; get; }
         public DateTime gmt_modified { set; get; }
 

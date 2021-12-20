@@ -23,29 +23,18 @@ namespace CampusForum.Controllers
         /// <summary>
         /// 添加评论
         /// </summary>
-        /// <param name="token"></param>
         /// <param name="comment"></param>
         /// <returns></returns>
         [HttpPost("insert")]
-        public Code insertComment(string token,Comment comment)
+        public Code insertComment(Comment comment)
         {
             using(CoreDbContext _coreDbContext = new CoreDbContext())
             {
-                //解析token
-                JwtSecurityTokenHandler jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
-                string idStr;
-                try
-                {
-                    JwtSecurityToken jwtSecurityToken = jwtSecurityTokenHandler.ReadJwtToken(token);
-                    jwtSecurityToken.Payload.GetValueOrDefault("ID").ToString();
-                    idStr = jwtSecurityToken.Payload.GetValueOrDefault("ID").ToString();
-                }
-                catch (Exception)
-                {
-                    return new Code(404, "token错误", false);
-                }
+                string token = HttpContext.Request.Headers["token"];
 
-                long id = long.Parse(idStr);
+                //解析token
+                int id = JwtToid(token);
+                if (id == 0) return new Code(404, "token错误", null);
 
                 State state = _coreDbContext.Set<State>().Find(comment.state_id);
                 if (state == null) return new Code(404, "没有状态记录", false);
@@ -61,30 +50,19 @@ namespace CampusForum.Controllers
         /// <summary>
         /// 删除评论
         /// </summary>
-        /// <param name="token"></param>
         /// <returns></returns>
-        [HttpPost("delete/{comment_id}")]
-        public Code deleteComment(string token)
+        [HttpPost("delete/{commentId}")]
+        public Code deleteComment()
         {
             using(CoreDbContext _coreDbContext = new CoreDbContext())
             {
+                string token = HttpContext.Request.Headers["token"];
+
                 //解析token
-                JwtSecurityTokenHandler jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
-                string idStr;
-                try
-                {
-                    JwtSecurityToken jwtSecurityToken = jwtSecurityTokenHandler.ReadJwtToken(token);
-                    jwtSecurityToken.Payload.GetValueOrDefault("ID").ToString();
-                    idStr = jwtSecurityToken.Payload.GetValueOrDefault("ID").ToString();
-                }
-                catch (Exception)
-                {
-                    return new Code(404, "token错误", false);
-                }
+                int id = JwtToid(token);
+                if (id == 0) return new Code(404, "token错误", null);
 
-                long id = long.Parse(idStr);
-
-                string comment_idStr = RouteData.Values["comment_id"].ToString();
+                string comment_idStr = RouteData.Values["commentId"].ToString();
                 int comment_id = int.Parse(comment_idStr);
 
                 Comment comment = _coreDbContext.Set<Comment>().Find(comment_id);
@@ -115,30 +93,19 @@ namespace CampusForum.Controllers
         /// <summary>
         /// 根据id获取评论
         /// </summary>
-        /// <param name="token"></param>
         /// <returns></returns>
-        [HttpGet("select/{comment_id}")]
-        public Code selectCommentById(string token)
+        [HttpGet("select/{commentId}")]
+        public Code selectCommentById()
         {
             using (CoreDbContext _coreDbContext = new CoreDbContext())
             {
+                string token = HttpContext.Request.Headers["token"];
+
                 //解析token
-                JwtSecurityTokenHandler jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
-                string idStr;
-                try
-                {
-                    JwtSecurityToken jwtSecurityToken = jwtSecurityTokenHandler.ReadJwtToken(token);
-                    jwtSecurityToken.Payload.GetValueOrDefault("ID").ToString();
-                    idStr = jwtSecurityToken.Payload.GetValueOrDefault("ID").ToString();
-                }
-                catch (Exception)
-                {
-                    return new Code(404, "token错误", false);
-                }
+                int id = JwtToid(token);
+                if (id == 0) return new Code(404, "token错误", null);
 
-                long id = long.Parse(idStr);
-
-                String comment_idStr = RouteData.Values["comment_id"].ToString();
+                String comment_idStr = RouteData.Values["commentId"].ToString();
                 int comment_id = int.Parse(comment_idStr);
 
                 Comment comment = _coreDbContext.Set<Comment>().Find(comment_id);
@@ -155,32 +122,21 @@ namespace CampusForum.Controllers
         /// <summary>
         /// 获取一个状态的一级评论
         /// </summary>
-        /// <param name="token"></param>
         /// <param name="page"></param>
         /// <param name="pageSize"></param>
         /// <returns></returns>
-        [HttpGet("selectAll/{state_id}")]
-        public Code getAllComment(string token, int page = 0, int pageSize = 10)
+        [HttpGet("selectAll/{stateId}")]
+        public Code getAllComment(int page = 0, int pageSize = 10)
         {
             using (CoreDbContext _coreDbContext = new CoreDbContext())
             {
+                string token = HttpContext.Request.Headers["token"];
+
                 //解析token
-                JwtSecurityTokenHandler jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
-                string idStr;
-                try
-                {
-                    JwtSecurityToken jwtSecurityToken = jwtSecurityTokenHandler.ReadJwtToken(token);
-                    jwtSecurityToken.Payload.GetValueOrDefault("ID").ToString();
-                    idStr = jwtSecurityToken.Payload.GetValueOrDefault("ID").ToString();
-                }
-                catch (Exception)
-                {
-                    return new Code(404, "token错误", false);
-                }
+                int id = JwtToid(token);
+                if (id == 0) return new Code(404, "token错误", null);
 
-                long id = long.Parse(idStr);
-
-                String state_idStr = RouteData.Values["state_id"].ToString();
+                String state_idStr = RouteData.Values["stateId"].ToString();
                 int state_id = int.Parse(state_idStr);
 
                 State state = _coreDbContext.Set<State>().Find(state_id);
@@ -191,7 +147,7 @@ namespace CampusForum.Controllers
                 int pages = total / pageSize;
                 if (total % pageSize != 0) pages += 1;
 
-                if(page > pages-1) return new Code(400, "页码超过记录数", null);
+                if (page > ((pages - 1) > 0 ? (pages - 1) : 0)) return new Code(400, "页码超过记录数", null);
 
                 List<Comment> commentList = _coreDbContext.Set<Comment>().Where(d => d.state_id == state_id && d.father_id == 0 && d.disable == 0).Skip(page * pageSize).Take(pageSize).ToList();
                 List<CommentRet> commentRetList = new List<CommentRet>();
@@ -211,32 +167,21 @@ namespace CampusForum.Controllers
         /// <summary>
         /// 获取一个评论下的所有子评论
         /// </summary>
-        /// <param name="token"></param>
         /// <param name="page"></param>
         /// <param name="pageSize"></param>
         /// <returns></returns>
-        [HttpGet("selectAllReply/{comment_id}")]
-        public Code getAllReply(string token, int page = 0, int pageSize = 10)
+        [HttpGet("selectAllReply/{commentId}")]
+        public Code getAllReply(int page = 0, int pageSize = 10)
         {
             using (CoreDbContext _coreDbContext = new CoreDbContext())
             {
+                string token = HttpContext.Request.Headers["token"];
+
                 //解析token
-                JwtSecurityTokenHandler jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
-                string idStr;
-                try
-                {
-                    JwtSecurityToken jwtSecurityToken = jwtSecurityTokenHandler.ReadJwtToken(token);
-                    jwtSecurityToken.Payload.GetValueOrDefault("ID").ToString();
-                    idStr = jwtSecurityToken.Payload.GetValueOrDefault("ID").ToString();
-                }
-                catch (Exception)
-                {
-                    return new Code(404, "token错误", false);
-                }
+                int id = JwtToid(token);
+                if (id == 0) return new Code(404, "token错误", null);
 
-                long id = long.Parse(idStr);
-
-                String comment_idStr = RouteData.Values["comment_id"].ToString();
+                String comment_idStr = RouteData.Values["commentId"].ToString();
                 int comment_id = int.Parse(comment_idStr);
 
                 Comment comment = _coreDbContext.Set<Comment>().Find(comment_id);
@@ -246,7 +191,7 @@ namespace CampusForum.Controllers
                 int pages = total / pageSize;
                 if (total % pageSize != 0) pages += 1;
 
-                if (page > pages - 1) return new Code(400, "页码超过记录数", null);
+                if (page > ((pages - 1) > 0 ? (pages - 1) : 0)) return new Code(400, "页码超过记录数", null);
 
                 List<Comment> commentList = _coreDbContext.Set<Comment>().Where(d => d.father_id == comment_id && d.disable == 0).Skip(page * pageSize).Take(pageSize).ToList();
                 List<CommentRet> commentRetList = new List<CommentRet>();
@@ -260,6 +205,27 @@ namespace CampusForum.Controllers
                 }
                 return new Code(200, "成功", new { total = pages, items = commentRetList });
             }
+        }
+
+        private int JwtToid(string token)
+        {
+            JwtSecurityTokenHandler jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
+            string studentIdStr;
+            try
+            {
+                JwtSecurityToken jwtSecurityToken = jwtSecurityTokenHandler.ReadJwtToken(token);
+                jwtSecurityToken.Payload.GetValueOrDefault("ID").ToString();
+                studentIdStr = jwtSecurityToken.Payload.GetValueOrDefault("ID").ToString();
+            }
+            catch (Exception)
+            {
+                return 0;
+            }
+
+            long studentId = long.Parse(studentIdStr);
+            int id = _coreDbContext.Set<User>().Where(d => d.student_id == studentId).FirstOrDefault().id;
+
+            return id;
         }
     }
 }

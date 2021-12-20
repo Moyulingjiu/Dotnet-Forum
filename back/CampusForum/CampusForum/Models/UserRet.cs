@@ -38,7 +38,7 @@ namespace CampusForum.Models
             this.gender = user.gender;
             this.avater = user.avater;
             this.description = user.description;
-            this.birthday = user.birthday;
+            //this.birthday = user.birthday;
             this.phone = user.phone;
             this.email = user.email;
             this.follower = follower;
