@@ -23,8 +23,9 @@
 
 <script>
 	import * as userApi from "../../api/user.js"
+	import * as stateApi from "../../api/state.js"
 	import * as config from "../../utils/config.js"
-
+	
 	export default {
 		data() {
 			return {
@@ -43,54 +44,47 @@
 				if (this.studentId.length === 0 || this.password.length === 0) {
 					uni.showToast({
 						title: '请填写学号和密码',
-						icon: 'error',
+						icon:'none',
 						duration: 2000,
 						position: 'top'
 					});
 					return
 				}
 				userApi.login(this.studentId, this.password)
-					.then(data => {
-						let result = true
-						if (typeof data === "undefined") {
-							result = false
-						} else {
-							let token = data.data.token
-							if (config.saveToken(token)) {
-								uni.showToast({
-									title: '登陆成功',
-									icon: "success",
-									mask: true,
-									duration: 2000
-								});
-								uni.switchTab({
-									url: '../index/index'
-								})
-							} else {
-								result = false
-							}
-						}
-
-						if (!result) {
+				.then(data => {
+					let result = true
+					if (typeof data === "undefined") {
+						result = false
+					} else {
+						let token = data.data.token
+						console.log(token)
+						if (config.saveToken(token)) {
 							uni.showToast({
-								title: '学号或密码错误',
-								icon: "error",
+								title: '登陆成功',
+								icon: "success",
 								mask: true,
 								duration: 2000
 							});
+							uni.switchTab({
+								url: '../index/index'
+							})
+						} else {
+							result = false
 						}
-					})
+					}
+				})
 			},
 			register() {
+				console.log('注册')
 				uni.redirectTo({
-					url: '/pages/register/register'
+				    url: '/pages/register/register'
 				});
 			}
 		}
 	}
 </script>
 
-<style>
+<style>	
 	.flex_box {
 		display: flex;
 	}
@@ -102,17 +96,17 @@
 		height: 300rpx;
 		text-align: center;
 	}
-
+	
 	.logo {
 		width: 300rpx;
 		height: 100%;
 	}
-
+	
 	.name_container {
 		margin-top: 40rpx;
 		text-align: center;
 	}
-
+	
 	.name {
 		font-size: 50rpx;
 		font-weight: bold;
@@ -123,7 +117,7 @@
 		margin-top: 75rpx;
 		width: 90%;
 	}
-
+	
 	.input_box {
 		margin: 0rpx 10rpx 30rpx 10rpx;
 		padding: 10rpx;
@@ -134,18 +128,18 @@
 		border-color: #A0A0A0;
 		border-radius: 40rpx;
 	}
-
+	
 	.input_box input {
 		font-size: 40rpx;
 		width: 92%;
 	}
-
+	
 	.cancel_icon {
 		width: 30rpx;
 		height: 30rpx;
 		margin-top: 15rpx;
 	}
-
+	
 	.login_button {
 		margin: 30rpx 10rpx;
 		background-image: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);
@@ -153,7 +147,7 @@
 		border-radius: 40rpx;
 		box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 	}
-
+	
 	.register {
 		border-width: 3rpx;
 		border-style: solid;

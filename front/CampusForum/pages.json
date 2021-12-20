@@ -75,8 +75,26 @@
             }
             
         }
+		,{
+		    "path" : "pages/otherUsers/otherUsers",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		}
         ,{
             "path" : "pages/test/test",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/editStatus/editStatus",
             "style" :                                                                                    
             {
                 "navigationBarTitleText": "",
