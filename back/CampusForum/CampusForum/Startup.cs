@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using CampusForum.Models;
 using Microsoft.EntityFrameworkCore;
 using System.IO;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace CampusForum
 {
@@ -22,6 +23,7 @@ namespace CampusForum
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
         }
 
         public IConfiguration Configuration { get; }

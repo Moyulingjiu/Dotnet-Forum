@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations;
+
 namespace CampusForum.Models
 {
-    public class User
+    public class UserRet
     {
-        /*[Key]
-        public int id { set; get; }*/
+        public long id { get; set; }
         [Key]
         public long student_id { set; get; }
-        public string password { get; set; }
         public string name { set; get; }
         public string college { set; get; }
         public int gender { set; get; }
@@ -20,20 +19,20 @@ namespace CampusForum.Models
         public DateTime birthday { set; get; }
         public string phone { get; set; }
         public string email { get; set; }
-        public int sign_state { get; set; }
-        public int disable { get; set; }
+        public int follower { get; set; }
+        public int following { get; set; }
         public DateTime gmt_create { set; get; }
         public DateTime gmt_modified { set; get; }
 
-        public User()
+        public UserRet()
         {
 
         }
 
-        public User(User user)
+        public UserRet(User user,int follower,int following)
         {
+            //需要增加id字段 this.id = user.id;
             this.student_id = user.student_id;
-            this.password = user.password;
             this.name = user.name;
             this.college = user.college;
             this.gender = user.gender;
@@ -42,9 +41,10 @@ namespace CampusForum.Models
             this.birthday = user.birthday;
             this.phone = user.phone;
             this.email = user.email;
-            this.sign_state = user.sign_state;
-            this.disable = user.disable;
+            this.follower = follower;
+            this.following = following;
+            this.gmt_create = user.gmt_create;
+            this.gmt_modified = user.gmt_modified;
         }
-
     }
 }

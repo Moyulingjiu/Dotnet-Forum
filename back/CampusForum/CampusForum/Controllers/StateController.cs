@@ -1,0 +1,599 @@
+﻿using CampusForum.Models;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace CampusForum.Controllers
+{
+    [Route("/state")]
+    [ApiController]
+    public class StateController: ControllerBase
+    {
+        private readonly CoreDbContext _coreDbContext;
+
+        public StateController(CoreDbContext coreDbContext)
+        {
+            _coreDbContext = coreDbContext;
+        }
+
+        /// <summary>
+        /// 新建状态
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="stateReq"></param>
+        /// <returns></returns>
+        [HttpPost("insert")]
+        public Code insert(string token,StateReq stateReq)
+        {
+            using(CoreDbContext _coreDbContext = new CoreDbContext())
+            {
+
+                //解析token
+                JwtSecurityTokenHandler jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
+                string idStr;
+                try
+                {
+                    JwtSecurityToken jwtSecurityToken = jwtSecurityTokenHandler.ReadJwtToken(token);
+                    jwtSecurityToken.Payload.GetValueOrDefault("ID").ToString();
+                    idStr = jwtSecurityToken.Payload.GetValueOrDefault("ID").ToString();
+                }
+                catch (Exception)
+                {
+                    return new Code(404, "token错误", false);
+                }
+
+                long id = long.Parse(idStr);
+
+                //state表新增记录
+                State state = new State();
+                state.user_id = id;
+                state.title = stateReq.title;
+                state.share_state = stateReq.shareState;
+
+                _coreDbContext.Set<State>().Add(state);
+                _coreDbContext.SaveChanges();
+
+                //调用SaveChanges()之后，state.ID的值就是数据库中新加记录对应自增标识列的值
+                int stateId = state.id;
+                StateText stateText = new StateText();
+                stateText.state_id = stateId;
+                stateText.text = stateReq.text;
+
+                try
+                {
+                    _coreDbContext.Set<StateText>().Add(stateText);
+                    _coreDbContext.SaveChanges();
+                }
+                catch(Exception)
+                {
+                    State insertState = _coreDbContext.Set<State>().Find(stateId);
+                    _coreDbContext.Set<State>().Remove(insertState);
+                    _coreDbContext.SaveChanges();
+                    return new Code(500, "无法写入数据库", false);
+                }
+               
+                return new Code(200, "成功", new { id = stateId });
+
+            }
+        }
+
+        /// <summary>
+        /// 修改状态
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="stateReq"></param>
+        /// <returns></returns>
+        [HttpPost("update/{state_id}")]
+        public Code updateState(string token,StateReq stateReq)
+        {
+            using(CoreDbContext _coreDbContext = new CoreDbContext())
+            {
+                //解析token
+                JwtSecurityTokenHandler jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
+                string idStr;
+                try
+                {
+                    JwtSecurityToken jwtSecurityToken = jwtSecurityTokenHandler.ReadJwtToken(token);
+                    jwtSecurityToken.Payload.GetValueOrDefault("ID").ToString();
+                    idStr = jwtSecurityToken.Payload.GetValueOrDefault("ID").ToString();
+                }
+                catch (Exception)
+                {
+                    return new Code(404, "token错误", false);
+                }
+
+                long id = long.Parse(idStr);
+
+                string state_idStr = RouteData.Values["state_id"].ToString();
+                int state_id = int.Parse(state_idStr);
+
+                //修改State表
+                State state = _coreDbContext.Set<State>().Find(state_id);
+                if (state == null) return new Code(404, "没有该记录", false);
+
+                //记录修改前的state表的数据值
+                int oldShare = state.share_state;
+                string oldTitle = state.title;
+
+                state.share_state = stateReq.shareState;
+                state.title = stateReq.title;
+                _coreDbContext.Set<State>().Update(state);
+                _coreDbContext.SaveChanges();
+
+                //修改stateText表
+                try
+                {
+                    List<StateText> stateList = _coreDbContext.Set<StateText>().Where(d => d.state_id == state_id).ToList();
+                    StateText updateStateText = stateList.First();
+                    updateStateText.text = stateReq.text;
+                    _coreDbContext.Set<StateText>().Update(updateStateText);
+                    _coreDbContext.SaveChanges();
+                }
+                catch(Exception)
+                {
+                    State rollbackState = _coreDbContext.Set<State>().Find(state_id);
+                    rollbackState.share_state = oldShare;
+                    rollbackState.title = oldTitle;
+                    _coreDbContext.Set<State>().Update(rollbackState);
+                    _coreDbContext.SaveChanges();
+                    return new Code(500, "无法写入数据库", false);
+                }
+
+                return new Code(200, "成功", true);
+            }
+        }
+
+        /// <summary>
+        /// 删除状态 存在路由匹配问题
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        [HttpPost("delete/{state_id}")]
+        public Code deleteState(string token)
+        {
+            using(CoreDbContext _coreDbContext = new CoreDbContext())
+            {
+                //解析token
+                JwtSecurityTokenHandler jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
+                string idStr;
+                try
+                {
+                    JwtSecurityToken jwtSecurityToken = jwtSecurityTokenHandler.ReadJwtToken(token);
+                    jwtSecurityToken.Payload.GetValueOrDefault("ID").ToString();
+                    idStr = jwtSecurityToken.Payload.GetValueOrDefault("ID").ToString();
+                }
+                catch (Exception)
+                {
+                    return new Code(404, "token错误", false);
+                }
+
+                long id = long.Parse(idStr);
+
+                string state_idStr = RouteData.Values["state_id"].ToString();
+                int state_id = int.Parse(state_idStr);
+
+                State state = _coreDbContext.Set<State>().Find(state_id);
+                if (state == null) return new Code(404, "没有该记录", false);
+                state.disable = 1;
+                _coreDbContext.Set<State>().Update(state);
+                _coreDbContext.SaveChanges();
+
+                try
+                {
+                    List<StateText> stateList = _coreDbContext.Set<StateText>().Where(d => d.state_id == state_id).ToList();
+                    StateText updateStateText = stateList.First();
+                    updateStateText.disable = 1;
+                    _coreDbContext.Set<StateText>().Update(updateStateText);
+                    _coreDbContext.SaveChanges();
+                }
+                catch (Exception)
+                {
+                    State rollbackState = _coreDbContext.Set<State>().Find(state_id);
+                    rollbackState.disable = 0;
+                    _coreDbContext.Set<State>().Update(rollbackState);
+                    _coreDbContext.SaveChanges();
+                    return new Code(500, "无法写入数据库", false);
+                }
+
+                return new Code(200, "成功", true);
+            }
+        }
+
+        /// <summary>
+        /// 通过id查询状态
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        [HttpGet("select/{state_id}")]
+        public Code getStateById(string token)
+        {
+            using(CoreDbContext _coreDbContext=new CoreDbContext())
+            {
+                //解析token
+                JwtSecurityTokenHandler jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
+                string idStr;
+                try
+                {
+                    JwtSecurityToken jwtSecurityToken = jwtSecurityTokenHandler.ReadJwtToken(token);
+                    jwtSecurityToken.Payload.GetValueOrDefault("ID").ToString();
+                    idStr = jwtSecurityToken.Payload.GetValueOrDefault("ID").ToString();
+                }
+                catch (Exception)
+                {
+                    return new Code(404, "token错误", false);
+                }
+
+                long id = long.Parse(idStr);
+
+                string state_idStr = RouteData.Values["state_id"].ToString();
+                int state_id = int.Parse(state_idStr);
+
+                //State对象
+                State state = _coreDbContext.Set<State>().Find(state_id);
+                if (state == null) return new Code(404, "没有记录", false);
+
+                //StateText对象
+                List<StateText> stateList = _coreDbContext.Set<StateText>().Where(d => d.state_id == state_id).ToList();
+                StateText stateText = stateList.First();
+
+                int likenum = _coreDbContext.Set<Like>().Count(d => d.state_id == state_id && d.disable == 0);
+
+                //User对象
+                User user = _coreDbContext.Set<User>().Find(state.user_id);
+
+                bool like;
+                int userlike = _coreDbContext.Set<Like>().Count(d => d.state_id == state_id && d.user_id == id && d.disable == 0);
+                if (userlike == 0) like = false;
+                else like = true;
+
+                //StateRet对象
+                StateRet stateRet = new StateRet(state, stateText, user, likenum, like);
+
+                return new Code(200, "成功", stateRet);
+            }
+        }
+
+        /// <summary>
+        /// 查询用户的所有状态
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="page"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+        [HttpGet("/selectAll")]
+        public Code getAllStates(string token, int page = 0, int pageSize = 10)
+        {
+            using (CoreDbContext _coreDbContext = new CoreDbContext())
+            {
+                //解析token
+                JwtSecurityTokenHandler jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
+                string idStr;
+                try
+                {
+                    JwtSecurityToken jwtSecurityToken = jwtSecurityTokenHandler.ReadJwtToken(token);
+                    jwtSecurityToken.Payload.GetValueOrDefault("ID").ToString();
+                    idStr = jwtSecurityToken.Payload.GetValueOrDefault("ID").ToString();
+                }
+                catch (Exception)
+                {
+                    return new Code(404, "token错误", false);
+                }
+
+                long id = long.Parse(idStr);
+
+                int total = _coreDbContext.Set<State>().Count();
+                int pages = total / pageSize;
+                if (total % pageSize != 0) pages += 1;
+
+                if (page > pages - 1) return new Code(400, "页码超过记录数", null);
+
+                List<State> stateList = _coreDbContext.Set<State>().Skip(page * pageSize).Take(pageSize).ToList();
+                List<StateRet> stateRetList = new List<StateRet>();
+                int likenum, userlike;
+                bool like;
+
+                foreach (State state in stateList)
+                {
+                    StateText stateText = _coreDbContext.Set<StateText>().Where(d => d.state_id == state.id).ToList().First();
+                    User user = _coreDbContext.Set<User>().Find(state.user_id);
+                    likenum = _coreDbContext.Set<Like>().Count(d => d.state_id == state.id && d.disable == 0);
+                    userlike = _coreDbContext.Set<Like>().Count(d => d.state_id == state.id && d.user_id == id && d.disable == 0);
+                    if (userlike == 0) like = false;
+                    else like = true;
+
+                    StateRet stateRet = new StateRet(state, stateText, user, likenum, like);
+                    stateRetList.Add(stateRet);
+                }
+
+                return new Code(200, "成功", new { total = pages, items = stateRetList });
+
+            }
+        }
+
+        /// <summary>
+        /// 条件查询状态 未测试
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="userId"></param>
+        /// <param name="userName"></param>
+        /// <param name="title"></param>
+        /// <param name="page"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+        [HttpGet("selectCondition")]
+        public Code getStateByCondition(string token,long userId,string userName,string title,int page,int pageSize)
+        {
+            using (CoreDbContext _coreDbContext = new CoreDbContext())
+            {
+                JwtSecurityTokenHandler jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
+                string idStr;
+                try
+                {
+                    JwtSecurityToken jwtSecurityToken = jwtSecurityTokenHandler.ReadJwtToken(token);
+                    jwtSecurityToken.Payload.GetValueOrDefault("ID").ToString();
+                    idStr = jwtSecurityToken.Payload.GetValueOrDefault("ID").ToString();
+                }
+                catch (Exception)
+                {
+                    return new Code(404, "token错误", false);
+                }
+
+                long student_id = long.Parse(idStr);
+
+                var queryResult = _coreDbContext.Set<State>().Select(d => d);
+                if(userId.ToString()!=null) queryResult = queryResult.Where(d => d.user_id == userId);
+                //if (userName != null) queryResult = queryResult.Where(d => d.name.Contains(name) || d.name.StartsWith(name) || d.name.EndsWith(name));
+                if (title != null) queryResult = queryResult.Where(d => d.title.Contains(title) || d.title.StartsWith(title) || d.title.EndsWith(title));
+                List<State> queryUser = queryResult.ToList();
+
+                int total = queryUser.Count();
+                int pages = total / pageSize;
+                if (total % pageSize != 0) pages += 1;
+                if (page > pages - 1) return new Code(400, "页码超过记录数", null);
+
+                List<StateRet> userRetList = new List<StateRet>();
+                int likenum, userlike;
+                bool like;
+
+                List<StateRet> stateRetList = new List<StateRet>();
+                for (int i = page * pageSize; i < total; i++)
+                {
+                    State state = _coreDbContext.Set<State>().Find(queryUser[i].id);
+                    StateText stateText = _coreDbContext.Set<StateText>().Where(d => d.state_id == state.id).ToList().First();
+                    User user = _coreDbContext.Set<User>().Find(state.user_id);
+                    likenum = _coreDbContext.Set<Like>().Count(d => d.state_id == state.id && d.disable == 0);
+                    userlike = _coreDbContext.Set<Like>().Count(d => d.state_id == state.id && d.user_id == state.user_id && d.disable == 0);
+                    if (userlike == 0) like = false;
+                    else like = true;
+
+                    StateRet stateRet = new StateRet(state, stateText, user, likenum, like);
+                    stateRetList.Add(stateRet);
+                }
+
+                return new Code(200, "成功", new { total = pages, items = stateRetList });
+            }   
+        }
+
+        
+
+        /// <summary>
+        /// 主页推荐的状态 返回关注的状态、关注点赞的状态和点赞数超过平台用户半数的状态 未测试
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="page"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+        [HttpGet("recommend")]
+        public Code getRecommendState(string token, int page = 0, int pageSize = 10)
+        {
+            using (CoreDbContext _coreDbContext = new CoreDbContext())
+            {
+                //解析token
+                JwtSecurityTokenHandler jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
+                string idStr;
+                try
+                {
+                    JwtSecurityToken jwtSecurityToken = jwtSecurityTokenHandler.ReadJwtToken(token);
+                    jwtSecurityToken.Payload.GetValueOrDefault("ID").ToString();
+                    idStr = jwtSecurityToken.Payload.GetValueOrDefault("ID").ToString();
+                }
+                catch (Exception)
+                {
+                    return new Code(404, "token错误", false);
+                }
+
+                long id = long.Parse(idStr);
+
+                List<LikeGroup> likeCount = _coreDbContext.Set<Like>().GroupBy(d => d.state_id).Select(d => new LikeGroup(d.Key,d.Count())).ToList();
+
+                
+                int userCount = _coreDbContext.Set<User>().Count();
+
+                //当前用户关注id列表
+                List<long> followingIdList = new List<long>();
+                List<Follow> followingList = _coreDbContext.Set<Follow>().Where(d => d.follower_id == id).ToList();
+
+                foreach (Follow follow in followingList) followingIdList.Add(follow.user_id);
+
+
+
+                //推荐的状态id集合
+                List<int> recommentStateIdList = new List<int>();
+
+                
+                foreach (LikeGroup like in likeCount)
+                {
+                    //系统用户数 状态的喜欢数大于用户数/2则推荐
+                    if (like.count > userCount / 2) recommentStateIdList.Add(like.state_id);
+
+                    else
+                    {
+                        //获取状态的创建者
+                        State state = _coreDbContext.Set<State>().Find(like.state_id);
+                        User user = _coreDbContext.Set<User>().Find(state.user_id);
+                        //如果创建者是token对应用户的关注则推荐
+                        if (followingIdList.Contains(user.student_id)) recommentStateIdList.Add(like.state_id);
+                        else
+                        {
+                            List<Like> likeList = _coreDbContext.Set<Like>().Where(d => d.state_id == like.state_id).ToList();
+                            List<long> likeIdList = new List<long>();
+                            //对当前状态点赞的用户
+                            foreach (Like currLike in likeList) likeIdList.Add(currLike.user_id);
+                            foreach(long likeId in likeIdList)
+                            {
+                                //如果token对应的用户对状态点赞则推荐
+                                if (followingIdList.Contains(likeId)) recommentStateIdList.Add(like.state_id);
+                            }
+                        }
+                    }
+                }
+
+                int total = recommentStateIdList.Count();
+                int pages = total / pageSize;
+                if (total % pageSize != 0) pages += 1;
+
+                if (page > pages - 1) return new Code(400, "页码超过记录数", null);
+
+                List<StateRet> stateRetList = new List<StateRet>();
+                for (int i = page*pageSize;i<total;i++)
+                {
+                    //State对象
+                    State state = _coreDbContext.Set<State>().Find(recommentStateIdList[i]);
+                    if (state == null) return new Code(404, "没有记录", false);
+
+                    //StateText对象
+                    List<StateText> stateList = _coreDbContext.Set<StateText>().Where(d => d.state_id == recommentStateIdList[i]).ToList();
+                    StateText stateText = stateList.First();
+
+                    int likenum = _coreDbContext.Set<Like>().Count(d => d.state_id == recommentStateIdList[i] && d.disable == 0);
+
+                    //User对象
+                    User user = _coreDbContext.Set<User>().Find(state.user_id);
+
+                    bool like;
+                    int userlike = _coreDbContext.Set<Like>().Count(d => d.state_id == recommentStateIdList[i] && d.user_id == id && d.disable == 0);
+                    if (userlike == 0) like = false;
+                    else like = true;
+
+                    //StateRet对象
+                    StateRet stateRet = new StateRet(state, stateText, user, likenum, like);
+                    stateRetList.Add(stateRet);
+                }
+                
+
+                return new Code(200, "成功", stateRetList);
+
+            }
+        }
+
+
+
+        /// <summary>
+        /// 点赞状态
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        [HttpPost("like/{state_id}")]
+        public Code likeState(string token)
+        {
+            using(CoreDbContext _coreDbContext = new CoreDbContext())
+            {
+                //解析token
+                JwtSecurityTokenHandler jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
+                string idStr;
+                try
+                {
+                    JwtSecurityToken jwtSecurityToken = jwtSecurityTokenHandler.ReadJwtToken(token);
+                    jwtSecurityToken.Payload.GetValueOrDefault("ID").ToString();
+                    idStr = jwtSecurityToken.Payload.GetValueOrDefault("ID").ToString();
+                }
+                catch (Exception)
+                {
+                    return new Code(404, "token错误", false);
+                }
+
+                long id = long.Parse(idStr);
+
+                string state_idStr = RouteData.Values["state_id"].ToString();
+                int state_id = int.Parse(state_idStr);
+
+                //请求的state_id是否存在
+                State state = _coreDbContext.Set<State>().Find(state_id);
+                if (state == null) return new Code(404, "没有记录", false);
+
+                //分为两种状态 在数据库中已经存在记录；在数据库中没有记录
+                int likeCount = _coreDbContext.Set<Like>().Count(d => d.user_id == id && d.state_id == state_id);
+                if (likeCount==0)
+                {
+                    Like like = new Like();
+                    like.state_id = state_id;
+                    like.user_id = id;
+                    _coreDbContext.Set<Like>().Add(like);
+                    _coreDbContext.SaveChanges();
+                    return new Code(200, "成功", true);
+                }
+
+                List<Like> likeList = _coreDbContext.Set<Like>().Where(d => d.state_id == state_id&&d.user_id == id).ToList();
+                Like existLike = likeList.First();
+
+                if (existLike.disable == 0) return new Code(400, "不可重复点赞", false);
+
+                existLike.disable = 0;
+                _coreDbContext.Set<Like>().Update(existLike);
+                _coreDbContext.SaveChanges();
+                return new Code(200, "成功", true);
+            }
+        }
+
+        /// <summary>
+        /// 取消点赞状态
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        [HttpPost("unlike/{state_id}")]
+        public Code unlikeState(string token)
+        {
+            using(CoreDbContext _coreDbContext= new CoreDbContext())
+            {
+                //解析token
+                JwtSecurityTokenHandler jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
+                string idStr;
+                try
+                {
+                    JwtSecurityToken jwtSecurityToken = jwtSecurityTokenHandler.ReadJwtToken(token);
+                    jwtSecurityToken.Payload.GetValueOrDefault("ID").ToString();
+                    idStr = jwtSecurityToken.Payload.GetValueOrDefault("ID").ToString();
+                }
+                catch (Exception)
+                {
+                    return new Code(404, "token错误", false);
+                }
+
+                long id = long.Parse(idStr);
+
+                string state_idStr = RouteData.Values["state_id"].ToString();
+                int state_id = int.Parse(state_idStr);
+
+                State state = _coreDbContext.Set<State>().Find(state_id);
+                if (state == null) return new Code(404, "没有记录", false);
+
+                int count = _coreDbContext.Set<Like>().Count(d => d.state_id == state_id && d.user_id == id);
+                if (count == 0) return new Code(404, "没有记录", false);
+
+                List<Like> likeList = _coreDbContext.Set<Like>().Where(d => d.state_id == state_id && d.user_id == id).ToList();
+                Like existLike = likeList.First();
+
+                if (existLike.disable == 1) return new Code(400, "不可重复取消", false);
+
+                existLike.disable = 1;
+                _coreDbContext.Set<Like>().Update(existLike);
+                _coreDbContext.SaveChanges();
+                return new Code(200, "成功", true);
+            }
+        }
+
+    }
+}
