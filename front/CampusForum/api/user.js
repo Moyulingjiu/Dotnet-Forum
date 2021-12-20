@@ -1,15 +1,34 @@
 import * as config from '../utils/config.js'
-export const modelUrl = config.baseUrl +  `/user`
+import request from './request.js'
+export const modelUrl = `/user`
 
 // 注册
 export function register(studentId, password, name, college, gender, avater, description, birthday, phone, email) {
 	let url = modelUrl + `/register`
+	let data = {
+		
+	}
+	request({
+		url: url,
+		data: data,
+		method: 'POST'
+	})
 	return null
 }
 
 // 登陆
 export function login(studentId, password) {
 	let url = modelUrl + `/login`
+	let data = {
+		studentId: studentId,
+		password: password
+	}
+	request({
+		url: url,
+		data: data,
+		method: 'GET'
+	})
+	
 	let token = '123' // 模拟获取token值
 	return config.saveToken(token)
 }

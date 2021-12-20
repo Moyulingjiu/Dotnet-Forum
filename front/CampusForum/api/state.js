@@ -1,5 +1,5 @@
 import * as config from '../utils/config.js'
-export const modelUrl = config.baseUrl +  `/state`
+export const modelUrl = `/state`
 
 // 新建状态
 export function insert(title, text, shareSate=false) {

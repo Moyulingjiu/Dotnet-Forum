@@ -1,5 +1,5 @@
 import * as config from '../utils/config.js'
-export const modelUrl = config.baseUrl +  `/comment`
+export const modelUrl =  `/comment`
 
 // 插入评论
 export function insert(stateId, fatherId, replyId, text) {

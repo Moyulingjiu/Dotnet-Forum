@@ -1,5 +1,5 @@
 import * as config from '../utils/config.js'
-export const modelUrl = config.baseUrl +  `/album`
+export const modelUrl = `/album`
 
 // 根据用户id获取其相册
 export function getAlbumByUserId(id) {

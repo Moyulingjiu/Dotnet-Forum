@@ -85,8 +85,8 @@ namespace WebApi.Controllers
                 if (user != null)
                 {
                     //密码加密
-                    /*RSAKey.createRSAKey();
-                    password = RSAKey.RSAEncrypt(password);*/
+                    RSAKey.createRSAKey();
+                    password = RSAKey.RSAEncrypt(password);
                     if (user.password == password)
                     {
                         string token = generateToken(student_id, user.name);

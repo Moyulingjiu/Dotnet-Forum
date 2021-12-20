@@ -26,7 +26,7 @@ namespace CampusForum.Models
             if (!optionsBuilder.IsConfigured)
             {
                 
-                optionsBuilder.UseMySQL(@"server = localhost; uid = root; pwd = Huawei@12321;
+                optionsBuilder.UseMySQL(@"server = localhost; uid = dbuser; pwd = 12345678;
                     port = 3306; database = dotnet_forum; sslmode = Preferred;");
 
             }
