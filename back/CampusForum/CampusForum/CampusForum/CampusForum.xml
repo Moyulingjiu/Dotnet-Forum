@@ -55,7 +55,7 @@
         </member>
         <member name="M:CampusForum.Controllers.StateController.deleteState">
             <summary>
-            删除状态 存在路由匹配问题
+            删除状态
             </summary>
             <returns></returns>
         </member>

@@ -39,7 +39,10 @@
 		<view class="bottom_tips">
 			<text>{{ (page >= total - 1) ? bottomTipsNoMore : bottomTips }}</text>
 		</view>
-
+		
+		<uni-popup ref="popup_success_refresh" type="message">
+			<uni-popup-message type="success" message="刷新成功" :duration="2000"></uni-popup-message>
+		</uni-popup>
 	</view>
 </template>
 
@@ -54,11 +57,8 @@
 				likeIcon: '../../static/like_active.png', // 点赞图标
 				unlikeIcon: '../../static/like.png', // 未点赞图标
 				searchCondition: '', // 搜索条件
-				token: null, // token
 				bottomTips: '- 上拉加载更多 -', // 底部提示
 				bottomTipsNoMore: '- 到底了 -', // 底部提示
-				page: 0, // 当前页码
-				total: 1, // 最后一页
 				banner: [{
 					img: '../../static/banner1.jpg',
 					comment: '测试备注消息1'
@@ -68,6 +68,8 @@
 				}], // 主页轮播图
 				bannerCurrent: 0,
 				bannerMode: 'round',
+				page: 0, // 当前页码
+				total: 1, // 最后一页
 				stateList: [{
 					id: 1,
 					title: '测试状态标题1',
@@ -78,44 +80,74 @@
 					share: true,
 					gmtCreate: '2021年7月20日 20:00',
 					like: true
-				}, {
-					id: 2,
-					title: '小石潭记',
-					userId: 2, // 用户id
-					userName: '用户2', // 用户名
-					userAvater: '../../static/avater.jpg', // 头像
-					text: '从小丘西行百二十步，隔篁竹，闻水声，如鸣珮环，心乐之。伐竹取道，下见小潭，水尤清冽。全石以为底，近岸，卷石底以出，为坻，为屿，为嵁，为岩。青树翠蔓，蒙络摇缀，参差披拂。(珮 通：佩)\n潭中鱼可百许头，皆若空游无所依。日光下澈，影布石上，佁然不动；俶尔远逝，往来翕忽。似与游者相乐。(下澈 一作：下彻)\n潭西南而望，斗折蛇行，明灭可见。其岸势犬牙差互，不可知其源。\n坐潭上，四面竹树环合，寂寥无人，凄神寒骨，悄怆幽邃。以其境过清，不可久居，乃记之而去。\n同游者：吴武陵，龚古，余弟宗玄。隶而从者，崔氏二小生，曰恕己，曰奉壹。',
-					share: true,
-					gmtCreate: '2021年7月20日 20:00',
-					like: false
-				}, {
-					id: 3,
-					title: '测试状态标题3',
-					userId: 3, // 用户id
-					userName: '用户3', // 用户名
-					userAvater: '../../static/avater.jpg', // 头像
-					text: '来时山有雪，归时雪满山。',
-					share: true,
-					gmtCreate: '2小时前',
-					like: false
-				}]
+				}],
+				isRefresh: true
 			}
 		},
 		onLoad() {
-			this.refresh()
+			// load之后一定会show，所以刷新一定会执行
+			this.isRefresh = true
 		},
 		onShow() {
 			this.refresh()
 		},
+		onPullDownRefresh() {
+			this.isRefresh = true
+			this.refresh()
+			uni.stopPullDownRefresh();
+			this.$refs.popup_success_refresh.open('top')
+		},
 		methods: {
 			refresh() {
 				if (config.checkToken()) {
-					
+					if (this.isRefresh) {
+						this.isRefresh = false
+						this.stateList = []
+						this.page = 0
+					}
+					this.loadData()
 				} else {
 					uni.redirectTo({
 						url: '../login/login'
 					})
 				}
+			},
+			loadData(page = this.page) {
+				stateApi.selectAll(page).then(data => {
+					if (typeof data === "undefined") {
+						uni.showToast({
+							title: '服务器错误',
+							icon: "error",
+							mask: true,
+							duration: 2000
+						})
+					} else if (data.code != 200) {
+						uni.showToast({
+							title: data.msg,
+							icon: "error",
+							mask: true,
+							duration: 2000
+						})
+					} else {
+						this.total = data.data.total
+						for (let key in data.data.items) {
+							if (key != 'length') {
+								let stateItem = {
+									id: data.data.items[key].id,
+									title: data.data.items[key].title,
+									userId: data.data.items[key].user_id,
+									userName: data.data.items[key].user_name,
+									userAvater: data.data.items[key].user_avater, // 头像
+									text: data.data.items[key].text,
+									share: data.data.items[key].share_state,
+									gmtCreate: data.data.items[key].gmt_create,
+									like: data.data.items[key].like
+								}
+								this.stateList.push(stateItem)
+							}
+						}
+					}
+				})
 			},
 			search() {
 				// 搜索
@@ -124,7 +156,50 @@
 				this.searchCondition = ''
 			},
 			like(index) {
-				this.stateList[index].like = !this.stateList[index].like
+				let id = this.stateList[index].id
+				if (this.stateList[index].like) {
+					stateApi.unlike(id).then(data => {
+						if (typeof data === "undefined") {
+							uni.showToast({
+								title: '服务器错误',
+								icon: "error",
+								mask: true,
+								duration: 2000
+							})
+						} else if (data.code != 200) {
+							uni.showToast({
+								title: data.msg,
+								icon: "error",
+								mask: true,
+								duration: 2000
+							})
+						} else {
+							this.stateList[index].like = false
+							this.$forceUpdate()
+						}
+					})
+				} else {
+					stateApi.like(id).then(data => {
+						if (typeof data === "undefined") {
+							uni.showToast({
+								title: '服务器错误',
+								icon: "error",
+								mask: true,
+								duration: 2000
+							})
+						} else if (data.code != 200) {
+							uni.showToast({
+								title: data.msg,
+								icon: "error",
+								mask: true,
+								duration: 2000
+							})
+						} else {
+							this.stateList[index].like = true
+							this.$forceUpdate()
+						}
+					})
+				}
 			},
 			userdetail(index){
 				uni.navigateTo({

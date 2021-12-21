@@ -38,8 +38,12 @@ namespace CampusForum.Controllers
 
                 State state = _coreDbContext.Set<State>().Find(comment.state_id);
                 if (state == null) return new Code(404, "没有状态记录", false);
+                if(state.disable == 1) return new Code(404,"状态已被删除",false);
 
                 comment.user_id = id;
+                comment.gmt_create =DateTime.Now;
+                comment.gmt_modified = DateTime.Now;
+
                 _coreDbContext.Set<Comment>().Add(comment);
                 _coreDbContext.SaveChanges();
                 long commentId = comment.id;
