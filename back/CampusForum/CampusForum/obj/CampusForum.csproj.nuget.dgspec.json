@@ -1,21 +1,27 @@
 {
   "format": 1,
   "restore": {
-    "P:\\A Personal\\Coding\\dotnet_forum\\New\\Dotnet-Forum\\back\\CampusForum\\CampusForum\\CampusForum.csproj": {}
+    "C:\\Users\\fan\\Desktop\\git\\back\\CampusForum\\CampusForum\\CampusForum.csproj": {}
   },
   "projects": {
-    "P:\\A Personal\\Coding\\dotnet_forum\\New\\Dotnet-Forum\\back\\CampusForum\\CampusForum\\CampusForum.csproj": {
+    "C:\\Users\\fan\\Desktop\\git\\back\\CampusForum\\CampusForum\\CampusForum.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "P:\\A Personal\\Coding\\dotnet_forum\\New\\Dotnet-Forum\\back\\CampusForum\\CampusForum\\CampusForum.csproj",
+        "projectUniqueName": "C:\\Users\\fan\\Desktop\\git\\back\\CampusForum\\CampusForum\\CampusForum.csproj",
         "projectName": "CampusForum",
-        "projectPath": "P:\\A Personal\\Coding\\dotnet_forum\\New\\Dotnet-Forum\\back\\CampusForum\\CampusForum\\CampusForum.csproj",
-        "packagesPath": "C:\\Users\\86138\\.nuget\\packages\\",
-        "outputPath": "P:\\A Personal\\Coding\\dotnet_forum\\New\\Dotnet-Forum\\back\\CampusForum\\CampusForum\\obj\\",
+        "projectPath": "C:\\Users\\fan\\Desktop\\git\\back\\CampusForum\\CampusForum\\CampusForum.csproj",
+        "packagesPath": "C:\\Users\\fan\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\fan\\Desktop\\git\\back\\CampusForum\\CampusForum\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "D:\\visual studio 2022\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+          "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
+        ],
         "configFilePaths": [
-          "C:\\Users\\86138\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\fan\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net5.0"
