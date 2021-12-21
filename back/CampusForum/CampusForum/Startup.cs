@@ -15,6 +15,7 @@ using CampusForum.Models;
 using Microsoft.EntityFrameworkCore;
 using System.IO;
 using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Http;
 
 namespace CampusForum
 {
@@ -29,7 +30,6 @@ namespace CampusForum
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<CoreDbContext>(options =>options.UseMySQL(Configuration.GetConnectionString("DefaultConnection")));
@@ -43,17 +43,18 @@ namespace CampusForum
                 var xmlPath = Path.Combine(basePath, "CampusForum.xml");
                 c.IncludeXmlComments(xmlPath);
             });
-            services.AddCors(options =>
-            {
-                options.AddPolicy(name: MyAllowSpecificOrigins,
-                                  builder =>
-                                  {
-                                      builder.WithOrigins("*");
-                                  });
-            });
 
-            // services.AddResponseCaching();
-            services.AddControllers();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            //¿çÓòÎÊÌâ
+            services.AddCors(options => options.AddPolicy("CorsPolicy",
+                builder =>
+                {
+                    builder.AllowAnyMethod()
+                    .SetIsOriginAllowed(_ => true)
+                    .AllowAnyHeader()
+                    .AllowCredentials();
+                }));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -64,16 +65,15 @@ namespace CampusForum
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "CampusForum v1"));
-                app.UseStaticFiles();
             }
 
             app.UseHttpsRedirection();
 
             app.UseRouting();
 
-            app.UseAuthorization();
+            app.UseCors("CorsPolicy");
 
-            app.UseCors(MyAllowSpecificOrigins);
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

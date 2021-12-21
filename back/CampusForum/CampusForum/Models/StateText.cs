@@ -9,8 +9,8 @@ namespace CampusForum.Models
     public class StateText
     {
         [Key]
-        public int id { get; set; }
-        public int state_id { get; set; }
+        public long id { get; set; }
+        public long state_id { get; set; }
         public string text { get; set; }
         public int disable { get; set; }
         public DateTime gmt_create { set; get; }

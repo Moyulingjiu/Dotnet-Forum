@@ -2,8 +2,10 @@
   "ExpandedNodes": [
     "",
     "\\back",
-    "\\back\\CampusForum"
+    "\\back\\CampusForum",
+    "\\back\\CampusForum\\CampusForum",
+    "\\back\\CampusForum\\CampusForum\\Controllers"
   ],
-  "SelectedNode": "\\back\\CampusForum\\CampusForum.sln",
+  "SelectedNode": "\\back\\CampusForum\\CampusForum\\Controllers\\StateController.cs",
   "PreviewInSolutionExplorer": false
 }
