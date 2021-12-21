@@ -1,5 +1,5 @@
-*/.vs
-*/node_modules
+back/CampusForum/.vs/*
+.vs/*
 
 # 忽略word的临时文件
 ~*.docx
