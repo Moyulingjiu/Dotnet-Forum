@@ -84,7 +84,7 @@ namespace CampusForum.Controllers
             var album = _coreDbContext.Album.Find(album_id);
             if (album == null) return new Code(404, "没有这个相册", null);
             if (album.user_id != user_id) return new Code(403, "没有使用权限", null);
-            var picture = _coreDbContext.Album_picture.Skip(page * pageSize).Take(pageSize).Select(b => new { id = b.id, name = b.name, url = b.url });
+            var picture = _coreDbContext.Album_picture.Where(c => c.album_id == album_id).Skip(page * pageSize).Take(pageSize).Select(b => new { id = b.id, name = b.name, url = b.url });
             if (picture == null) return new Code(404, "这页没有图片", null);
             return new Code(200, "成功", new { item = picture });
         }
