@@ -24,13 +24,5 @@ namespace CampusForum.Models
             this.data = data;
         }
 
-        static public long TokenToId(string token)
-        {
-            JwtSecurityTokenHandler jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
-            JwtSecurityToken jwtSecurityToken = jwtSecurityTokenHandler.ReadJwtToken(token);
-            string idStr = jwtSecurityToken.Payload.GetValueOrDefault("ID").ToString();
-            long id = long.Parse(idStr);
-            return id;
-        }
     }
 }
