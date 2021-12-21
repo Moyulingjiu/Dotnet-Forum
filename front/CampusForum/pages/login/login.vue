@@ -41,7 +41,7 @@
 		methods: {
 			refresh() {
 				if (config.checkToken()) {
-					uni.switchTab({
+					uni.reLaunch({
 						url: '../index/index'
 					})
 				}
@@ -74,7 +74,7 @@
 									duration: 2000
 								})
 								setTimeout(() => {
-									uni.switchTab({
+									uni.reLaunch({
 										url: '../index/index'
 									})
 								}, config.waitTime)

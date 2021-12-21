@@ -52,7 +52,7 @@
 							if (data.code == 200) {
 								this.$refs.popup_success.open('top')
 								setTimeout(() => {
-									uni.switchTab({
+									uni.reLaunch({
 										url: '../state/state'
 									})
 								}, config.waitTime)
