@@ -40,6 +40,8 @@ namespace CampusForum.Controllers
                 state.user_id = id;
                 state.title = stateReq.title;
                 state.share_state = stateReq.shareState;
+                state.gmt_create = DateTime.Now;
+                state.gmt_modified = DateTime.Now;
 
                 _coreDbContext.Set<State>().Add(state);
                 _coreDbContext.SaveChanges();
@@ -49,6 +51,8 @@ namespace CampusForum.Controllers
                 StateText stateText = new StateText();
                 stateText.state_id = stateId;
                 stateText.text = stateReq.text;
+                stateText.gmt_modified = DateTime.Now;
+                stateText.gmt_create = DateTime.Now;
 
                 try
                 {
@@ -94,9 +98,11 @@ namespace CampusForum.Controllers
                 //记录修改前的state表的数据值
                 int oldShare = state.share_state;
                 string oldTitle = state.title;
+                DateTime oldModified = state.gmt_modified;
 
                 state.share_state = stateReq.shareState;
                 state.title = stateReq.title;
+                state.gmt_modified = DateTime.Now;
                 _coreDbContext.Set<State>().Update(state);
                 _coreDbContext.SaveChanges();
 
@@ -106,6 +112,7 @@ namespace CampusForum.Controllers
                     List<StateText> stateList = _coreDbContext.Set<StateText>().Where(d => d.state_id == state_id).ToList();
                     StateText updateStateText = stateList.First();
                     updateStateText.text = stateReq.text;
+                    updateStateText.gmt_modified = DateTime.Now;
                     _coreDbContext.Set<StateText>().Update(updateStateText);
                     _coreDbContext.SaveChanges();
                 }
@@ -114,6 +121,7 @@ namespace CampusForum.Controllers
                     State rollbackState = _coreDbContext.Set<State>().Find(state_id);
                     rollbackState.share_state = oldShare;
                     rollbackState.title = oldTitle;
+                    rollbackState.gmt_modified = oldModified;
                     _coreDbContext.Set<State>().Update(rollbackState);
                     _coreDbContext.SaveChanges();
                     return new Code(500, "无法写入数据库", false);
@@ -124,7 +132,7 @@ namespace CampusForum.Controllers
         }
 
         /// <summary>
-        /// 删除状态 存在路由匹配问题
+        /// 删除状态
         /// </summary>
         /// <returns></returns>
         [HttpPost("delete/{stateId}")]
@@ -143,6 +151,8 @@ namespace CampusForum.Controllers
 
                 State state = _coreDbContext.Set<State>().Find(state_id);
                 if (state == null) return new Code(404, "没有该记录", false);
+                if(state.disable == 1) return new Code(404,"状态已被删除",false);
+                if(state.user_id !=id) return new Code(403,"只能删除自己的状态",false);
                 state.disable = 1;
                 _coreDbContext.Set<State>().Update(state);
                 _coreDbContext.SaveChanges();
@@ -189,11 +199,12 @@ namespace CampusForum.Controllers
                 //State对象
                 State state = _coreDbContext.Set<State>().Find(state_id);
                 if (state == null) return new Code(404, "没有记录", false);
+                if(state.disable == 1) return new Code(404,"状态已被删除",false);
 
                 //StateText对象
                 List<StateText> stateList = _coreDbContext.Set<StateText>().Where(d => d.state_id == state_id).ToList();
                 StateText stateText = stateList.First();
-
+                
                 int likenum = _coreDbContext.Set<Like>().Count(d => d.state_id == state_id && d.disable == 0);
 
                 //User对象
@@ -234,7 +245,9 @@ namespace CampusForum.Controllers
 
                 if (page > ((pages - 1) > 0 ? (pages - 1) : 0)) return new Code(400, "页码超过记录数", null);
 
-                List<State> stateList = _coreDbContext.Set<State>().Skip(page * pageSize).Take(pageSize).ToList();
+                //只返回当前用户未被删除的状态
+                List<State> stateList = _coreDbContext.Set<State>().Where(d => d.user_id == id&& d.disable == 0).Skip(page * pageSize).Take(pageSize).ToList();
+ 
                 List<StateRet> stateRetList = new List<StateRet>();
                 int likenum, userlike;
                 bool like;
@@ -329,8 +342,39 @@ namespace CampusForum.Controllers
                 long id = JwtToid(token);
                 if (id == 0) return new Code(404, "token错误", null);
 
-                List<LikeGroup> likeCount = _coreDbContext.Set<Like>().GroupBy(d => d.state_id).Select(d => new LikeGroup(d.Key,d.Count())).ToList();
+                List<LikeGroup> likeCount = _coreDbContext.Set<Like>().Where(d => d.disable == 0).GroupBy(d => d.state_id).Select(d => new LikeGroup(d.Key, d.Count())).ToList();
+                
+                //平台没有被点赞的状态
+                if (likeCount.Count == 0)
+                {
+                    int totalStates = _coreDbContext.Set<State>().Count(d => d.user_id != id);
+                    int statesPages = totalStates / page;
+                    if (totalStates % page != 0) statesPages += 1;
+                    List<State> stateList = _coreDbContext.Set<State>().Where(d => d.user_id != id).Skip(page * pageSize).Take(pageSize).ToList();
 
+                    List<StateRet> nStateRetList = new List<StateRet>();
+                    int likenum, userlike;
+                    bool like;
+
+                    foreach (State state in stateList)
+                    {
+                        StateText stateText = _coreDbContext.Set<StateText>().Where(d => d.state_id == state.id).ToList().First();
+                        User user = _coreDbContext.Set<User>().Find(state.user_id);
+                        likenum = _coreDbContext.Set<Like>().Count(d => d.state_id == state.id && d.disable == 0);
+                        userlike = _coreDbContext.Set<Like>().Count(d => d.state_id == state.id && d.user_id == id && d.disable == 0);
+                        if (userlike == 0) like = false;
+                        else like = true;
+
+                        StateRet stateRet = new StateRet(state, stateText, user, likenum, like);
+                        nStateRetList.Add(stateRet);
+                    }
+
+                    return new Code(200, "成功", new { total = statesPages, items = nStateRetList });
+                }
+                else
+                {
+
+                }
                 
                 int userCount = _coreDbContext.Set<User>().Count();
 
@@ -374,6 +418,12 @@ namespace CampusForum.Controllers
                 }
 
                 int total = recommentStateIdList.Count();
+
+                if(total == 0)
+                {
+                    likeCount.OrderBy(d => d.count);
+                }
+
                 int pages = total / pageSize;
                 if (total % pageSize != 0) pages += 1;
 

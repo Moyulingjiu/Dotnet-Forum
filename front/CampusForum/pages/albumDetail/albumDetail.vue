@@ -1,9 +1,9 @@
 <template>
 	<view>
-		<button type="primary" @click="getImg">请选择图片</button>
-		<image :src="picPath"></image>
+		<button type="primary" @click="chooseAndUploadPic()">请选择图片</button>
+		
 		<view class="container":style="{'--picWidth':this.picWidth}">
-			<view v-for="(item,index) in pictrue.Item">
+			<view v-for="(item,index) in this.picture.Item">
 				<template>
 					<image :src="item.url" mode="aspectFill" class="text" @click="clickPic(item.Id)"></image>
 				</template>
@@ -14,15 +14,18 @@
 
 
 <script>
+	import * as config from '../../utils/config.js'
+	import * as pictureApi from '../../api/picture.js'
 	export default {
 		data() {
 			return {
-				picPath:"",
+				albumId:0,
 				windowWidth:0,
 				picWidthNum:0,
 				picWidth:"",
 				picRowNum:0,
-				pictrue:{
+				pageInfo:{page:0,pageSize:20},
+				picture:{
 					Totle:3,
 					Item:[
 						{
@@ -44,18 +47,41 @@
 				}
 			}
 		},
-		onLoad() {
+		onLoad(prop) {
 			//获取picture数据，还要传page和pagesize
+			let len
+			this.albumId=prop.albumId;
+			
+			this.picture=pictureApi.getPictureByAlbumId(this.albumId,this.pageInfo).then(data => {
+						console.log("ok");
+						len=data.data.item.length
+						console.log(data);
+						this.picture={totle:0,Item:[]};
+						console.log("len:"+len);
+						for(let i=0;i<len;i++)
+						{
+							console.log("i:"+i);
+							let temp={"id":data.data.item[i].id,
+										"name":data.data.item[i].name,
+										"url":data.data.item[i].url}
+							this.picture.Item.push(temp);
+							console.log(this.picture.Item)
+							this.picture.Item[i].url="/api"+String(this.picture.Item[i].url).replace(/\\/g, "/");
+						}
+						console.log(this.picture.Item);
+					});
+			
+			
 			
 			console.log(123);
 			var that=this;
 			uni.getSystemInfo({
 			    success: function (res) {
-			        console.log(res.windowWidth);
-			        console.log(res.windowHeight);
+			        //console.log(res.windowWidth);
+			        //console.log(res.windowHeight);
 					that.windowWidth=res.windowWidth;	
 					that.picRowNum=Math.ceil(Math.max(3,that.windowWidth/250));
-					console.log(that.picRowNum);
+					//console.log(that.picRowNum);
 					that.picWidthNum=(that.windowWidth-1)/that.picRowNum;
 					that.picWidth=that.picWidthNum+"px";
 			    }
@@ -63,41 +89,46 @@
 		},
 		
 		methods: {
-			clickPic(pictrueId){
-				uni.navigateTo({
-				                url: '/pages/albumDetail/albumDetail?pictrueId='+{pictrueId}.pictrueId,
-				            });
+			// clickPic(pictureId){
+			// 	uni.navigateTo({
+			// 	                url: '/pages/albumDetail/albumDetail?pictureId='+{pictureId}.pictureId,
+			// 	            });
+			// },
+			chooseAndUploadPic(){
+				var that=this;
+			    uni.chooseImage({
+			        count: 1,
+			        sizeType:['copressed'],
+			        success(res) {
+			            //因为有一张图片， 输出下标[0]， 直接输出地址
+			            var imgFiles = res.tempFilePaths[0]
+						
+			            console.log(imgFiles)
+						console.log(config.getToken())
+			            // 上传图片
+			            // 做成一个上传对象
+			            var uper = uni.uploadFile({
+			                // 需要上传的地址
+			                url:'/api/picture/insert/'+that.albumId,
+							header: {
+								'token': config.getToken(),
+							},
+			                // filePath  需要上传的文件
+			                filePath: imgFiles,
+			                name: 'file',
+			                success(res1) {
+			                    // 显示上传信息
+			                    console.log(res1)
+								uni.navigateTo({
+				                url: '/pages/albumDetail/albumDetail?albumId='+String(that.albumId),
+								});
+			                }
+			            });
+			        }
+			    })
+				
 			},
-			upload(){
-				console.log(123);
-				var that = this
-				uni.uploadFile({
-					url: '/api/insert/1', //服务器地址
-					fileType:"image",//ZFB必填,不然报错
-					filePath: that.uploadImgArr[0],//这个就是我们上面拍照返回或者先中照片返回的数组
-					name: 'imgFile',
-					success: (uploadFileRes) => {
-						let imgData = JSON.parse(uploadFileRes.data)
-						console.log(UploadFileRes);
-						console.log(this);
-					}
-				});
-			},
-			getImg () {
-				var that = this
-				uni.chooseImage({
-				    count: 6,           // 最多可以选择的图片张数，默认9
-				    sizeType: ['original', 'compressed'],              //original 原图，compressed 压缩图，默认二者都有
-				    sourceType: ['album', 'camera'],             //album 从相册选图，camera 使用相机，默认二者都有。如需直接开相机或直接选相册，请只使用一个选项
-				    success: function (res) {
-				        console.log(JSON.stringify(res.tempFilePaths));
-						that.picPath=JSON.stringify(res.tempFilePaths)+'.png';
-						that.uploadImgArr = res.tempFilePaths;
-						console.log(that.uploadImgArr);
-						//that.upload();
-				    }
-				});
-			},
+			
 		}
 	}
 </script>

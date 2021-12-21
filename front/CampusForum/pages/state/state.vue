@@ -20,7 +20,8 @@
 			<view class="state_bottom">
 				<text class="state_date">{{ item.gmtCreate }}</text>
 				<view class="state_icon">
-					<image src="../../static/comment.png" mode="aspectFill"></image>
+					<image src="../../static/state.png" mode="aspectFill" @click="updateState(index)"></image>
+					<image src="../../static/cancel.png" mode="aspectFill" @click="deleteState(index)"></image>
 				</view>
 			</view>
 		</view>
@@ -28,6 +29,13 @@
 		<view class="bottom_tips">
 			<text>{{ (page >= total - 1) ? bottomTipsNoMore : bottomTips }}</text>
 		</view>
+
+		<uni-popup ref="popup_success" type="message">
+			<uni-popup-message type="success" message="删除成功" :duration="2000"></uni-popup-message>
+		</uni-popup>
+		<uni-popup ref="popup_success_refresh" type="message">
+			<uni-popup-message type="success" message="刷新成功" :duration="2000"></uni-popup-message>
+		</uni-popup>
 	</view>
 </template>
 
@@ -53,37 +61,27 @@
 					text: '测试的正文1',
 					share: true,
 					gmtCreate: '2021年7月20日 20:00',
-				}, {
-					id: 2,
-					title: '小石潭记',
-					userId: 2, // 用户id
-					userName: '用户2', // 用户名
-					userAvater: '../../static/avater.jpg', // 头像
-					text: '从小丘西行百二十步，隔篁竹，闻水声，如鸣珮环，心乐之。伐竹取道，下见小潭，水尤清冽。全石以为底，近岸，卷石底以出，为坻，为屿，为嵁，为岩。青树翠蔓，蒙络摇缀，参差披拂。(珮 通：佩)\n潭中鱼可百许头，皆若空游无所依。日光下澈，影布石上，佁然不动；俶尔远逝，往来翕忽。似与游者相乐。(下澈 一作：下彻)\n潭西南而望，斗折蛇行，明灭可见。其岸势犬牙差互，不可知其源。\n坐潭上，四面竹树环合，寂寥无人，凄神寒骨，悄怆幽邃。以其境过清，不可久居，乃记之而去。\n同游者：吴武陵，龚古，余弟宗玄。隶而从者，崔氏二小生，曰恕己，曰奉壹。',
-					share: true,
-					gmtCreate: '2021年7月20日 20:00',
-				}, {
-					id: 3,
-					title: '测试状态标题3',
-					userId: 3, // 用户id
-					userName: '用户3', // 用户名
-					userAvater: '../../static/avater.jpg', // 头像
-					text: '来时山有雪，归时雪满山。',
-					share: true,
-					gmtCreate: '2小时前',
 				}]
 			}
 		},
 		onLoad() {
 			this.isRefresh = true
+		},
+		onShow() {
 			this.refresh()
+		},
+		onPullDownRefresh() {
+			this.isRefresh = true
+			this.refresh()
+			uni.stopPullDownRefresh();
+			this.$refs.popup_success_refresh.open('top')
 		},
 		methods: {
 			refresh() {
 				if (config.checkToken()) {
 					if (this.isRefresh) {
-						this.stateList = []
 						this.isRefresh = false
+						this.stateList = []
 						this.page = 0
 					}
 					this.loadData()
@@ -133,6 +131,41 @@
 				uni.navigateTo({
 					url: '/pages/editStatus/editStatus'
 				});
+			},
+			deleteState(index) {
+				let stateId = this.stateList[index].id
+				new Promise((resolve, reject) => {
+					uni.showModal({
+						title: '确定删除此状态吗?',
+						content: ' ',
+						success: function(res) {
+							resolve(res)
+						}
+					})
+				}).then(data => {
+					if (data.confirm) {
+						return stateApi.deleteState(stateId)
+					}
+				}).then(data => {
+					if (data.data) {
+						this.$refs.popup_success.open('top')
+						this.isRefresh = true
+						this.stateList.splice(index, 1)
+					} else {
+						uni.showToast({
+							title: data.msg,
+							icon: "error",
+							mask: true,
+							duration: 2000
+						})
+					}
+				})
+			},
+			updateState(index) {
+				let stateId = this.stateList[index].id
+				uni.navigateTo({
+				    url: `/pages/editStatus/updateStatus?id=${stateId}`
+				})
 			}
 		}
 	}

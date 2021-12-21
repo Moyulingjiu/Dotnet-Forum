@@ -8,12 +8,12 @@
 						<image class="image-1" src="../../static/cancel.png" mode="aspectFill"></image>
 					</template>
 				</uni-list-item>
-				<uni-list-item direction="row" v-for="(item,index) in albumArr" :key="index" :title="item.Name":note="item.Description"
-				@click="clickAlbum(item.Id)" link>
+				<uni-list-item direction="row" v-for="(item,index) in albumArr" :key="index" :title="item.name":note="item.description"
+				@click="clickAlbum(item.id)" link>
 					<!-- 通过v-slot:header插槽定义列表左侧的图片显示，其他内容通过List组件内置属性实现-->
 					<template v-slot:header>
 						<!-- 当前判断长度只为简单判断类型，实际业务中，根据逻辑直接渲染即可 -->
-						<image class="image-1" :src="item.Cover" mode="aspectFill"></image>
+						<image class="image-1" :src="item.cover" mode="aspectFill"></image>
 					</template>
 				</uni-list-item>
 				
@@ -26,28 +26,33 @@
 	import uniList from "@/uni_modules/uni-list/components/uni-list/uni-list.vue"         // uni-app列表组件，渲染图片列表
 	import uniListItem from "@/uni_modules/uni-list/components/uni-list-item/uni-list-item.vue"        // 列表项组件
 	import * as config from "../../utils/config.js"
-	
+	import * as albumApi from "../../api/album.js"
 	export default {
 		data() {
 			return {
 				albumArr: [
 					{	
-						"Id":"1",
-						"Name": "1",
-						"Description":"testaaaaaaaaaaaaaaaaaaaaaaaa",
-						"Cover":"https://ns-strategy.cdn.bcebos.com/ns-strategy/upload/fc_big_pic/part-00563-2872.jpg"
+						"id":"1",
+						"name": "1",
+						"description":"testaaaaaaaaaaaaaaaaaaaaaaaa",
+						"cover":"https://ns-strategy.cdn.bcebos.com/ns-strategy/upload/fc_big_pic/part-00563-2872.jpg"
 					},
 					{
-						"Id":"2",
-						"Name": "asd",
-						"Description":"test",
-						"Cover":"https://ns-strategy.cdn.bcebos.com/ns-strategy/upload/fc_big_pic/part-00563-2872.jpg"
+						"id":"2",
+						"name": "asd",
+						"description":"test",
+						"cover":"https://ns-strategy.cdn.bcebos.com/ns-strategy/upload/fc_big_pic/part-00563-2872.jpg"
 					}
 				],
 			}
 		},
 		onLoad() {
-			this.refresh()
+			albumApi.getAlbumByUserId().then(data => {
+				console.log(data);
+						console.log("ok");
+						this.albumArr=data.data.item;
+						console.log(this.albumArr)
+					});
 		},
 		onShow() {
 			this.refresh()
