@@ -22,7 +22,7 @@
 						</uni-badge>
 					</view>
 					<view class="information_text">
-						<input maxlength=200 type="text" password="true" placeholder="请输入相册描述" v-model="albumInfo.description" />
+						<input maxlength=200 type="text" placeholder="请输入相册描述" v-model="albumInfo.description" />
 					</view>
 				</view>
 			</view>

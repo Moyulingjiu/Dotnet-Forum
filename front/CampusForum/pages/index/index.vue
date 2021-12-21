@@ -151,6 +151,10 @@
 			},
 			search() {
 				// 搜索
+				var that=this;
+				uni.navigateTo({
+					url: `/pages/search/search?searchCondition`+that.searchCondition
+				});
 			},
 			clearCondition() {
 				this.searchCondition = ''
