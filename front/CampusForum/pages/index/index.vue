@@ -47,7 +47,6 @@
 </template>
 
 <script>
-	import * as userApi from "../../api/user.js"
 	import * as stateApi from "../../api/state.js"
 	import * as config from "../../utils/config.js"
 

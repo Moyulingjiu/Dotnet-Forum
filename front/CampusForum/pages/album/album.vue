@@ -17,6 +17,10 @@
 				</template>
 			</uni-list-item>
 		</uni-list>
+		
+		<uni-popup ref="popup_success_refresh" type="message">
+			<uni-popup-message type="success" message="刷新成功" :duration="2000"></uni-popup-message>
+		</uni-popup>
 	</view>
 </template>
 
@@ -41,6 +45,11 @@
 		},
 		onShow() {
 			this.refresh()
+		},
+		onPullDownRefresh() {
+			this.refresh()
+			uni.stopPullDownRefresh();
+			this.$refs.popup_success_refresh.open('top')
 		},
 		methods: {
 			refresh() {
