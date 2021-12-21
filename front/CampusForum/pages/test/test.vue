@@ -6,8 +6,9 @@
 </template>
 
 <script>
+	import * as config from '../../utils/config.js'
     // 注册一个进度条
-    var _self;
+    let _self;
 
     export default {
         data() {
@@ -39,11 +40,15 @@
                         //因为有一张图片， 输出下标[0]， 直接输出地址
                         var imgFiles = res.tempFilePaths[0]
                         console.log(imgFiles)
+						console.log(config.getToken())
                         // 上传图片
                         // 做成一个上传对象
                         var uper = uni.uploadFile({
                             // 需要上传的地址
-                            url:'http://localhost:44330/insert/1',
+                            url:'/api/picture/insert/1',
+							header: {
+								'token': config.getToken()
+							},
                             // filePath  需要上传的文件
                             filePath: imgFiles,
                             name: 'file',

@@ -9,7 +9,7 @@
 		<button class="bottom" @click="sendstate()">发送状态</button>
 		<view class="state_share">
 			<text>是否分享该状态</text>
-			<switch :checked="state.shareState" @change="switchShare" />
+			<switch :checked="getShare()" @change="switchShare" />
 		</view>
 		<uni-popup ref="popup_success" type="message">
 			<uni-popup-message type="success" message="发送成功" :duration="1500"></uni-popup-message>
@@ -30,7 +30,7 @@
 				state: {
 					title: '',
 					text: '',
-					shareState: true
+					shareState: 1 // 对于该点使用数字来表示状态
 				}
 			}
 		},
@@ -69,7 +69,16 @@
 				}
 			},
 			switchShare() {
-				this.state.isShare = !this.state.isShare
+				if (this.state.isShare == 0) {
+					this.state.isShare = 1
+				} else {
+					this.state.isShare = 0
+				}
+			},
+			getShare() {
+				if (this.state.isShare == 0)
+					return false
+				return true
 			}
 		}
 	}

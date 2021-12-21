@@ -6,7 +6,7 @@ export const modelUrl = `/state`
 export function insert({
 	title,
 	text,
-	shareState = false
+	shareState = 0
 }) {
 	let url = modelUrl + `/insert`
 	let data = {
@@ -14,6 +14,7 @@ export function insert({
 		text: text,
 		shareState: shareState
 	}
+	console.log(data)
 	return request.service({
 		url: url,
 		data: data,
@@ -58,12 +59,15 @@ export function select(stateId) {
 // 查询所有状态
 export function selectAll(page = 0, pageSize = 10) {
 	let url = modelUrl + `/selectAll`
-	let token = config.getToken()
-
-	return {
-		total: 1,
-		item: []
+	let data = {
+		page: page,
+		pageSize: pageSize
 	}
+	return request.service({
+		url: url,
+		data: data,
+		method: 'GET'
+	})
 }
 
 // 条件查询状态

@@ -217,7 +217,7 @@ namespace CampusForum.Controllers
         /// <param name="page"></param>
         /// <param name="pageSize"></param>
         /// <returns></returns>
-        [HttpGet("/selectAll")]
+        [HttpGet("selectAll")]
         public Code getAllStates(int page = 0, int pageSize = 10)
         {
             using (CoreDbContext _coreDbContext = new CoreDbContext())

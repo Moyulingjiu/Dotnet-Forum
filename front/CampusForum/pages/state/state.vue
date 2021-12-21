@@ -1,8 +1,14 @@
 <template>
 	<view>
-		<view class="newstate" @click="newstate()">
+		<view class="newstate" @tap="newState()">
 			<view class="circle"></view>
 			<view class="plus">+</view>
+		</view>
+		<view class="insert_box" @click="newState()">
+			<image src="../../static/insert.png" mode="aspectFill"></image>
+			<view>
+				<text>新增状态</text>
+			</view>
 		</view>
 		<view class="state_box" v-for="(item,index) in stateList">
 			<view class="state_title">
@@ -18,6 +24,10 @@
 				</view>
 			</view>
 		</view>
+		
+		<view class="bottom_tips">
+			<text>{{ (page===total-1)?bottomTipsNoMore:bottomTips }}</text>
+		</view>
 	</view>
 </template>
 
@@ -29,9 +39,9 @@
 	export default {
 		data() {
 			return {
-				token: null, // token
 				bottomTips: '- 上拉加载更多 -', // 底部提示
 				bottomTipsNoMore: '- 到底了 -', // 底部提示
+				isRefresh: true, // 是否需要刷新
 				page: 0, // 当前页码
 				total: 1, // 最后一页
 				stateList: [{
@@ -65,6 +75,7 @@
 			}
 		},
 		onLoad() {
+			this.isRefresh = true
 			this.refresh()
 		},
 		onShow() {
@@ -73,14 +84,26 @@
 		methods: {
 			refresh() {
 				if (config.checkToken()) {
-					// 相册页面的初始化加载
+					if (this.isRefresh) {
+						this.stateList = []
+						this.isRefresh = false
+						this.page = 0
+					}
+					this.loadData()
 				} else {
 					uni.redirectTo({
 						url: '../login/login'
 					})
 				}
 			},
-			newstate(){
+			loadData(page=this.page) {
+				stateApi.selectAll(page).then(data => {
+					console.log('获取到的值')
+					console.log(data)
+				})
+			},
+			newState(){
+				console.log('调用')
 				uni.navigateTo({
 					url: '/pages/editStatus/editStatus'
 				});
@@ -90,6 +113,30 @@
 </script>
 
 <style>
+	.insert_box {
+		width: 90%;
+		margin-left: 5%;
+		margin-right: 5%;
+		margin-top: 40rpx;
+		padding-left: 10rpx;
+		padding-top: 10rpx;
+		padding-bottom: 10rpx;
+		border-radius: 10rpx;
+		background-color: #F0F0F0;
+		box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+		text-align: center;
+	}
+	
+	.insert_box image {
+		width: 50rpx;
+		height: 50rpx;
+	}
+	
+	.insert_box view {
+		width: 100%;
+		text-align: center;
+	}
+	
 	.state_box {
 		width: 90%;
 		margin-left: 5%;

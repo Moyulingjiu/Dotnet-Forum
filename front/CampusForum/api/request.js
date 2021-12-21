@@ -16,7 +16,7 @@ export function service({
 				'token': config.getToken(),
 				// 'content-type': 'application/x-www-form-urlencoded'
 			},
-			sslVerify: false, // 进行ssl验证（我们的访问都是http的不应爱进行检验）
+			sslVerify: false, // 进行ssl验证（我们的访问都是http的不应该进行检验）
 			success: (res) => {
 				console.log('回调函数成功执行')
 				if (res.data.code == 200) {
