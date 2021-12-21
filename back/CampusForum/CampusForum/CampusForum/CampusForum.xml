@@ -43,7 +43,6 @@
             <summary>
             新建状态
             </summary>
-            <param name="token"></param>
             <param name="stateReq"></param>
             <returns></returns>
         </member>

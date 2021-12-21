@@ -36,11 +36,11 @@
 		},
 		methods: {
 			sendstate() {
-				console.log('发送了当前页面')
 				if (this.state.title.length == 0 || this.state.text.length == 0) {
 					this.$refs.popup_error.open('top')
 				} else {
 					stateApi.insert(this.state).then(data => {
+						console.log(data)
 						if (typeof data === "undefined") {
 							uni.showToast({
 								title: '服务器错误',

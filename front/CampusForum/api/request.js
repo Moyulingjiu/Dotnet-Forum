@@ -18,8 +18,8 @@ export function service({
 			},
 			sslVerify: false, // 进行ssl验证（我们的访问都是http的不应该进行检验）
 			success: (res) => {
-				console.log('回调函数成功执行')
-				if (res.data.code == 200) {
+				// console.log('回调函数成功执行')
+				if (res.statusCode == 200) {
 					//请求成功
 					resolve(res.data)
 				} else {

@@ -14,7 +14,6 @@ export function insert({
 		text: text,
 		shareState: shareState
 	}
-	console.log(data)
 	return request.service({
 		url: url,
 		data: data,

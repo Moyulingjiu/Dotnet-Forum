@@ -130,7 +130,6 @@
 				})
 			},
 			newState() {
-				console.log('调用')
 				uni.navigateTo({
 					url: '/pages/editStatus/editStatus'
 				});
