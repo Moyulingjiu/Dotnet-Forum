@@ -1,13 +1,24 @@
 import * as config from '../utils/config.js'
+import * as request from './request.js'
 export const modelUrl = `/state`
 
 // 新建状态
-export function insert(title, text, shareSate=false) {
+export function insert({
+	title,
+	text,
+	shareState = false
+}) {
 	let url = modelUrl + `/insert`
-	let token = config.getToken()
-	// 请求
-	let stateId = 1
-	return stateId
+	let data = {
+		title: title,
+		text: text,
+		shareState: shareState
+	}
+	return request.service({
+		url: url,
+		data: data,
+		method: 'POST'
+	})
 }
 
 // 修改状态
@@ -30,7 +41,7 @@ export function deleteState(stateId) {
 export function select(stateId) {
 	let url = modelUrl + `/select/${stateId}`
 	let token = config.getToken()
-	
+
 	return {
 		id: 1,
 		title: '测试状态',
@@ -45,10 +56,10 @@ export function select(stateId) {
 }
 
 // 查询所有状态
-export function selectAll(page=0, pageSize=10) {
+export function selectAll(page = 0, pageSize = 10) {
 	let url = modelUrl + `/selectAll`
 	let token = config.getToken()
-	
+
 	return {
 		total: 1,
 		item: []
@@ -56,10 +67,10 @@ export function selectAll(page=0, pageSize=10) {
 }
 
 // 条件查询状态
-export function selectCondition(page=0, pageSize=10, userId, userName, title) {
+export function selectCondition(page = 0, pageSize = 10, userId, userName, title) {
 	let url = modelUrl + `/selectCondition`
 	let token = config.getToken()
-	
+
 	return {
 		total: 1,
 		item: []
@@ -67,10 +78,10 @@ export function selectCondition(page=0, pageSize=10, userId, userName, title) {
 }
 
 // 主页推荐
-export function recommend(page=0, pageSize=10) {
+export function recommend(page = 0, pageSize = 10) {
 	let url = modelUrl + `/recommend`
 	let token = config.getToken()
-	
+
 	return {
 		total: 1,
 		item: []

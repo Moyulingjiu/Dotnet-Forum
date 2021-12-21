@@ -104,7 +104,7 @@
 	}
 	
 	.state_box .state_title {
-		font-size: 40rpx;
+		font-size: 45rpx;
 		font-weight: bold;
 		/* text-shadow: 1px 1px 4px #000000; */
 	}
@@ -136,7 +136,7 @@
 	
 	.state_box .state_text text {
 		margin-top: 20rpx;
-		font-size: 25rpx;
+		font-size: 35rpx;
 		display: -webkit-box;
 		/*弹性伸缩盒子模型显示*/
 		-webkit-box-orient: vertical;
