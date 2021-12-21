@@ -102,8 +102,8 @@
 					</view>
 					<view class="information_text">
 						<view class="uni-list-cell-db">
-							<picker mode="date"  :value="user.brithday" @change="bindDateChange">
-								<view class="uni-input">{{ user.brithday }}</view>
+							<picker mode="date"  :value="user.birthday" @change="bindDateChange">
+								<view class="uni-input">{{ user.birthday }}</view>
 							</picker>
 						</view>
 					</view>
@@ -117,6 +117,12 @@
 		</uni-popup>
 		<uni-popup ref="popup_error_password" type="message">
 			<uni-popup-message type="error" message="密码长度需在6-16之间" :duration="3000"></uni-popup-message>
+		</uni-popup>
+		<uni-popup ref="popup_error_email" type="message">
+			<uni-popup-message type="error" message="邮箱格式不正确" :duration="3000"></uni-popup-message>
+		</uni-popup>
+		<uni-popup ref="popup_error_phone" type="message">
+			<uni-popup-message type="error" message="电话格式不正确" :duration="3000"></uni-popup-message>
 		</uni-popup>
 	</view>
 </template>
@@ -144,7 +150,7 @@
 					email: '',
 					college: '',
 					description: '这个人没有个性签名',
-					brithday: this.getToday(),
+					birthday: this.getToday(),
 				}
 			}
 		},
@@ -170,6 +176,10 @@
 					this.$refs.popup_error.open('top')
 				} else if (this.user.password.length < 6 || this.user.password.length > 16) {
 					this.$refs.popup_error_password.open('top')
+				} else if (this.user.phone.length != 0 && !config.checkPhone(this.user.phone)) {
+					this.$refs.popup_error_phone.open('top')
+				} else if (this.user.email.length != 0 && !config.checkEmail(this.user.email)) {
+					this.$refs.popup_error_email.open('top')
 				} else {
 					userApi.register(this.user)
 						.then(data => {
@@ -213,7 +223,7 @@
 				})
 			},
 			bindDateChange(e) { // 改变日期
-				this.user.brithday = e.target.value
+				this.user.birthday = e.target.value
 			},
 			getToday() { // 获取今天
 				const date = new Date();

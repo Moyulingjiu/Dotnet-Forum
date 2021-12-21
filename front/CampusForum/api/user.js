@@ -75,35 +75,13 @@ export function deleteById(id) {
 
 
 // 根据id获取用户数据
-export function select(id) {
+export function select(id=0) {
 	let url = modelUrl + `/select/${id}`
-	let data = {}
-	// uni.request({
-	// 	url: url,
-	// 	data: data,
-	// 	method: 'GET',
-	// 	timeout: 50000,
-	// 	success() {
-	// 		// 成功回调函数
-	// 	},
-	// 	fail() {
-	// 		// 失败回调函数
-	// 	}
-	// })
-	return {
-		id: 1,
-		studentId: 22920192200000,
-		name: '用户名',
-		college: '信息学院',
-		gender: 1,
-		avater: '',
-		description: '个性签名',
-		birthday: '2021-12-20',
-		phone: '',
-		email: '',
-		follwer: 0,
-		follwing: 0
-	}
+	return request.service({
+		url: url,
+		data: {},
+		method: 'GET'
+	})
 }
 
 // 查询所有的用户

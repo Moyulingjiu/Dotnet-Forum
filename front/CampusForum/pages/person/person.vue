@@ -35,7 +35,7 @@
 						<text>学院</text>
 					</view>
 					<view class="information_text">
-						<text>{{ user.collegeName }}</text>
+						<text>{{ user.college }}</text>
 					</view>
 				</view>
 				<view>
@@ -87,7 +87,7 @@
 						<text>生日</text>
 					</view>
 					<view class="information_text">
-						<text>{{ user.brithday }}</text>
+						<text>{{ user.birthday }}</text>
 					</view>
 				</view>
 				<view>
@@ -109,6 +109,9 @@
 		<uni-popup ref="popup_serve_error" type="message">
 			<uni-popup-message type="error" message="服务器错误" :duration="3000"></uni-popup-message>
 		</uni-popup>
+		<uni-popup ref="popup_information_error" type="message">
+			<uni-popup-message type="error" message="获取个人信息失败" :duration="3000"></uni-popup-message>
+		</uni-popup>
 	</view>
 </template>
 
@@ -124,11 +127,11 @@
 				user: {
 					studentId: 22920191234,
 					name: '墨羽翎玖',
-					collegeName: '信息学院',
+					college: '信息学院',
 					gender: 1,
 					avater: '../../static/avater.jpg',
 					description: '来时山有雪，归时雪满山。',
-					brithday: '2021-12-15',
+					birthday: '2021-12-15',
 					phone: '12312341234',
 					email: '123456@qq.com',
 					following: 100,
@@ -143,9 +146,20 @@
 			this.refresh()
 		},
 		methods: {
-			refresh() {
+			refresh() { // 刷新个人信息
 				if (config.checkToken()) {
-					// 相册页面的初始化加载
+					userApi.select().then(data => {
+						if (typeof data === "undefined") {
+							this.$refs.popup_serve_error.open('top')
+						} else if (data.code == 200) {
+							this.user = Object.assign({}, data.data)
+							this.user.studentId = data.data.student_id
+							this.user.gmtCreate = data.data.gmt_create
+							this.user.gmtModified = data.data.gmt_modified
+						} else {
+							this.$refs.popup_information_error.open('top')
+						}
+					})
 				} else {
 					uni.redirectTo({
 						url: '../login/login'
