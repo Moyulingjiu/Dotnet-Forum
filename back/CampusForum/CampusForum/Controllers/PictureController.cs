@@ -35,13 +35,17 @@ namespace CampusForum.Controllers
             Album album = _coreDbContext.Set<Album>().Find(album_id);
             if (album == null) return new Code(404, "没有这个相册", null);
             if (album.user_id != user_id) return new Code(403, "没有使用权限", null);
-            string url = @"\image" + "\\" + photo.FileName;
+
+            string uuid = System.Guid.NewGuid().ToString();
+            string url = @"\image" + "\\" + uuid + photo.FileName;
             var newPicture = new Album_picture { album_id = album_id, name = photo.FileName, url = url };
             newPicture.gmt_create = DateTime.Now;
             newPicture.gmt_modified = DateTime.Now;
             _coreDbContext.Set<Album_picture>().Add(newPicture);
             _coreDbContext.SaveChanges();
-            string path = @"wwwroot\image" + "\\" + photo.FileName;
+
+
+            string path = @"wwwroot" + url;
             using (var stream = System.IO.File.Create(path))
             {
                 photo.CopyTo(stream);
