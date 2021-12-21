@@ -24,7 +24,7 @@ namespace CampusForum.Controllers
         //需要注意，这里返回与存入数据库的url并不是可以直接调用的，需要在url字符串前加上端口
         //例如我给的url是\image\1.png，但你需要在这个url前加上localhost:xxxx才能直接调用图片
         [HttpPost("insert/{album_id}")]
-        public Code InsertPictureByAlbumId(IFormFile photo)
+        public Code InsertPictureByAlbumId([FromForm(Name ="file")] IFormFile photo)
         {
             string token = HttpContext.Request.Headers["token"];
             string album_idStr = RouteData.Values["album_id"].ToString();

@@ -24,7 +24,7 @@ namespace CampusForum.Controllers
 
 
         [HttpPost("insert")]
-        public Code InsertAlbum(string name, string description)
+        public Code InsertAlbum(AlbumReq albumReq)
         {
             string token = HttpContext.Request.Headers["token"];
             long user_id = JwtToid(token);
@@ -32,7 +32,7 @@ namespace CampusForum.Controllers
 
             int cnt = _coreDbContext.Set<Album>().Where(b => b.user_id == user_id).Count();
             if (cnt > 20) return new Code(403, "创建相册已经达到20个的上限", null);
-            Album newAlbum = new Album { user_id = user_id, name = name, description = description };
+            Album newAlbum = new Album { user_id = user_id, name = albumReq.name, description = albumReq.description ,cover=albumReq.cover};
             newAlbum.gmt_create = DateTime.Now;
             newAlbum.gmt_modified = DateTime.Now;
             _coreDbContext.Set<Album>().Add(newAlbum);
@@ -41,7 +41,7 @@ namespace CampusForum.Controllers
         }
 
         [HttpPut("update/{album_id}")]
-        public Code UpdateAlbumByAlbumId(string name, string description, string cover)
+        public Code UpdateAlbumByAlbumId(AlbumReq albumReq)
         {
             string token = HttpContext.Request.Headers["token"];
             string album_idStr = RouteData.Values["album_id"].ToString();
@@ -52,9 +52,9 @@ namespace CampusForum.Controllers
             Album album = _coreDbContext.Set<Album>().Single(b => b.id == album_id);
             if (album == null) return new Code(404, "没有这个相册", null);
             if (album.user_id != user_id) return new Code(403, "没有修改权限", null);
-            album.name = name;
-            album.description = description;
-            album.cover = cover;
+            album.name = albumReq.name;
+            album.description = albumReq.description;
+            album.cover = albumReq.cover;
             album.gmt_modified = DateTime.Now;
             _coreDbContext.SaveChanges();
             return new Code(200, "成功", true);
