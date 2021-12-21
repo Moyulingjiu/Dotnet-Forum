@@ -24,9 +24,9 @@
 				</view>
 			</view>
 		</view>
-		
+
 		<view class="bottom_tips">
-			<text>{{ (page===total-1)?bottomTipsNoMore:bottomTips }}</text>
+			<text>{{ (page >= total - 1) ? bottomTipsNoMore : bottomTips }}</text>
 		</view>
 	</view>
 </template>
@@ -35,7 +35,7 @@
 	import * as userApi from "../../api/user.js"
 	import * as stateApi from "../../api/state.js"
 	import * as config from "../../utils/config.js"
-	
+
 	export default {
 		data() {
 			return {
@@ -78,9 +78,6 @@
 			this.isRefresh = true
 			this.refresh()
 		},
-		onShow() {
-			this.refresh()
-		},
 		methods: {
 			refresh() {
 				if (config.checkToken()) {
@@ -96,13 +93,43 @@
 					})
 				}
 			},
-			loadData(page=this.page) {
+			loadData(page = this.page) {
 				stateApi.selectAll(page).then(data => {
-					console.log('获取到的值')
-					console.log(data)
+					if (typeof data === "undefined") {
+						uni.showToast({
+							title: '服务器错误',
+							icon: "error",
+							mask: true,
+							duration: 2000
+						})
+					} else if (data.code != 200) {
+						uni.showToast({
+							title: data.msg,
+							icon: "error",
+							mask: true,
+							duration: 2000
+						})
+					} else {
+						this.total = data.data.total
+						for (let key in data.data.items) {
+							if (key != 'length') {
+								let stateItem = {
+									id: data.data.items[key].id,
+									title: data.data.items[key].title,
+									userId: data.data.items[key].user_id,
+									userName: data.data.items[key].user_name,
+									userAvater: data.data.items[key].user_avater, // 头像
+									text: data.data.items[key].text,
+									share: data.data.items[key].share_state,
+									gmtCreate: data.data.items[key].gmt_create
+								}
+								this.stateList.push(stateItem)
+							}
+						}
+					}
 				})
 			},
-			newState(){
+			newState() {
 				console.log('调用')
 				uni.navigateTo({
 					url: '/pages/editStatus/editStatus'
@@ -126,17 +153,17 @@
 		box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 		text-align: center;
 	}
-	
+
 	.insert_box image {
 		width: 50rpx;
 		height: 50rpx;
 	}
-	
+
 	.insert_box view {
 		width: 100%;
 		text-align: center;
 	}
-	
+
 	.state_box {
 		width: 90%;
 		margin-left: 5%;
@@ -149,25 +176,25 @@
 		background-color: #F5F5F5;
 		box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 	}
-	
+
 	.state_box .state_title {
 		font-size: 45rpx;
 		font-weight: bold;
 		/* text-shadow: 1px 1px 4px #000000; */
 	}
-	
+
 	.state_box .state_author {
 		display: flex;
 		margin-top: 10rpx;
 		margin-left: 10rpx;
 	}
-	
+
 	.state_box .state_author image {
 		height: 45rpx;
 		width: 45rpx;
 		border-radius: 50%;
 	}
-	
+
 	.state_box .state_author text {
 		margin-top: 3rpx;
 		margin-left: 10rpx;
@@ -175,12 +202,12 @@
 		font-size: 30rpx;
 		color: #6F6F6F;
 	}
-	
+
 	.state_box .state_text {
 		padding-left: 10rpx;
 		padding-right: 10rpx;
 	}
-	
+
 	.state_box .state_text text {
 		margin-top: 20rpx;
 		font-size: 35rpx;
@@ -193,12 +220,12 @@
 		overflow: hidden;
 		/*溢出隐藏*/
 	}
-	
+
 	.state_box .state_bottom {
 		padding-top: 20rpx;
 		position: relative;
 	}
-	
+
 	.state_box .state_bottom .state_date {
 		color: #A8A8A8;
 		font-size: 30rpx;
@@ -206,7 +233,7 @@
 		position: relative;
 		display: inline-block;
 	}
-	
+
 	.state_box .state_bottom .state_icon {
 		margin-bottom: 10rpx;
 		margin-right: 10rpx;
@@ -215,41 +242,41 @@
 		bottom: 0;
 		right: 0;
 	}
-	
+
 	.state_box .state_bottom .state_icon image {
 		margin-left: 15rpx;
 		width: 30rpx;
 		height: 30rpx;
 	}
-	
+
 	.bottom_tips {
 		margin-top: 30rpx;
 		text-align: center;
 		height: 200rpx;
 	}
-	
+
 	.bottom_tips text {
 		color: #A8A8A8;
 		bottom: 0;
 	}
-	
-	.newstate{
+
+	.newstate {
 		position: fixed;
 		right: 20rpx;
 		bottom: 200rpx;
 	}
-	
-	.circle{
+
+	.circle {
 		width: 50px;
 		height: 50px;
 		background-color: #2979FF;
 		border-radius: 50%;
 	}
-	
-	.plus{
-		position:absolute;
+
+	.plus {
+		position: absolute;
 		top: 3px;
 		right: 14px;
-		font-size:30px;
+		font-size: 30px;
 	}
 </style>

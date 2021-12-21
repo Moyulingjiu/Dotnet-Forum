@@ -22,15 +22,14 @@ namespace CampusForum.Controllers
         /// <summary>
         /// 新建状态
         /// </summary>
-        /// <param name="token"></param>
         /// <param name="stateReq"></param>
         /// <returns></returns>
         [HttpPost("insert")]
-        public Code insert(string token,StateReq stateReq)
+        public Code insert(StateReq stateReq)
         {
             using(CoreDbContext _coreDbContext = new CoreDbContext())
             {
-                //string token = HttpContext.Request.Headers["token"];
+                string token = HttpContext.Request.Headers["token"];
 
                 //解析token
                 long id = JwtToid(token);

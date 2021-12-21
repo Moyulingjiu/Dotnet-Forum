@@ -37,7 +37,7 @@
 		</view>
 
 		<view class="bottom_tips">
-			<text>{{ (page===total-1)?bottomTipsNoMore:bottomTips }}</text>
+			<text>{{ (page >= total - 1) ? bottomTipsNoMore : bottomTips }}</text>
 		</view>
 
 	</view>

@@ -39,7 +39,7 @@
             <param name="pageSize"></param>
             <returns></returns>
         </member>
-        <member name="M:CampusForum.Controllers.StateController.insert(System.String,CampusForum.Models.StateReq)">
+        <member name="M:CampusForum.Controllers.StateController.insert(CampusForum.Models.StateReq)">
             <summary>
             新建状态
             </summary>
