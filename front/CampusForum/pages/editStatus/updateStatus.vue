@@ -41,13 +41,12 @@
 		},
 		onLoad(option) {
 			this.stateId = option.id
-			this.refresh()
 		},
 		onShow() {
 			this.refresh()
 		},
 		methods: {
-			refresh() { // 刷新个人信息
+			refresh() {
 				if (!config.checkToken()) {
 					uni.redirectTo({
 						url: '../login/login'

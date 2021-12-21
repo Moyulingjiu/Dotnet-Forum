@@ -202,8 +202,9 @@
 				}
 			},
 			userdetail(index){
+				let id = this.stateList[index].userId
 				uni.navigateTo({
-					url: '/pages/otherUsers/otherUsers'
+					url: `/pages/otherUsers/otherUsers?id=${id}`
 				});
 			}
 		}
