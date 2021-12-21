@@ -1,27 +1,21 @@
 {
   "format": 1,
   "restore": {
-    "E:\\厦门大学\\大学四年的学习资料\\大三\\大三上\\.Net平台技术-杨律青\\大作业\\项目\\back\\CampusForum\\CampusForum\\CampusForum.csproj": {}
+    "P:\\A Personal\\Coding\\dotnet_forum\\New\\Dotnet-Forum\\back\\CampusForum\\CampusForum\\CampusForum.csproj": {}
   },
   "projects": {
-    "E:\\厦门大学\\大学四年的学习资料\\大三\\大三上\\.Net平台技术-杨律青\\大作业\\项目\\back\\CampusForum\\CampusForum\\CampusForum.csproj": {
+    "P:\\A Personal\\Coding\\dotnet_forum\\New\\Dotnet-Forum\\back\\CampusForum\\CampusForum\\CampusForum.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\厦门大学\\大学四年的学习资料\\大三\\大三上\\.Net平台技术-杨律青\\大作业\\项目\\back\\CampusForum\\CampusForum\\CampusForum.csproj",
+        "projectUniqueName": "P:\\A Personal\\Coding\\dotnet_forum\\New\\Dotnet-Forum\\back\\CampusForum\\CampusForum\\CampusForum.csproj",
         "projectName": "CampusForum",
-        "projectPath": "E:\\厦门大学\\大学四年的学习资料\\大三\\大三上\\.Net平台技术-杨律青\\大作业\\项目\\back\\CampusForum\\CampusForum\\CampusForum.csproj",
-        "packagesPath": "C:\\Users\\BeforeDawn\\.nuget\\packages\\",
-        "outputPath": "E:\\厦门大学\\大学四年的学习资料\\大三\\大三上\\.Net平台技术-杨律青\\大作业\\项目\\back\\CampusForum\\CampusForum\\obj\\",
+        "projectPath": "P:\\A Personal\\Coding\\dotnet_forum\\New\\Dotnet-Forum\\back\\CampusForum\\CampusForum\\CampusForum.csproj",
+        "packagesPath": "C:\\Users\\86138\\.nuget\\packages\\",
+        "outputPath": "P:\\A Personal\\Coding\\dotnet_forum\\New\\Dotnet-Forum\\back\\CampusForum\\CampusForum\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
-          "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
-        ],
         "configFilePaths": [
-          "C:\\Users\\BeforeDawn\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+          "C:\\Users\\86138\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net5.0"
@@ -81,7 +75,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.100\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.403\\RuntimeIdentifierGraph.json"
         }
       }
     }
