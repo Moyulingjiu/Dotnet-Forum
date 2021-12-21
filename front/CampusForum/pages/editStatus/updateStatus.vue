@@ -52,7 +52,7 @@
 						url: '../login/login'
 					})
 				} else if (this.stateId == 0 || typeof this.stateId === "undefined") {
-					uni.switchTab({
+					uni.reLaunch({
 						url: '../state/state'
 					})
 				} else {
@@ -95,6 +95,7 @@
 						} else {
 							if (data.code == 200) {
 								this.$refs.popup_success.open('top')
+								uni.setStorageSync('refreshState', true)
 							} else {
 								uni.showToast({
 									title: data.msg,
@@ -168,7 +169,7 @@
 		right: 0;
 		position: absolute;
 	}
-	
+
 	.state_create {
 		margin: 30rpx 5%;
 		width: 90%;

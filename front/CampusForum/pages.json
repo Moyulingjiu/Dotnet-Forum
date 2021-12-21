@@ -46,7 +46,7 @@
 		{
 			"path": "pages/stateDetail/stateDetail",
 			"style": {
-				"navigationBarTitleText": "",
+				"navigationBarTitleText": "状态详情",
 				"enablePullDownRefresh": false
 			}
 
@@ -62,7 +62,7 @@
 		{
 			"path": "pages/albumAdd/albumAdd",
 			"style": {
-				"navigationBarTitleText": "",
+				"navigationBarTitleText": "添加相册",
 				"enablePullDownRefresh": false
 			}
 
@@ -70,7 +70,7 @@
 		{
 			"path": "pages/manage/manage",
 			"style": {
-				"navigationBarTitleText": "",
+				"navigationBarTitleText": "管理页面",
 				"enablePullDownRefresh": false
 			}
 

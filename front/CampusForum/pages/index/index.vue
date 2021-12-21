@@ -17,20 +17,20 @@
 		</view>
 
 		<view class="state_box" v-for="(item,index) in stateList">
-			<view class="state_title">
+			<view class="state_title" @click="stateDetail(index)">
 				<text>{{ item.title }}</text>
 			</view>
 			<view class="state_author" @click="userdetail(index)">
 				<image :src="item.userAvater"></image>
 				<text>{{ item.userName }}</text>
 			</view>
-			<view class="state_text">
+			<view class="state_text" @click="stateDetail(index)">
 				<text space="emsp">{{ item.text }}</text>
 			</view>
 			<view class="state_bottom">
 				<text class="state_date">{{ item.gmtCreate }}</text>
 				<view class="state_icon">
-					<image src="../../static/comment.png" mode="aspectFill"></image>
+					<image src="../../static/comment.png" mode="aspectFill" @click="stateDetail(index)"></image>
 					<image :src="item.like?likeIcon:unlikeIcon" @click="like(index)"></image>
 				</view>
 			</view>
@@ -201,11 +201,17 @@
 					})
 				}
 			},
-			userdetail(index){
+			userdetail(index) {
 				let id = this.stateList[index].userId
 				uni.navigateTo({
 					url: `/pages/otherUsers/otherUsers?id=${id}`
-				});
+				})
+			},
+			stateDetail(index) {
+				let id = this.stateList[index].id
+				uni.navigateTo({
+					url: `/pages/stateDetail/stateDetail?id=${id}`
+				})
 			}
 		}
 	}

@@ -76,7 +76,7 @@
 						<text>生日</text>
 					</view>
 					<view class="information_text">
-						<text>{{ user.brithday }}</text>
+						<text>{{ user.birthday }}</text>
 					</view>
 				</view>
 			</view>
@@ -111,7 +111,7 @@
 					gender: 1,
 					avater: '../../static/avater.jpg',
 					description: '落花风雨更伤春，不如怜取眼前人。',
-					brithday: '2021-12-20',
+					birthday: '2021-12-20',
 					phone: '12312341234',
 					email: '123456@outlook.com',
 					following: 100,
@@ -152,7 +152,6 @@
 								duration: 2000
 							})
 						} else {
-							console.log(data)
 							this.user.studentId = data.data.student_id
 							this.user.name = data.data.name
 							this.user.collegeName = data.data.college
