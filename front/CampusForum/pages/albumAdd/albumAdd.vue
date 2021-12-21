@@ -9,7 +9,7 @@
 						</uni-badge>
 					</view>
 					<view class="information_text">
-						<input maxlength=20 type="text" placeholder="请输入相册名称" v-model="albumInfo.albumName" />
+						<input maxlength=30 type="text" placeholder="请输入相册名称" v-model="albumInfo.name" />
 					</view>
 				</view>
 			</view>
@@ -22,7 +22,7 @@
 						</uni-badge>
 					</view>
 					<view class="information_text">
-						<input maxlength=20 type="text" password="true" placeholder="请输入相册描述" v-model="albumInfo.albumDescription" />
+						<input maxlength=200 type="text" password="true" placeholder="请输入相册描述" v-model="albumInfo.description" />
 					</view>
 				</view>
 			</view>
@@ -39,14 +39,14 @@
 
 <script>
 	import * as config from "../../utils/config.js"
-	
+	import * as albumApi from "../../api/album.js"
 	export default {
 		data() {
 			
 			return {
 				albumInfo:{
-					albumName:'',
-					albumDescription:''
+					name:'',
+					description:''
 				},
 			}
 		},
@@ -58,6 +58,10 @@
 				else {
 					console.log(this.albumInfo)
 					console.log('试图增加相册')
+					
+					albumApi.insertAlbum(this.albumInfo).then(data => {
+						console.log(data);
+					})
 				}
 			},
 		}
