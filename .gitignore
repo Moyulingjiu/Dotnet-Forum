@@ -1,5 +1,7 @@
 back/CampusForum/.vs/*
 .vs/*
+back/CampusForum/CampusForum/obj/Debug
+back/CampusForum/CampusForum/obj/Release
 
 # 忽略word的临时文件
 ~*.docx
