@@ -66,10 +66,11 @@
 		},
 		onLoad() {
 			this.isRefresh = true
+		},
+		onShow() {
 			this.refresh()
 		},
 		onPullDownRefresh() {
-			console.log('触发下拉刷新');
 			this.isRefresh = true
 			this.refresh()
 			uni.stopPullDownRefresh();
@@ -79,8 +80,8 @@
 			refresh() {
 				if (config.checkToken()) {
 					if (this.isRefresh) {
-						this.stateList = []
 						this.isRefresh = false
+						this.stateList = []
 						this.page = 0
 					}
 					this.loadData()

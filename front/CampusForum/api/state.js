@@ -95,13 +95,19 @@ export function recommend(page = 0, pageSize = 10) {
 // 点赞状态
 export function like(stateId) {
 	let url = modelUrl + `/like/${stateId}`
-	let token = config.getToken()
-	return true
+	return request.service({
+		url: url,
+		data: {},
+		method: 'POST'
+	})
 }
 
 // 取消点赞状态
 export function unlike(stateId) {
 	let url = modelUrl + `/unlike/${stateId}`
-	let token = config.getToken()
-	return true
+	return request.service({
+		url: url,
+		data: {},
+		method: 'POST'
+	})
 }
