@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace CampusForum.Models
 {
@@ -21,6 +22,15 @@ namespace CampusForum.Models
             this.code = code;
             this.msg = msg;
             this.data = data;
+        }
+
+        static public long TokenToId(string token)
+        {
+            JwtSecurityTokenHandler jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
+            JwtSecurityToken jwtSecurityToken = jwtSecurityTokenHandler.ReadJwtToken(token);
+            string idStr = jwtSecurityToken.Payload.GetValueOrDefault("ID").ToString();
+            long id = long.Parse(idStr);
+            return id;
         }
     }
 }

@@ -10,7 +10,9 @@ namespace CampusForum.Models
         public virtual DbSet<StateText> State_text { get; set; }
         public virtual DbSet<Like> like_state { get; set; }
         public virtual DbSet<Comment> Comment { get; set; }
-        
+        public virtual DbSet<Album> Album { set; get; }
+        public virtual DbSet<Album_picture> Album_picture { set; get; }
+
         public CoreDbContext()
         {
 
