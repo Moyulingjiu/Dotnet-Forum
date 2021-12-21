@@ -1,4 +1,5 @@
 // 全局常量配置
+export const waitTime = 800
 
 // 检查登陆
 export function checkToken() {

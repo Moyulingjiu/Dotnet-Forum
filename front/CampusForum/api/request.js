@@ -1,3 +1,4 @@
+import * as config from '../utils/config.js'
 export const baseUrl = '/api'
 
 export function service({
@@ -12,10 +13,12 @@ export function service({
 			data: data,
 			method: method,
 			header: {
-				'token': config.getToken()
+				'token': config.getToken(),
+				// 'content-type': 'application/x-www-form-urlencoded'
 			},
 			sslVerify: false, // 进行ssl验证（我们的访问都是http的不应爱进行检验）
 			success: (res) => {
+				console.log('回调函数成功执行')
 				if (res.data.code == 200) {
 					//请求成功
 					resolve(res.data)

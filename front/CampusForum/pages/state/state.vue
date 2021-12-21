@@ -64,7 +64,22 @@
 				}]
 			}
 		},
+		onLoad() {
+			this.refresh()
+		},
+		onShow() {
+			this.refresh()
+		},
 		methods: {
+			refresh() {
+				if (config.checkToken()) {
+					// 相册页面的初始化加载
+				} else {
+					uni.redirectTo({
+						url: '../login/login'
+					})
+				}
+			},
 			newstate(){
 				uni.navigateTo({
 					url: '/pages/editStatus/editStatus'

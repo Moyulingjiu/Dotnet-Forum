@@ -83,7 +83,7 @@
 					"changeOrigin": true, //是否跨域
 					"secure": true, // 设置支持https协议的代理
 					"pathRewrite": {
-						"^/api": "/"
+						"^/api": ""
 					}
 				}
 

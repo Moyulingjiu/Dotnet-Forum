@@ -28,8 +28,6 @@ export function register({
 		phone: phone,
 		email: email
 	}
-	console.log('注册调用')
-	console.log(data)
 	return request.service({
 		url: url,
 		data: data,
@@ -54,15 +52,16 @@ export function login(studentId, password) {
 // 登出
 export function logout() {
 	let url = modelUrl + `/logout`
-	let token = config.getToken()
-	config.saveTokenFroce('') // 删除token的值
-	return true
+	return request.service({
+		url: url,
+		data: {},
+		method: 'GET'
+	})
 }
 
 // 修改用户数据
 export function updateById(id) {
 	let url = modelUrl + `/update/${id}`
-	let token = config.getToken()
 	// 请求
 	return true
 }
@@ -70,7 +69,6 @@ export function updateById(id) {
 // 删除用户
 export function deleteById(id) {
 	let url = modelUrl + `/delete/${id}`
-	let token = config.getToken()
 	// 请求
 	return true
 }
@@ -79,7 +77,6 @@ export function deleteById(id) {
 // 根据id获取用户数据
 export function select(id) {
 	let url = modelUrl + `/select/${id}`
-	let token = config.getToken()
 	let data = {}
 	// uni.request({
 	// 	url: url,
@@ -112,7 +109,6 @@ export function select(id) {
 // 查询所有的用户
 export function selectAll(page=0, pageSize=10) {
 	let url = modelUrl + `/selectAll`
-	let token = config.getToken()
 	let data = {
 		token: token,
 		page: page,
@@ -127,7 +123,6 @@ export function selectAll(page=0, pageSize=10) {
 // 模糊查询
 export function selectCondition(page=0, pageSize=10, id, studentId, name, college, gender, beginDate, endDate) {
 	let url = modelUrl + `/selectCondition`
-	let token = config.getToken()
 	let data = {
 		token: token,
 		id: id,
@@ -150,7 +145,6 @@ export function selectCondition(page=0, pageSize=10, id, studentId, name, colleg
 // 获取粉丝列表
 export function followers(page=0, pageSize=10) {
 	let url = modelUrl + `/followers`
-	let token = config.getToken()
 	// 模拟请求
 	return {
 		total: 1,
@@ -161,7 +155,6 @@ export function followers(page=0, pageSize=10) {
 // 获取关注列表
 export function followings(page=0, pageSize=10) {
 	let url = modelUrl + `/followings`
-	let token = config.getToken()
 	// 模拟请求
 	return {
 		total: 1,
@@ -172,7 +165,6 @@ export function followings(page=0, pageSize=10) {
 // 关注某人
 export function follow(id) {
 	let url = modelUrl + `/follow/${id}`
-	let token = config.getToken()
 	// 模拟请求
 	return true
 }
@@ -180,7 +172,6 @@ export function follow(id) {
 // 取关某人
 export function unfollow(id) {
 	let url = modelUrl + `/unfollow/${id}`
-	let token = config.getToken()
 	// 模拟请求
 	return true
 }

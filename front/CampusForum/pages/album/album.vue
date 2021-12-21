@@ -25,6 +25,8 @@
 <script>
 	import uniList from "@/uni_modules/uni-list/components/uni-list/uni-list.vue"         // uni-app列表组件，渲染图片列表
 	import uniListItem from "@/uni_modules/uni-list/components/uni-list-item/uni-list-item.vue"        // 列表项组件
+	import * as config from "../../utils/config.js"
+	
 	export default {
 		data() {
 			return {
@@ -44,11 +46,22 @@
 				],
 			}
 		},
-				
 		onLoad() {
-			// 获取相册列表到albumArr
+			this.refresh()
+		},
+		onShow() {
+			this.refresh()
 		},
 		methods: {
+			refresh() {
+				if (config.checkToken()) {
+					// 相册页面的初始化加载
+				} else {
+					uni.redirectTo({
+						url: '../login/login'
+					})
+				}
+			},
 			clickAlbum(albumId){
 				var that=this;
 				console.log("click");

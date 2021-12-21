@@ -102,20 +102,20 @@
 			}
 		},
 		onLoad() {
-			this.token = config.getToken()
-			console.log(this.token)
-			// if (this.token == '') {
-			// 	this.login()
-			// } else {
-			// 	// 获取状态列表
-			// 	// this.stateList = stateApi.getStateById(this.token, this.page) 
-			// }
+			this.refresh()
+		},
+		onShow() {
+			this.refresh()
 		},
 		methods: {
-			login() {
-				uni.redirectTo({
-					url: '/pages/login/login'
-				});
+			refresh() {
+				if (config.checkToken()) {
+					
+				} else {
+					uni.redirectTo({
+						url: '../login/login'
+					})
+				}
 			},
 			search() {
 				// 搜索

@@ -95,23 +95,27 @@
 				</view>
 			</view>
 		</view>
-		
+
 		<button v-if="power" class="bottom_button function" @click="manage()">管理页面</button>
 		<button class="bottom_button logout" @click="logout()">退出登陆</button>
 
 		<view class="bottom_tips">
 			<text>{{ '- 到底了 -' }}</text>
 		</view>
-		
+
 		<uni-popup ref="popup_success" type="message">
 			<uni-popup-message type="success" message="登出成功" :duration="3000"></uni-popup-message>
+		</uni-popup>
+		<uni-popup ref="popup_serve_error" type="message">
+			<uni-popup-message type="error" message="服务器错误" :duration="3000"></uni-popup-message>
 		</uni-popup>
 	</view>
 </template>
 
 <script>
+	import * as userApi from "../../api/user.js"
 	import * as config from "../../utils/config.js"
-	
+
 	export default {
 		data() {
 			return {
@@ -132,21 +136,52 @@
 				}
 			}
 		},
+		onLoad() {
+			this.refresh()
+		},
+		onShow() {
+			this.refresh()
+		},
 		methods: {
+			refresh() {
+				if (config.checkToken()) {
+					// 相册页面的初始化加载
+				} else {
+					uni.redirectTo({
+						url: '../login/login'
+					})
+				}
+			},
 			getGender() {
 				return config.getGender(this.user.gender)
 			},
 			manage() {
-				console.log('管理页面')
 				uni.navigateTo({
-				                url: '/pages/manage/manage',
-				            });
+					url: '/pages/manage/manage',
+				})
 			},
 			logout() {
-				console.log('登陆')
-				config.saveToken('')
-				this.user = {}
-				this.$refs.popup_success.open('top')
+				userApi.logout().then(data => {
+					if (typeof data === "undefined") {
+						this.$refs.popup_serve_error.open('top')
+					} else if (data.code == 200) {
+						config.saveToken('')
+						this.user = {}
+						this.$refs.popup_success.open('top')
+						setTimeout(() => {
+							uni.redirectTo({
+								url: '../login/login'
+							})
+						}, config.waitTime)
+					} else {
+						uni.showToast({
+							title: '登出失败：' + data.msg,
+							icon: "error",
+							mask: true,
+							duration: 2000
+						})
+					}
+				})
 			}
 		}
 	}
@@ -156,11 +191,11 @@
 	.flex_box {
 		display: flex;
 	}
-	
+
 	.inner_split {
 		margin-left: 20rpx;
 	}
-	
+
 	.person_card {
 		width: 90%;
 		margin-left: 5%;
@@ -205,7 +240,7 @@
 		font-size: 30rpx;
 		color: #5F5F5F;
 	}
-	
+
 	.person_description {
 		/* margin-top: 10rpx; */
 		/* margin-left: 20rpx; */
@@ -213,7 +248,7 @@
 		width: 400rpx;
 		color: #909090;
 	}
-	
+
 	.person_description text {
 		width: 100%;
 		font-size: 30rpx;
@@ -226,31 +261,31 @@
 		overflow: hidden;
 		/*溢出隐藏*/
 	}
-	
+
 	.information_card {
 		margin: 0;
 		padding: 10rpx;
 	}
-	
+
 	.information_container {
 		width: 95%;
 	}
-	
+
 	.information_title {
 		color: #606060;
 		font-size: 30rpx;
 	}
-	
+
 	.information_text {
 		font-size: 30rpx;
 	}
-	
+
 	.information_edit {
 		height: 40rpx;
 		width: 40rpx;
 		margin-top: 30rpx;
 	}
-	
+
 	.bottom_tips {
 		margin-top: 30rpx;
 		text-align: center;
@@ -261,17 +296,17 @@
 		color: #A8A8A8;
 		bottom: 0;
 	}
-	
+
 	.bottom_button {
 		width: 90%;
 		margin: 30rpx 5%;
 		box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 	}
-	
-    .function {
+
+	.function {
 		background-image: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);
 	}
-	
+
 	.logout {
 		background-image: linear-gradient(to right, #f78ca0 0%, #f9748f 19%, #fd868c 60%, #fe9a8b 100%);
 	}

@@ -45,7 +45,7 @@
 						<text>学院</text>
 					</view>
 					<view class="information_text">
-						<input maxlength=20 type="text" placeholder="请输入学院" v-model="user.collegeName" />
+						<input maxlength=20 type="text" placeholder="请输入学院" v-model="user.college" />
 					</view>
 				</view>
 			</view>
@@ -111,6 +111,7 @@
 			</view>
 		</view>
 		<button class="register_button" @click="register()">注 册</button>
+		<button class="login_button" @click="login()">返回登陆</button>
 		<uni-popup ref="popup_error" type="message">
 			<uni-popup-message type="error" message="学号、密码、用户名不能为空" :duration="3000"></uni-popup-message>
 		</uni-popup>
@@ -121,6 +122,7 @@
 </template>
 
 <script>
+	import * as userApi from "../../api/user.js"
 	import * as config from "../../utils/config.js"
 	
 	export default {
@@ -140,25 +142,75 @@
 					gender: 0,
 					phone: '',
 					email: '',
-					collegeName: '',
-					description: '来时山有雪，归时雪满山。',
+					college: '',
+					description: '这个人没有个性签名',
 					brithday: this.getToday(),
 				}
 			}
 		},
+		onLoad() {
+			this.refresh()
+		},
+		onShow() {
+			this.refresh()
+		},
 		methods: {
+			refresh() {
+				if (config.checkToken()) {
+					uni.switchTab({
+						url: '../index/index'
+					})
+				}
+			},
 			getGender() {
 				return config.getGender(this.user.gender)
 			},
 			register() {
 				if (this.user.studentId == '' || this.user.password == '' || this.user.name == '') {
 					this.$refs.popup_error.open('top')
-				} else if (this.user.password.length < 6 || this.user.password > 16) {
+				} else if (this.user.password.length < 6 || this.user.password.length > 16) {
 					this.$refs.popup_error_password.open('top')
 				} else {
-					console.log(this.user)
-					console.log('试图注册')
+					userApi.register(this.user)
+						.then(data => {
+							if (typeof data === "undefined") {
+								uni.showToast({
+									title: '服务器错误',
+									icon: "error",
+									mask: true,
+									duration: 2000
+								})
+							} else {
+								if (data.code == 200) {
+									let token = data.data.token
+									config.saveTokenFroce(token)
+									uni.showToast({
+										title: '注册成功！',
+										icon: "success",
+										mask: true,
+										duration: 2000
+									})
+									setTimeout(() => {
+										uni.switchTab({
+											url: '../index/index'
+										})
+									}, config.waitTime)
+								} else {
+									uni.showToast({
+										title: '注册失败：' + data.msg,
+										icon: "error",
+										mask: true,
+										duration: 2000
+									})
+								}
+							}
+						})
 				}
+			},
+			login() {
+				uni.redirectTo({
+					url: '../login/login'
+				})
 			},
 			bindDateChange(e) { // 改变日期
 				this.user.brithday = e.target.value
@@ -217,6 +269,14 @@
 		box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 	}
 	
+	.login_button {
+		width: 90%;
+		margin: 30rpx 5%;
+		background-image: linear-gradient(120deg, #f6d365 0%, #fda085 100%);
+		font-weight: bold;
+		border-radius: 40rpx;
+		box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+	}
 	
 	.person_card {
 		width: 90%;
