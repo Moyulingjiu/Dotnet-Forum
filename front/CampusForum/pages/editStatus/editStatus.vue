@@ -34,13 +34,25 @@
 				}
 			}
 		},
+		onLoad() {
+			this.refresh()
+		},
+		onShow() {
+			this.refresh()
+		},
 		methods: {
+			refresh() { // 刷新个人信息
+				if (!config.checkToken()) {
+					uni.redirectTo({
+						url: '../login/login'
+					})
+				}
+			},
 			sendstate() {
 				if (this.state.title.length == 0 || this.state.text.length == 0) {
 					this.$refs.popup_error.open('top')
 				} else {
 					stateApi.insert(this.state).then(data => {
-						console.log(data)
 						if (typeof data === "undefined") {
 							uni.showToast({
 								title: '服务器错误',
@@ -58,7 +70,7 @@
 								}, config.waitTime)
 							} else {
 								uni.showToast({
-									title: '发送失败：' + data.msg,
+									title: data.msg,
 									icon: "error",
 									mask: true,
 									duration: 2000

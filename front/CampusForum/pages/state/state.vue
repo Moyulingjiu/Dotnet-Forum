@@ -21,6 +21,7 @@
 				<text class="state_date">{{ item.gmtCreate }}</text>
 				<view class="state_icon">
 					<image src="../../static/comment.png" mode="aspectFill"></image>
+					<image src="../../static/cancel.png" mode="aspectFill" @click="deleteState(index)"></image>
 				</view>
 			</view>
 		</view>
@@ -28,6 +29,10 @@
 		<view class="bottom_tips">
 			<text>{{ (page >= total - 1) ? bottomTipsNoMore : bottomTips }}</text>
 		</view>
+
+		<uni-popup ref="popup_success" type="message">
+			<uni-popup-message type="success" message="删除成功" :duration="3000"></uni-popup-message>
+		</uni-popup>
 	</view>
 </template>
 
@@ -133,6 +138,35 @@
 				uni.navigateTo({
 					url: '/pages/editStatus/editStatus'
 				});
+			},
+			deleteState(index) {
+				let stateId = this.stateList[index].id
+				new Promise((resolve, reject) => {
+					uni.showModal({
+						title: '确定删除此状态吗?',
+						content: ' ',
+						success: function(res) {
+							resolve(res)
+						}
+					})
+				}).then(data => {
+					if (data.confirm) {
+						return stateApi.deleteState(stateId)
+					}
+				}).then(data => {
+					if (data.data) {
+						this.$refs.popup_success.open('top')
+						this.isRefresh = true
+						this.stateList.splice(index, 1)
+					} else {
+						uni.showToast({
+							title: data.msg,
+							icon: "error",
+							mask: true,
+							duration: 2000
+						})
+					}
+				})
 			}
 		}
 	}

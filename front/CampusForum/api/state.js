@@ -32,9 +32,11 @@ export function update(stateId, data) {
 // 删除状态
 export function deleteState(stateId) {
 	let url = modelUrl + `/delete/${stateId}`
-	let token = config.getToken()
-	// 请求
-	return true
+	return request.service({
+		url: url,
+		data: {},
+		method: 'POST'
+	})
 }
 
 // 通过id查询状态
