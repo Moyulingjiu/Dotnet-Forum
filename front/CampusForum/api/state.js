@@ -22,11 +22,18 @@ export function insert({
 }
 
 // 修改状态
-export function update(stateId, data) {
+export function update(stateId, title, text, shareState) {
 	let url = modelUrl + `/update/${stateId}`
-	let token = config.getToken()
-	// 请求
-	return true
+	let data = {
+		title: title,
+		text: text,
+		shareState: shareState
+	}
+	return request.service({
+		url: url,
+		data: data,
+		method: 'POST'
+	})
 }
 
 // 删除状态
@@ -42,19 +49,11 @@ export function deleteState(stateId) {
 // 通过id查询状态
 export function select(stateId) {
 	let url = modelUrl + `/select/${stateId}`
-	let token = config.getToken()
-
-	return {
-		id: 1,
-		title: '测试状态',
-		text: '正文',
-		shareSate: true,
-		like: false,
-		likeNumber: 10,
-		userId: 1,
-		userName: '作者名',
-		userAvater: '用户头像'
-	}
+	return request.service({
+		url: url,
+		data: {},
+		method: 'GET'
+	})
 }
 
 // 查询所有状态
