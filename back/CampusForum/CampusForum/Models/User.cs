@@ -8,7 +8,7 @@ namespace CampusForum.Models
     public class User
     {
         [Key]
-        public int id { set; get; }
+        public long id { set; get; }
         public long student_id { set; get; }
         public string password { get; set; }
         public string name { set; get; }

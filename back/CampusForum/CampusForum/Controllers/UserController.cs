@@ -55,7 +55,7 @@ namespace WebApi.Controllers
                     //写数据库
                     _coreDbContext.Set<User>().Add(user);
                     _coreDbContext.SaveChanges();
-                    int userId = user.id;
+                    long userId = user.id;
 
                     return new Code(200, "成功", new { id = userId, token = token });
                 }
@@ -134,13 +134,13 @@ namespace WebApi.Controllers
         {
             string token = HttpContext.Request.Headers["token"];
 
-            int id = JwtToid(token);
+            long id = JwtToid(token);
             if (id == 0) return new Code(404, "token错误", null);
 
 
             string user_idStr = RouteData.Values["userId"].ToString();
             User user = _coreDbContext.Set<User>().Find(id);
-            int userId = int.Parse(user_idStr);
+            long userId = long.Parse(user_idStr);
 
             //token中的student_id对应的userId与路径上的userId不一致
             if (user.id != userId) return new Code(403, "只能修改自己的信息", false);
@@ -189,7 +189,7 @@ namespace WebApi.Controllers
             {
                 string token = HttpContext.Request.Headers["token"];
 
-                int id = JwtToid(token);
+                long id = JwtToid(token);
                 if (id == 0) return new Code(404, "token错误", null);
 
                 User user = _coreDbContext.Set<User>().Find(id);
@@ -217,11 +217,11 @@ namespace WebApi.Controllers
             {
                 string token = HttpContext.Request.Headers["token"];
 
-                int id = JwtToid(token);
+                long id = JwtToid(token);
                 if (id == 0) return new Code(404, "token错误", null);
 
                 string user_idStr = RouteData.Values["userId"].ToString();
-                int user_id = int.Parse(user_idStr);
+                long user_id = long.Parse(user_idStr);
 
 
                 if (user_id == 0)
@@ -260,7 +260,7 @@ namespace WebApi.Controllers
             {
                 string token = HttpContext.Request.Headers["token"];
 
-                int id = JwtToid(token);
+                long id = JwtToid(token);
                 if (id == 0) return new Code(404, "token错误", new { token = token });
 
                 int total = _coreDbContext.Set<User>().Count();
@@ -300,7 +300,7 @@ namespace WebApi.Controllers
             {
                 string token = HttpContext.Request.Headers["token"];
 
-                int id = JwtToid(token);
+                long id = JwtToid(token);
                 if (id == 0) return new Code(404, "token错误", null);
 
                 int total = _coreDbContext.Set<Follow>().Count(d => d.user_id == id);
@@ -309,7 +309,7 @@ namespace WebApi.Controllers
 
                 if (page > ((pages - 1) > 0 ? (pages - 1) : 0)) return new Code(400, "页码超过记录数", null);
                 List<Follow> followList = _coreDbContext.Set<Follow>().Where(d => d.user_id == id).Skip(page * pageSize).Take(pageSize).ToList();
-                List<int> ids = new List<int>();
+                List<long> ids = new List<long>();
                 
                 foreach(Follow follow in followList)
                 {
@@ -338,7 +338,7 @@ namespace WebApi.Controllers
             {
                 string token = HttpContext.Request.Headers["token"];
 
-                int id = JwtToid(token);
+                long id = JwtToid(token);
                 if (id == 0) return new Code(404, "token错误", null);
 
                 var queryResult = _coreDbContext.Set<User>().Select(d => d);
@@ -386,7 +386,7 @@ namespace WebApi.Controllers
             {
                 string token = HttpContext.Request.Headers["token"];
 
-                int id = JwtToid(token);
+                long id = JwtToid(token);
                 if (id == 0) return new Code(404, "token错误", null);
 
                 int total = _coreDbContext.Set<Follow>().Count(d => d.follower_id == id);
@@ -395,7 +395,7 @@ namespace WebApi.Controllers
 
                 if (page > ((pages - 1) > 0 ? (pages - 1) : 0)) return new Code(400, "页码超过记录数", null);
                 List<Follow> followList = _coreDbContext.Set<Follow>().Where(d => d.follower_id == id).Skip(page * pageSize).Take(pageSize).ToList();
-                List<int> ids = new List<int>();
+                List<long> ids = new List<long>();
 
                 foreach (Follow follow in followList)
                 {
@@ -419,11 +419,11 @@ namespace WebApi.Controllers
             {
                 string token = HttpContext.Request.Headers["token"];
 
-                int id = JwtToid(token);
+                long id = JwtToid(token);
                 if (id == 0) return new Code(404, "token错误", null);
 
                 string user_idStr = RouteData.Values["userId"].ToString();
-                int user_id = int.Parse(user_idStr);
+                long user_id = long.Parse(user_idStr);
 
                 //user_id是否存在
                 User user = _coreDbContext.Set<User>().Find(user_id);
@@ -466,11 +466,11 @@ namespace WebApi.Controllers
             {
                 string token = HttpContext.Request.Headers["token"];
 
-                int id = JwtToid(token);
+                long id = JwtToid(token);
                 if (id == 0) return new Code(404, "token错误", null);
 
                 string user_idStr = RouteData.Values["userId"].ToString();
-                int user_id = int.Parse(user_idStr);
+                long user_id = long.Parse(user_idStr);
 
                 User user = _coreDbContext.Set<User>().Find(user_id);
                 if (user == null) return new Code(404, "用户不存在", false);
@@ -518,7 +518,7 @@ namespace WebApi.Controllers
         }
 
 
-        private int JwtToid(string token)
+        private long JwtToid(string token)
         {
             JwtSecurityTokenHandler jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
             string studentIdStr;
@@ -534,7 +534,7 @@ namespace WebApi.Controllers
             }
 
             long studentId = long.Parse(studentIdStr);
-            int id = _coreDbContext.Set<User>().Where(d => d.student_id == studentId).FirstOrDefault().id;
+            long id = _coreDbContext.Set<User>().Where(d => d.student_id == studentId).FirstOrDefault().id;
 
             return id;
         }

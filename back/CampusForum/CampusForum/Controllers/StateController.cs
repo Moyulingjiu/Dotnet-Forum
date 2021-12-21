@@ -22,17 +22,18 @@ namespace CampusForum.Controllers
         /// <summary>
         /// 新建状态
         /// </summary>
+        /// <param name="token"></param>
         /// <param name="stateReq"></param>
         /// <returns></returns>
         [HttpPost("insert")]
-        public Code insert(StateReq stateReq)
+        public Code insert(string token,StateReq stateReq)
         {
             using(CoreDbContext _coreDbContext = new CoreDbContext())
             {
-                string token = HttpContext.Request.Headers["token"];
+                //string token = HttpContext.Request.Headers["token"];
 
                 //解析token
-                int id = JwtToid(token);
+                long id = JwtToid(token);
                 if (id == 0) return new Code(404, "token错误", null);
 
                 //state表新增记录
@@ -45,7 +46,7 @@ namespace CampusForum.Controllers
                 _coreDbContext.SaveChanges();
 
                 //调用SaveChanges()之后，state.ID的值就是数据库中新加记录对应自增标识列的值
-                int stateId = state.id;
+                long stateId = state.id;
                 StateText stateText = new StateText();
                 stateText.state_id = stateId;
                 stateText.text = stateReq.text;
@@ -81,11 +82,11 @@ namespace CampusForum.Controllers
                 string token = HttpContext.Request.Headers["token"];
 
                 //解析token
-                int id = JwtToid(token);
+                long id = JwtToid(token);
                 if (id == 0) return new Code(404, "token错误", null);
 
                 string state_idStr = RouteData.Values["stateId"].ToString();
-                int state_id = int.Parse(state_idStr);
+                long state_id = long.Parse(state_idStr);
 
                 //修改State表
                 State state = _coreDbContext.Set<State>().Find(state_id);
@@ -135,11 +136,11 @@ namespace CampusForum.Controllers
                 string token = HttpContext.Request.Headers["token"];
 
                 //解析token
-                int id = JwtToid(token);
+                long id = JwtToid(token);
                 if (id == 0) return new Code(404, "token错误", null);
 
                 string state_idStr = RouteData.Values["stateId"].ToString();
-                int state_id = int.Parse(state_idStr);
+                long state_id = long.Parse(state_idStr);
 
                 State state = _coreDbContext.Set<State>().Find(state_id);
                 if (state == null) return new Code(404, "没有该记录", false);
@@ -180,11 +181,11 @@ namespace CampusForum.Controllers
                 string token = HttpContext.Request.Headers["token"];
 
                 //解析token
-                int id = JwtToid(token);
+                long id = JwtToid(token);
                 if (id == 0) return new Code(404, "token错误", null);
 
                 string state_idStr = RouteData.Values["stateId"].ToString();
-                int state_id = int.Parse(state_idStr);
+                long state_id = long.Parse(state_idStr);
 
                 //State对象
                 State state = _coreDbContext.Set<State>().Find(state_id);
@@ -217,7 +218,7 @@ namespace CampusForum.Controllers
         /// <param name="page"></param>
         /// <param name="pageSize"></param>
         /// <returns></returns>
-        [HttpGet("selectAll")]
+        [HttpGet("/selectAll")]
         public Code getAllStates(int page = 0, int pageSize = 10)
         {
             using (CoreDbContext _coreDbContext = new CoreDbContext())
@@ -225,7 +226,7 @@ namespace CampusForum.Controllers
                 string token = HttpContext.Request.Headers["token"];
 
                 //解析token
-                int id = JwtToid(token);
+                long id = JwtToid(token);
                 if (id == 0) return new Code(404, "token错误", null);
 
                 int total = _coreDbContext.Set<State>().Count();
@@ -273,7 +274,7 @@ namespace CampusForum.Controllers
             {
                 string token = HttpContext.Request.Headers["token"];
 
-                int id = JwtToid(token);
+                long id = JwtToid(token);
                 if (id == 0) return new Code(404, "token错误", null);
 
                 var queryResult = _coreDbContext.Set<State>().Select(d => d);
@@ -326,7 +327,7 @@ namespace CampusForum.Controllers
                 string token = HttpContext.Request.Headers["token"];
 
                 //解析token
-                int id = JwtToid(token);
+                long id = JwtToid(token);
                 if (id == 0) return new Code(404, "token错误", null);
 
                 List<LikeGroup> likeCount = _coreDbContext.Set<Like>().GroupBy(d => d.state_id).Select(d => new LikeGroup(d.Key,d.Count())).ToList();
@@ -343,7 +344,7 @@ namespace CampusForum.Controllers
 
 
                 //推荐的状态id集合
-                List<int> recommentStateIdList = new List<int>();
+                List<long> recommentStateIdList = new List<long>();
 
                 
                 foreach (LikeGroup like in likeCount)
@@ -425,11 +426,11 @@ namespace CampusForum.Controllers
                 string token = HttpContext.Request.Headers["token"];
 
                 //解析token
-                int id = JwtToid(token);
+                long id = JwtToid(token);
                 if (id == 0) return new Code(404, "token错误", null);
 
                 string state_idStr = RouteData.Values["stateId"].ToString();
-                int state_id = int.Parse(state_idStr);
+                long state_id = long.Parse(state_idStr);
 
                 //请求的state_id是否存在
                 State state = _coreDbContext.Set<State>().Find(state_id);
@@ -471,11 +472,11 @@ namespace CampusForum.Controllers
                 string token = HttpContext.Request.Headers["token"];
 
                 //解析token
-                int id = JwtToid(token);
+                long id = JwtToid(token);
                 if (id == 0) return new Code(404, "token错误", null);
 
                 string state_idStr = RouteData.Values["stateId"].ToString();
-                int state_id = int.Parse(state_idStr);
+                long state_id = long.Parse(state_idStr);
 
                 State state = _coreDbContext.Set<State>().Find(state_id);
                 if (state == null) return new Code(404, "没有记录", false);
@@ -495,7 +496,7 @@ namespace CampusForum.Controllers
             }
         }
 
-        private int JwtToid(string token)
+        private long JwtToid(string token)
         {
             JwtSecurityTokenHandler jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
             string studentIdStr;
@@ -511,7 +512,7 @@ namespace CampusForum.Controllers
             }
 
             long studentId = long.Parse(studentIdStr);
-            int id = _coreDbContext.Set<User>().Where(d => d.student_id == studentId).FirstOrDefault().id;
+            long id = _coreDbContext.Set<User>().Where(d => d.student_id == studentId).FirstOrDefault().id;
 
             return id;
         }

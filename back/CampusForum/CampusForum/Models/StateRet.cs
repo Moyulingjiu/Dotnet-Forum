@@ -7,7 +7,7 @@ namespace CampusForum.Models
 {
     public class StateRet
     {
-        public int id { get; set; }
+        public long id { get; set; }
         public string title { get; set; }
         public string text { get; set; }
         public int share_state { get; set; }

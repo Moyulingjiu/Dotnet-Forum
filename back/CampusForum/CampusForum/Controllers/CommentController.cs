@@ -33,7 +33,7 @@ namespace CampusForum.Controllers
                 string token = HttpContext.Request.Headers["token"];
 
                 //解析token
-                int id = JwtToid(token);
+                long id = JwtToid(token);
                 if (id == 0) return new Code(404, "token错误", null);
 
                 State state = _coreDbContext.Set<State>().Find(comment.state_id);
@@ -42,7 +42,7 @@ namespace CampusForum.Controllers
                 comment.user_id = id;
                 _coreDbContext.Set<Comment>().Add(comment);
                 _coreDbContext.SaveChanges();
-                int commentId = comment.id;
+                long commentId = comment.id;
                 return new Code(200, "成功", new { id = commentId });
             }
         }
@@ -59,11 +59,11 @@ namespace CampusForum.Controllers
                 string token = HttpContext.Request.Headers["token"];
 
                 //解析token
-                int id = JwtToid(token);
+                long id = JwtToid(token);
                 if (id == 0) return new Code(404, "token错误", null);
 
                 string comment_idStr = RouteData.Values["commentId"].ToString();
-                int comment_id = int.Parse(comment_idStr);
+                long comment_id = long.Parse(comment_idStr);
 
                 Comment comment = _coreDbContext.Set<Comment>().Find(comment_id);
                 if (comment == null) return new Code(404, "没有评论记录", false);
@@ -102,11 +102,11 @@ namespace CampusForum.Controllers
                 string token = HttpContext.Request.Headers["token"];
 
                 //解析token
-                int id = JwtToid(token);
+                long id = JwtToid(token);
                 if (id == 0) return new Code(404, "token错误", null);
 
                 String comment_idStr = RouteData.Values["commentId"].ToString();
-                int comment_id = int.Parse(comment_idStr);
+                long comment_id = long.Parse(comment_idStr);
 
                 Comment comment = _coreDbContext.Set<Comment>().Find(comment_id);
                 if (comment == null || comment.disable == 1) return new Code(404, "评论不存在或已被删除", null);
@@ -133,11 +133,11 @@ namespace CampusForum.Controllers
                 string token = HttpContext.Request.Headers["token"];
 
                 //解析token
-                int id = JwtToid(token);
+                long id = JwtToid(token);
                 if (id == 0) return new Code(404, "token错误", null);
 
                 String state_idStr = RouteData.Values["stateId"].ToString();
-                int state_id = int.Parse(state_idStr);
+                long state_id = long.Parse(state_idStr);
 
                 State state = _coreDbContext.Set<State>().Find(state_id);
                 if (state == null) return new Code(404, "没有状态记录", null);
@@ -178,11 +178,11 @@ namespace CampusForum.Controllers
                 string token = HttpContext.Request.Headers["token"];
 
                 //解析token
-                int id = JwtToid(token);
+                long id = JwtToid(token);
                 if (id == 0) return new Code(404, "token错误", null);
 
                 String comment_idStr = RouteData.Values["commentId"].ToString();
-                int comment_id = int.Parse(comment_idStr);
+                long comment_id = long.Parse(comment_idStr);
 
                 Comment comment = _coreDbContext.Set<Comment>().Find(comment_id);
                 if (comment == null || comment.disable == 1) return new Code(404, "评论不存在或已被删除", null);
@@ -207,7 +207,7 @@ namespace CampusForum.Controllers
             }
         }
 
-        private int JwtToid(string token)
+        private long JwtToid(string token)
         {
             JwtSecurityTokenHandler jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
             string studentIdStr;
@@ -223,7 +223,7 @@ namespace CampusForum.Controllers
             }
 
             long studentId = long.Parse(studentIdStr);
-            int id = _coreDbContext.Set<User>().Where(d => d.student_id == studentId).FirstOrDefault().id;
+            long id = _coreDbContext.Set<User>().Where(d => d.student_id == studentId).FirstOrDefault().id;
 
             return id;
         }

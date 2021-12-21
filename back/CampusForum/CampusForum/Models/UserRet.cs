@@ -16,7 +16,7 @@ namespace CampusForum.Models
         public int gender { set; get; }
         public string avater { get; set; }
         public string description { set; get; }
-        public DateTime birthday { set; get; }
+        public string  birthday { set; get; }
         public string phone { get; set; }
         public string email { get; set; }
         public int follower { get; set; }
@@ -31,14 +31,14 @@ namespace CampusForum.Models
 
         public UserRet(User user,int follower,int following)
         {
-            //需要增加id字段 this.id = user.id;
+            this.id = user.id;
             this.student_id = user.student_id;
             this.name = user.name;
             this.college = user.college;
             this.gender = user.gender;
             this.avater = user.avater;
             this.description = user.description;
-            //this.birthday = user.birthday;
+            this.birthday = user.birthday;
             this.phone = user.phone;
             this.email = user.email;
             this.follower = follower;
