@@ -153,6 +153,7 @@
 									gmtCreate: data.data.items[key].gmt_create,
 									like: data.data.items[key].like
 								}
+								stateItem.userAvater = "/api" + String(stateItem.userAvater).replace(/\\/g, "/")
 								this.stateList.push(stateItem)
 							}
 						}
@@ -162,8 +163,11 @@
 			search() {
 				// 搜索
 				uni.navigateTo({
-					url: `/pages/search/search?searchCondition=`+this.searchCondition
-				});
+					url: `/pages/search/search?searchCondition=`+this.searchCondition,
+					success: () => {
+						this.searchCondition = ''
+					}
+				})
 			},
 			clearCondition() {
 				this.searchCondition = ''

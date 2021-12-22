@@ -9,7 +9,7 @@
 		<button class="bottom" @click="updateState()">修改状态</button>
 		<view class="state_share">
 			<text>是否分享该状态</text>
-			<switch :checked="getShare()" @change="switchShare" />
+			<switch :checked="getShare()" @change="switchShare()" />
 		</view>
 		<view class="state_create">
 			<text>创建时间：{{ state.gmtCreate }}</text>
@@ -74,7 +74,7 @@
 						} else {
 							this.state.title = data.data.title
 							this.state.text = data.data.text
-							this.state.shareState = data.data.share_state
+							this.state.shareState = data.data.shareState
 							this.state.gmtCreate = data.data.gmt_create
 						}
 					})
@@ -109,14 +109,14 @@
 				}
 			},
 			switchShare() {
-				if (this.state.isShare == 0) {
-					this.state.isShare = 1
+				if (this.state.shareState == 0) {
+					this.state.shareState = 1
 				} else {
-					this.state.isShare = 0
+					this.state.shareState = 0
 				}
 			},
 			getShare() {
-				if (this.state.isShare == 0)
+				if (this.state.shareState == 0)
 					return false
 				return true
 			}
