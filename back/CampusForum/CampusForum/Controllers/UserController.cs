@@ -420,11 +420,11 @@ namespace WebApi.Controllers
         /// <param name="pageSize"></param>
         /// <returns></returns>
         [HttpGet("selectCondition")]
-        public Code getUserByCondition(string token,long studentId,string name,string college,int gender, int page=0, int pageSize=10)
+        public Code getUserByCondition(long studentId,string name,string college,int gender, int page=0, int pageSize=10)
         {
             using (CoreDbContext _coreDbContext = new CoreDbContext())
             {
-                //string token = HttpContext.Request.Headers["token"];
+                string token = HttpContext.Request.Headers["token"];
 
                 long id = JwtToid(token);
                 if (id == 0) return new Code(404, "token错误", null);
