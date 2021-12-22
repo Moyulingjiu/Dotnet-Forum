@@ -83,6 +83,14 @@
 				if (config.checkToken()) {
 					albumApi.getAlbumByUserId().then(data => {
 						this.albumArr = data.data.item;
+						console.log(this.albumArr)
+						let len=this.albumArr.length
+						for(let i=0;i<len;i++)
+						{
+							console.log(this.albumArr[i])
+							this.albumArr[i].cover="/api"+String(this.albumArr[i].cover).replace(/\\/g, "/")
+							console.log(this.albumArr[i].cover)
+						}
 					})
 				} else {
 					uni.redirectTo({

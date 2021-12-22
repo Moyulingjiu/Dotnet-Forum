@@ -51,3 +51,17 @@ export function deleteAlbum(albumId){
 		method: 'DELETE'
 	})
 }
+
+export function updateAlbum(albumId,cover){
+	let url=modelUrl+`/update/${albumId}`
+	let data={
+		name:null,
+		description:null,
+		cover:cover
+	}
+	return request.service({
+		url: url,
+		data:data,
+		method: 'PUT'
+	})
+}

@@ -2,10 +2,10 @@
 	<view class="big">
 		<view class="trade">
 			<view class="texts" :class="curr==0?'active':''" data-index="0" @tap="setCurr">
-				关注
+				注册审核
 			</view>
 			<view class="texts" :class="curr==1?'active':''" data-index="1" @tap="setCurr">
-				粉丝
+				用户
 			</view>
 		</view>
 		<swiper :current="curr" @change="setCurr">
@@ -18,7 +18,7 @@
 								<!-- <br />
 								<text class="user_description">{{ item.description }}</text> -->
 							</view>
-							<view :class="item.isPassed?'follow':'unfollow'">
+							<view :class="item.isPassed?'follow':'unfollow'" @click="cilckPass()">
 								{{ item.isPassed?'通过':'已通过' }}
 							</view>
 						</view>
@@ -35,7 +35,7 @@
 								<br />
 								<text class="user_description">{{ item.description }}</text>
 							</view>
-							<view :class="item.isBanned?'follow':'unfollow'">
+							<view :class="item.isBanned?'follow':'unfollow'" @click="clickBan()">
 								{{ item.isBanned?'封禁':'已封禁' }}
 							</view>
 						</view>
@@ -106,6 +106,9 @@
 			});
 		},
 		methods: {
+			clickBan(id){
+				console.log(id+"ban")
+			},
 			cilckPass(id){
 				console.log(id+"pass");
 			},
