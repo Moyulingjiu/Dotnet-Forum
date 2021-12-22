@@ -436,34 +436,31 @@ namespace CampusForum.Controllers
             long user_id = JwtToid(token);
             if (user_id == 0) return new Code(404, "token错误", null);
 
-            List<State> states = _coreDbContext.Set<State>().Where(b => b.user_id != user_id).Skip(page * pageSize).Take(pageSize).ToList();
+            List<State> states = _coreDbContext.Set<State>().Where(b => b.user_id != user_id).OrderByDescending(d => d.gmt_create).Skip(page * pageSize).Take(pageSize).ToList();
             int size = states.Count;
             if (size == 0) return new Code(404, "目前无状态可推荐", null);
-            Random random = new Random();
-            for (int i = 0; i < size; i++)
-            {
-                int randomPos = random.Next(size);
-                State temp = states[i];
-                states[i] = states[randomPos];
-                states[randomPos] = temp;
-            }
 
-            List<StateRet> rets = new List<StateRet>();
-            for (int i = 0; i < size; i++)
+            int total = _coreDbContext.Set<State>().Where(b => b.user_id != user_id).Count();
+            int pages = total / pageSize;
+            if (total % pageSize != 0) pages += 1;
+
+            List<StateRet> stateRetList = new List<StateRet>();
+            int likenum, userlike;
+            bool like;
+
+            foreach (State state in states)
             {
-                StateRet stateRet = new StateRet();
-                stateRet.id = states[i].id;
-                stateRet.title = states[i].title;
-                stateRet.shareState = states[i].share_state;
-                stateRet.like = (_coreDbContext.Set<Like>().Where(b => b.state_id == states[i].id && b.user_id == user_id) != null);
-                stateRet.likeNumber = _coreDbContext.Set<Like>().Count(b => b.state_id == states[i].id);
-                stateRet.userId = states[i].user_id;
-                User user = _coreDbContext.Set<User>().Single(b => b.id == states[i].user_id);
-                stateRet.userName = user.name;
-                stateRet.userAvater = user.avater;
-                rets.Add(stateRet);
+                StateText stateText = _coreDbContext.Set<StateText>().Where(d => d.state_id == state.id).ToList().First();
+                User user = _coreDbContext.Set<User>().Find(state.user_id);
+                likenum = _coreDbContext.Set<Like>().Count(d => d.state_id == state.id && d.disable == 0);
+                userlike = _coreDbContext.Set<Like>().Count(d => d.state_id == state.id && d.user_id == user_id && d.disable == 0);
+                if (userlike == 0) like = false;
+                else like = true;
+
+                StateRet stateRet = new StateRet(state, stateText, user, likenum, like);
+                stateRetList.Add(stateRet);
             }
-            return new Code(200, "成功", new { total = (size - 1) / pageSize + 1, item = rets });
+            return new Code(200, "成功", new { total = pages, items = stateRetList });
         }
 
         /// <summary>

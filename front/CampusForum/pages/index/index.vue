@@ -123,7 +123,7 @@
 				}
 			},
 			loadData(page = this.page) {
-				stateApi.selectAll(page).then(data => {
+				stateApi.recommend(page).then(data => {
 					if (typeof data === "undefined") {
 						uni.showToast({
 							title: '服务器错误',
