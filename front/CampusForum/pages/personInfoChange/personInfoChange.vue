@@ -94,7 +94,9 @@
 					</view>
 				</view>
 			</view>
+		</view>
 		
+		<view class="person_card">
 			<view class="information_card flex_box">
 				<view>
 					<image class="information_edit" src="../../static/school.png" mode="aspectFill"></image>
@@ -149,8 +151,102 @@
 			</view>
 		</view>
 		
+		<view class="person_card">
+			<view class="information_card flex_box">
+				<view>
+					<image class="information_edit" src="../../static/school.png" mode="aspectFill"></image>
+				</view>
+				<view class="information_container">
+					<view class="information_title">
+						<text>爱好</text>
+					</view>
+					<view class="information_text">
+						<input maxlength=20 type="text" placeholder="请输入爱好" v-model="user.hobby.other" />
+					</view>
+				</view>
+			</view>
+			<view class="information_card flex_box">
+				<view>
+					<image class="information_edit" src="../../static/school.png" mode="aspectFill"></image>
+				</view>
+				<view class="information_container">
+					<view class="information_title">
+						<text>喜欢的音乐</text>
+					</view>
+					<view class="information_text">
+						<input maxlength=20 type="text" placeholder="请输入喜欢的音乐" v-model="user.hobby.music" />
+					</view>
+				</view>
+			</view>
+			<view class="information_card flex_box">
+				<view>
+					<image class="information_edit" src="../../static/school.png" mode="aspectFill"></image>
+				</view>
+				<view class="information_container">
+					<view class="information_title">
+						<text>喜欢的书籍</text>
+					</view>
+					<view class="information_text">
+						<input maxlength=20 type="text" placeholder="请输入喜欢的书籍" v-model="user.hobby.book" />
+					</view>
+				</view>
+			</view>
+			<view class="information_card flex_box">
+				<view>
+					<image class="information_edit" src="../../static/school.png" mode="aspectFill"></image>
+				</view>
+				<view class="information_container">
+					<view class="information_title">
+						<text>喜欢的电影</text>
+					</view>
+					<view class="information_text">
+						<input maxlength=20 type="text" placeholder="请输入喜欢的电影" v-model="user.hobby.movie" />
+					</view>
+				</view>
+			</view>
+			<view class="information_card flex_box">
+				<view>
+					<image class="information_edit" src="../../static/school.png" mode="aspectFill"></image>
+				</view>
+				<view class="information_container">
+					<view class="information_title">
+						<text>喜欢的游戏</text>
+					</view>
+					<view class="information_text">
+						<input maxlength=20 type="text" placeholder="请输入喜欢的游戏" v-model="user.hobby.game" />
+					</view>
+				</view>
+			</view>
+			<view class="information_card flex_box">
+				<view>
+					<image class="information_edit" src="../../static/school.png" mode="aspectFill"></image>
+				</view>
+				<view class="information_container">
+					<view class="information_title">
+						<text>喜欢的动漫</text>
+					</view>
+					<view class="information_text">
+						<input maxlength=20 type="text" placeholder="请输入喜欢的动漫" v-model="user.hobby.comic" />
+					</view>
+				</view>
+			</view>
+			<view class="information_card flex_box">
+				<view>
+					<image class="information_edit" src="../../static/school.png" mode="aspectFill"></image>
+				</view>
+				<view class="information_container">
+					<view class="information_title">
+						<text>喜欢的运动</text>
+					</view>
+					<view class="information_text">
+						<input maxlength=20 type="text" placeholder="请输入喜欢的运动" v-model="user.hobby.sport" />
+					</view>
+				</view>
+			</view>
+		</view>
+
 		<button class="register_button" @click="update()">更 新</button>
-		
+
 		<uni-popup ref="popup_error" type="message">
 			<uni-popup-message type="error" message="用户名不能为空" :duration="2000"></uni-popup-message>
 		</uni-popup>
@@ -287,35 +383,22 @@
 								mask: true,
 								duration: 2000
 							})
+						} else if (data.code != 200) {
+							uni.showToast({
+								title: data.msg,
+								icon: "error",
+								mask: true,
+								duration: 2000
+							})
 						} else {
-							if (data.code == 200) {
-								let token = data.data.token
-								config.saveTokenFroce(token)
-								uni.showToast({
-									title: '修改成功！',
-									icon: "success",
-									mask: true,
-									duration: 2000
+							let token = data.data.token
+							config.saveTokenFroce(token)
+							this.$refs.popup_success.open('top')
+							setTimeout(() => {
+								uni.reLaunch({
+									url: '../person/person'
 								})
-								setTimeout(() => {
-									uni.reLaunch({
-										url: '../person/person'
-									})
-								}, config.waitTime)
-							} else {
-								uni.showToast({
-									title: data.msg,
-									icon: "error",
-									mask: true,
-									duration: 2000
-								})
-								this.$refs.popup_success.open('top')
-								setTimeout(() => {
-									uni.reLaunch({
-										url: '../person/person'
-									})
-								}, config.waitTime)
-							}
+							}, config.waitTime)
 						}
 					})
 				}

@@ -60,24 +60,51 @@ export function logout() {
 }
 
 // 修改用户数据
-export function updateById(id,{
-		name: name,
-		college: college,
-		gender: gender,
-		description: description,
-		birthday: birthday,
-		phone: phone,
-		email: email}) 
-	{
+export function updateById(id, {
+	studentId,
+	name,
+	college,
+	departmet,
+	gender,
+	avater,
+	description,
+	birthday,
+	phone,
+	email,
+	following,
+	follower,
+	primarySchool,
+	juniorHighSchool,
+	highSchool,
+	university,
+	admin,
+	hobby
+}) {
 	let url = modelUrl + `/update/${id}`
 	let data={
 		name: name,
 		college: college,
+		departmet: departmet,
 		gender: gender,
+		avater: avater,
 		description: description,
 		birthday: birthday,
 		phone: phone,
-		email: email}
+		email: email,
+		primarySchool: primarySchool,
+		juniorHighSchool: juniorHighSchool,
+		highSchool: highSchool,
+		university: university,
+		hobbyReq: {
+			other: hobby.other,
+			music: hobby.music,
+			book: hobby.book,
+			movie: hobby.movie,
+			game: hobby.game,
+			comic: hobby.comic,
+			sport: hobby.sport
+		}
+	}
 	// 请求
 	return request.service({
 		url: url,

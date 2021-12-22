@@ -318,6 +318,7 @@
 						if (typeof data === "undefined") {
 							this.$refs.popup_serve_error.open('top')
 						} else if (data.code == 200) {
+							console.log(data.data)
 							this.user.id = data.data.id
 							this.user.studentId = data.data.studentId
 							this.user.name = data.data.name
