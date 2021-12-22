@@ -14,12 +14,15 @@
 					<view v-for="(item,index) in applicationList.data">
 						<view class="person_container">
 							<view class="user">
-								<text class="user_name">{{ item.username }}</text>
+								<text class="user_name">{{ item.name }}</text>
 								<br />
 								<text class="user_description">{{ item.description }}</text>
 							</view>
-							<view :class="item.isPassed?'follow':'unfollow'" @click="cilckPass(item.id)">
-								{{ item.isPassed?'通过':'已通过' }}
+							<view :class="item.sign_state?'follow':'unfollow'" @click="cilckPass(index)">
+								{{ item.sign_state?'已通过':'通过' }}
+							</view>
+							<view :class="item.sign_state?'follow':'unfollow'" @click="cilckCancel(index)">
+								{{ item.sign_state?'拒绝':'已拒绝' }}
 							</view>
 						</view>
 					</view>
@@ -109,6 +112,31 @@
 			    }
 			});
 			
+			userApi.selectAllRegisterUser().then(data=>{
+				console.log(data)
+				if (typeof data === "undefined") {
+					uni.showToast({
+						title: '服务器错误',
+						icon: "error",
+						mask: true,
+						duration: 2000
+					})
+				} else if (data.code != 200) {
+					uni.showToast({
+						title: data.msg,
+						icon: "error",
+						mask: true,
+						duration: 2000
+					})
+				} else {
+					this.applicationList.data=data.data.items
+					for(let i=0;i<data.data.items.length;i++)
+					{
+						this.applicationList.data[i].sign_state=0
+					}
+				}
+			})
+			
 			userApi.selectAll().then(data=>{
 				console.log(data)
 				if (typeof data === "undefined") {
@@ -144,11 +172,55 @@
 			clickBan(id){
 				console.log(id+"ban")
 			},
-			cilckPass(id){
-				console.log(id+"pass");
+			cilckPass(index){
+				if(this.applicationList.data[index].sign_state==0){
+					userApi.passRegister(this.applicationList.data[index].id).then(data=>{
+						if (typeof data === "undefined") {
+							uni.showToast({
+								title: '服务器错误',
+								icon: "error",
+								mask: true,
+								duration: 2000
+							})
+						} else if (data.code != 200) {
+							uni.showToast({
+								title: data.msg,
+								icon: "error",
+								mask: true,
+								duration: 2000
+							})
+						} else {
+							console.log("ok")
+							this.applicationList.data[index].sign_state=1;
+						}
+					
+					})
+				}
 			},
-			cilckCancel(id){
-				console.log(id+"cancel");
+			cilckCancel(index){
+				if(this.applicationList.data[index].sign_state==0){
+					userApi.rejectRegister(this.applicationList.data[index].id).then(data=>{
+						if (typeof data === "undefined") {
+							uni.showToast({
+								title: '服务器错误',
+								icon: "error",
+								mask: true,
+								duration: 2000
+							})
+						} else if (data.code != 200) {
+							uni.showToast({
+								title: data.msg,
+								icon: "error",
+								mask: true,
+								duration: 2000
+							})
+						} else {
+							console.log("ok")
+							this.applicationList.data[index].sign_state=2;
+						}
+					
+					})
+				}
 			},
 			pageChange(e){
 				//重新加载applicationList

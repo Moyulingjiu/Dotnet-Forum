@@ -11,6 +11,7 @@ namespace CampusForum.Models
         public virtual DbSet<Like> like_state { get; set; }
         public virtual DbSet<Comment> Comment { get; set; }
         public virtual DbSet<Hobby> User_hobby { get; set; }
+        public virtual DbSet<Check> user_check { get; set; }
         public virtual DbSet<Album> Album { set; get; }
         public virtual DbSet<Album_picture> Album_picture { set; get; }
 
