@@ -114,7 +114,7 @@
 		</view>
 		<button class="register_button" @click="update()">更 新</button>
 		<uni-popup ref="popup_error" type="message">
-			<uni-popup-message type="error" message="学号、密码、用户名不能为空" :duration="2000"></uni-popup-message>
+			<uni-popup-message type="error" message="用户名不能为空" :duration="2000"></uni-popup-message>
 		</uni-popup>
 		<uni-popup ref="popup_error_password" type="message">
 			<uni-popup-message type="error" message="密码长度需在6-16之间" :duration="2000"></uni-popup-message>
@@ -125,6 +125,9 @@
 		<uni-popup ref="popup_error_phone" type="message">
 			<uni-popup-message type="error" message="电话格式不正确" :duration="2000"></uni-popup-message>
 		</uni-popup>
+		<uni-popup ref="popup_success" type="message">
+			<uni-popup-message type="success" message="修改成功" :duration="2000"></uni-popup-message>
+		</uni-popup>
 	</view>
 </template>
 
@@ -134,7 +137,6 @@
 
 	export default {
 		data() {
-
 			return {
 				genderArray: [
 					'保密',
@@ -161,8 +163,20 @@
 			if (config.checkToken()) {
 				userApi.select().then(data => {
 					if (typeof data === "undefined") {
-						this.$refs.popup_serve_error.open('top')
-					} else if (data.code == 200) {
+						uni.showToast({
+							title: '服务器错误',
+							icon: "error",
+							mask: true,
+							duration: 2000
+						})
+					} else if (data.code != 200) {
+						uni.showToast({
+							title: data.msg,
+							icon: "error",
+							mask: true,
+							duration: 2000
+						})
+					} else {
 						this.user = Object.assign({}, data.data)
 						this.user.studentId = data.data.student_id
 						this.user.gmtCreate = data.data.gmt_create
@@ -170,9 +184,7 @@
 						this.user.avater="/api"+String(data.data.avater).replace(/\\/g, "/")
 						console.log(data.data);
 						console.log(this.user.avater)
-					} else {
-						this.$refs.popup_information_error.open('top')
-					}
+					} 
 				})
 			} else {
 				uni.redirectTo({
@@ -181,25 +193,28 @@
 			}
 		},
 		methods: {
-			
 			getGender() {
 				return config.getGender(this.user.gender)
 			},
 			update() {
-				console.log("试图更新")
-				console.log(this.user);
-				if (this.user.studentId == '' || this.user.password == '' || this.user.name == '') {
+				if (this.user.name.length == 0) {
 					this.$refs.popup_error.open('top')
 				} else if (this.user.phone.length != 0 && !config.checkPhone(this.user.phone)) {
 					this.$refs.popup_error_phone.open('top')
 				} else if (this.user.email.length != 0 && !config.checkEmail(this.user.email)) {
 					this.$refs.popup_error_email.open('top')
 				} else {
-					
-					userApi.updateById(this.user.id,this.user).then(data => {
+					userApi.updateById(this.user.id, this.user).then(data => {
 						if (typeof data === "undefined") {
 							uni.showToast({
 								title: '服务器错误',
+								icon: "error",
+								mask: true,
+								duration: 2000
+							})
+						} else if (data.code != 200) {
+							uni.showToast({
+								title: data.msg,
 								icon: "error",
 								mask: true,
 								duration: 2000
@@ -224,17 +239,17 @@
 									title: '修改失败：' + data.msg,
 									icon: "error",
 									mask: true,
-									duration: 2000
+									duration: 2000})
+							this.$refs.popup_success.open('top')
+							setTimeout(() => {
+								uni.reLaunch({
+									url: '../person/person'
 								})
-							}
+							}, config.waitTime)
+						}
 						}
 					})
 				}
-			},
-			login() {
-				uni.redirectTo({
-					url: '../login/login'
-				})
 			},
 			bindDateChange(e) { // 改变日期
 				this.user.birthday = e.target.value

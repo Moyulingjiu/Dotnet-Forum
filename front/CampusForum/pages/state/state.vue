@@ -1,9 +1,5 @@
 <template>
 	<view>
-		<view class="newstate" @tap="newState()">
-			<view class="circle"></view>
-			<view class="plus">+</view>
-		</view>
 		<view class="insert_box" @click="newState()">
 			<image src="../../static/insert.png" mode="aspectFill"></image>
 			<view>
@@ -28,6 +24,11 @@
 
 		<view class="bottom_tips">
 			<text>{{ (page >= total - 1) ? bottomTipsNoMore : bottomTips }}</text>
+		</view>
+		
+		<view class="newstate" @tap="newState()">
+			<view class="circle"></view>
+			<view class="plus">+</view>
 		</view>
 
 		<uni-popup ref="popup_success" type="message">
@@ -88,8 +89,8 @@
 						this.isRefresh = false
 						this.stateList = []
 						this.page = 0
+						this.loadData()
 					}
-					this.loadData()
 				} else {
 					uni.redirectTo({
 						url: '../login/login'
@@ -152,7 +153,9 @@
 						return stateApi.deleteState(stateId)
 					}
 				}).then(data => {
-					if (data.data) {
+					if (typeof data === "undefined") {
+						
+					} else if (data.data) {
 						this.$refs.popup_success.open('top')
 						this.isRefresh = true
 						this.stateList.splice(index, 1)

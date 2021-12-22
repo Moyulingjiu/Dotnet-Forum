@@ -19,10 +19,10 @@
 		<view class="comment">
 			<view class="comment_box" v-for="(item , index) in comment">
 				<view class="comment_avater">
-					<image src="../../static/avater.jpg" mode="aspectFill"></image>
+					<image :src="subitem.userAvater" mode="aspectFill"></image>
 				</view>
 				<view class="comment_text_container">
-					<view space="emsp" class="comment_user">{{ item.username }}</view>
+					<view space="emsp" class="comment_user">{{ item.userName }}</view>
 					<view space="emsp" class="comment_text">{{ item.text }}</view>
 					<view class="comment_button">
 						<text>{{ item.gmtCreate }}</text>
@@ -30,10 +30,10 @@
 					</view>
 					<view class="subcomment" v-for="(subitem , subindex) in item.subcomment">
 						<view class="comment_avater">
-							<image src="../../static/avater.jpg" mode="aspectFill"></image>
+							<image :src="subitem.userAvater" mode="aspectFill"></image>
 						</view>
 						<view class="comment_text_container">
-							<view space="emsp" class="comment_user">{{ subitem.username }}</view>
+							<view space="emsp" class="comment_user">{{ subitem.userName }}</view>
 							<view space="emsp" class="comment_text">{{ subitem.text }}</view>
 							<view class="comment_button">
 								<text>{{ subitem.gmtCreate }}</text>
@@ -99,7 +99,7 @@
 						replyId: 1,
 						text: '一个测试的正文',
 						userId: 1,
-						username: '作者的名字',
+						userName: '作者的名字',
 						userAvater: '../../static/avater.jpg',
 						gmtCreate: '2021年7月20日 20:00',
 						subcomment: [{
@@ -224,7 +224,88 @@
 							this.state.likeNumber = data.data.likeNumber
 						}
 					})
+					this.comment = []
+					this.commentPage = 0
+					this.commentTotal = 1
+					this.loadComment()
 				}
+			},
+			loadComment(page=this.commentPage) {
+				commentApi.selectAllByStateId(this.stateId, page).then(data => {
+					if (typeof data == 'undefined') {
+						uni.showToast({
+							title: '服务器错误',
+							icon: "error",
+							mask: true,
+							duration: 2000
+						})
+					} else if (data.code != 200) {
+						uni.showToast({
+							title: data.msg,
+							icon: "error",
+							mask: true,
+							duration: 2000
+						})
+					} else {
+						this.commentTotal = data.data.total
+						for (let key in data.data.items) {
+							if (key != 'length') {
+								let commentItem = {
+									id: data.data.items[key].id,
+									stateId: data.data.items[key].state_id,
+									fatherId: data.data.items[key].father_id,
+									replyId: data.data.items[key].reply_id,
+									text: data.data.items[key].text,
+									userId: data.data.items[key].userId,
+									userName: data.data.items[key].userName,
+									userAvater: data.data.items[key].userAvater,
+									gmtCreate: data.data.items[key].gmt_create,
+									
+									subcomment: [],
+									subcommentPage: 0,
+									subcommentTotal: 1,
+									needReply: false,
+									replyText: '',
+									replyCommentId: 1
+								}
+								commentApi.selectAllReply(commentItem.id).then(subdata => {
+									if (typeof subdata == 'undefined') {
+										uni.showToast({
+											title: '服务器错误',
+											icon: "error",
+											mask: true,
+											duration: 2000
+										})
+									} else if (subdata.code != 200) {
+										uni.showToast({
+											title: subdata.msg,
+											icon: "error",
+											mask: true,
+											duration: 2000
+										})
+									} else {
+										commentItem.subcommentTotal = subdata.data.total
+										for (let key2 in subdata.data.items) {
+											let subCommentItem = {
+												id: subdata.data.items[key].id,
+												stateId: subdata.data.items[key].state_id,
+												fatherId: subdata.data.items[key].father_id,
+												replyId: subdata.data.items[key].reply_id,
+												text: subdata.data.items[key].text,
+												userId: subdata.data.items[key].userId,
+												userName: subdata.data.items[key].userName,
+												userAvater: subdata.data.items[key].userAvater,
+												gmtCreate: subdata.data.items[key].gmt_create,
+											}
+											commentItem.subcomment.push(subCommentItem)
+										}
+									}
+								})
+								this.comment.push(commentItem)
+							}
+						}
+					}
+				})
 			},
 			like() {
 				let id = this.stateId
