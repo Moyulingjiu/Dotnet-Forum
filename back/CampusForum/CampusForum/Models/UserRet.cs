@@ -24,7 +24,7 @@ namespace CampusForum.Models
         public string highSchool { get; set; }
         public string university { get; set; }
         public int admin { get; set; }
-        //public Hobby hobby { get; set; }
+        public Hobby hobby { get; set; }
         public bool follow { get; set; }
         public int follower { get; set; }
         public int following { get; set; }
@@ -36,7 +36,7 @@ namespace CampusForum.Models
 
         }
 
-        public UserRet(User user/*,Hobby hobby*/, bool follow,int follower,int following)
+        public UserRet(User user, Hobby hobby, bool follow,int follower,int following)
         {
             this.id = user.id;
             this.studentId = user.student_id;
@@ -59,7 +59,7 @@ namespace CampusForum.Models
             this.following = following;
             this.gmt_create = user.gmt_create;
             this.gmt_modified = user.gmt_modified;
-            //this.hobby = hobby;
+            this.hobby = hobby;
         }
     }
 }

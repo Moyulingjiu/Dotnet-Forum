@@ -239,7 +239,7 @@ namespace CampusForum.Controllers
                 long id = JwtToid(token);
                 if (id == 0) return new Code(404, "token错误", null);
 
-                int total = _coreDbContext.Set<State>().Count();
+                int total = _coreDbContext.Set<State>().Where(d => d.user_id == id&& d.disable == 0).Count();
                 int pages = total / pageSize;
                 if (total % pageSize != 0) pages += 1;
 
@@ -265,6 +265,88 @@ namespace CampusForum.Controllers
                     stateRetList.Add(stateRet);
                 }
 
+                return new Code(200, "成功", new { total = pages, items = stateRetList });
+
+            }
+        }
+
+        [HttpGet("selectAll/{userId}")]
+        public Code getAllStatesById(int page = 0, int pageSize = 10)
+        {
+            using (CoreDbContext _coreDbContext = new CoreDbContext())
+            {
+                string token = HttpContext.Request.Headers["token"];
+
+                //解析token
+                long id = JwtToid(token);
+                if (id == 0) return new Code(404, "token错误", null);
+                long userId;
+
+                try
+                {
+                    string user_idStr = RouteData.Values["userId"].ToString();
+                    userId = long.Parse(user_idStr);
+                }
+                catch (Exception)
+                {
+                    return new Code(400, "参数错误", false);
+                }
+
+                if (userId == 0)
+                {
+                    int totalOwn = _coreDbContext.Set<State>().Where(d => d.user_id == id && d.disable == 0 && d.share_state == 1).Count();
+                    int pagesOwn = totalOwn / pageSize;
+                    if (totalOwn % pageSize != 0) pagesOwn += 1;
+
+                    if (page > ((pagesOwn - 1) > 0 ? (pagesOwn - 1) : 0)) return new Code(400, "页码超过记录数", null);
+
+                    //只返回当前用户未被删除分享的状态
+                    List<State> stateOwnList = _coreDbContext.Set<State>().Where(d => d.user_id == id && d.disable == 0 && d.share_state == 1).Skip(page * pageSize).Take(pageSize).OrderByDescending(d => d.gmt_create).ToList();
+
+                    List<StateRet> stateOwnRetList = new List<StateRet>();
+                    int likeOwnnum, userOwnlike;
+                    bool ownLike;
+
+                    foreach (State state in stateOwnList)
+                    {
+                        StateText stateText = _coreDbContext.Set<StateText>().Where(d => d.state_id == state.id).ToList().First();
+                        User user = _coreDbContext.Set<User>().Find(state.user_id);
+                        likeOwnnum = _coreDbContext.Set<Like>().Count(d => d.state_id == state.id && d.disable == 0);
+                        userOwnlike = _coreDbContext.Set<Like>().Count(d => d.state_id == state.id && d.user_id == id && d.disable == 0);
+                        if (userOwnlike == 0) ownLike = false;
+                        else ownLike = true;
+
+                        StateRet stateRet = new StateRet(state, stateText, user, likeOwnnum, ownLike);
+                        stateOwnRetList.Add(stateRet);
+                    }
+                    return new Code(200, "成功", new { total = pagesOwn, items = stateOwnRetList });
+                }
+
+                int total = _coreDbContext.Set<State>().Where(d => d.user_id == userId && d.disable == 0 && d.share_state == 1).Count();
+                int pages = total / pageSize;
+                if (total % pageSize != 0) pages += 1;
+
+                if (page > ((pages - 1) > 0 ? (pages - 1) : 0)) return new Code(400, "页码超过记录数", null);
+
+                //只返回当前用户未被删除的状态
+                List<State> stateList = _coreDbContext.Set<State>().Where(d => d.user_id == userId && d.disable == 0 && d.share_state == 1 && d.share_state == 1).Skip(page * pageSize).Take(pageSize).OrderByDescending(d => d.gmt_create).ToList();
+
+                List<StateRet> stateRetList = new List<StateRet>();
+                int likenum, userlike;
+                bool like;
+
+                foreach (State state in stateList)
+                {
+                    StateText stateText = _coreDbContext.Set<StateText>().Where(d => d.state_id == state.id).ToList().First();
+                    User user = _coreDbContext.Set<User>().Find(state.user_id);
+                    likenum = _coreDbContext.Set<Like>().Count(d => d.state_id == state.id && d.disable == 0);
+                    userlike = _coreDbContext.Set<Like>().Count(d => d.state_id == state.id && d.user_id == id && d.disable == 0);
+                    if (userlike == 0) like = false;
+                    else like = true;
+
+                    StateRet stateRet = new StateRet(state, stateText, user, likenum, like);
+                    stateRetList.Add(stateRet);
+                }
                 return new Code(200, "成功", new { total = pages, items = stateRetList });
 
             }
@@ -505,8 +587,16 @@ namespace CampusForum.Controllers
                 return 0;
             }
 
-            long studentId = long.Parse(studentIdStr);
-            long id = _coreDbContext.Set<User>().Where(d => d.student_id == studentId).FirstOrDefault().id;
+            long id = 0;
+            try
+            {
+                long studentId = long.Parse(studentIdStr);
+                id = _coreDbContext.Set<User>().Where(d => d.student_id == studentId).FirstOrDefault().id;
+            }
+            catch (Exception)
+            {
+                return 0;
+            }
 
             return id;
         }

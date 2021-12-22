@@ -76,5 +76,22 @@ namespace CampusForum.Models
 
         }
 
+        public void modifyUser(UserModifiedReq userModifiedReq)
+        {
+            this.name = userModifiedReq.name;
+            this.college = userModifiedReq.college;
+            this.department = userModifiedReq.department;
+            this.gender = userModifiedReq.gender;
+            this.avater = userModifiedReq.avater;
+            this.description = userModifiedReq.description;
+            this.birthday = userModifiedReq.birthday;
+            this.phone = userModifiedReq.phone;
+            this.email = userModifiedReq.email;
+            this.primary_school = userModifiedReq.primarySchool;
+            this.junior_high_school = userModifiedReq.juniorHighSchool;
+            this.high_school = userModifiedReq.highSchool;
+            this.university = userModifiedReq.university;
+            this.admin = userModifiedReq.admin;
+        }
     }
 }
