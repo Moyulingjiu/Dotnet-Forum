@@ -5,7 +5,7 @@
 			<image :src="state.like?likeIcon:unlikeIcon" @click="like()"></image>
 			<text>{{ state.likeNumber }}</text>
 		</view>
-		<view class="avater">
+		<view class="avater" @click="userdetail(state.userId)">
 			<image :src="state.userAvater" mode="aspectFill"></image>
 			<text>{{ state.userName }}</text>
 		</view>
@@ -18,11 +18,11 @@
 		</view>
 		<view class="comment">
 			<view class="comment_box" v-for="(item , index) in comment">
-				<view class="comment_avater">
+				<view class="comment_avater" @click="userdetail(item.userId)">
 					<image :src="item.userAvater" mode="aspectFill"></image>
 				</view>
 				<view class="comment_text_container">
-					<view space="emsp" class="comment_user">{{ item.userName }}</view>
+					<view space="emsp" class="comment_user" @click="userdetail(item.userId)">{{ item.userName }}</view>
 					<view space="emsp" class="comment_text">{{ item.text }}</view>
 					<view class="comment_button">
 						<text>{{ item.gmtCreate }}</text>
@@ -30,11 +30,11 @@
 						<text class="comment_delete" @click="deleteComment(item.id)" v-if="item.userId = userId">删除</text>
 					</view>
 					<view class="subcomment" v-for="(subitem , subindex) in item.subcomment">
-						<view class="comment_avater">
+						<view class="comment_avater" @click="userdetail(subitem.userId)">
 							<image :src="subitem.userAvater" mode="aspectFill"></image>
 						</view>
 						<view class="comment_text_container">
-							<view space="emsp" class="comment_user">{{ subitem.userName }}</view>
+							<view space="emsp" class="comment_user" @click="userdetail(subitem.userId)">{{ subitem.userName }}</view>
 							<view space="emsp" class="comment_text">{{ subitem.text }}</view>
 							<view class="comment_button">
 								<text>{{ subitem.gmtCreate }}</text>
@@ -336,6 +336,11 @@
 						}
 					})
 				}
+			},
+			userdetail(userId) {
+				uni.navigateTo({
+					url: `/pages/otherUsers/otherUsers?id=${userId}`
+				})
 			},
 			showReplyBox(index, commentId) {
 				for (let i = 0; i < this.comment.length; ++i) {

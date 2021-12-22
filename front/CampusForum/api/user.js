@@ -163,13 +163,19 @@ export function followings(page=0, pageSize=10) {
 // 关注某人
 export function follow(id) {
 	let url = modelUrl + `/follow/${id}`
-	// 模拟请求
-	return true
+	return request.service({
+		url: url,
+		data: {},
+		method: 'POST'
+	})
 }
 
 // 取关某人
 export function unfollow(id) {
 	let url = modelUrl + `/unfollow/${id}`
-	// 模拟请求
-	return true
+	return request.service({
+		url: url,
+		data: {},
+		method: 'POST'
+	})
 }

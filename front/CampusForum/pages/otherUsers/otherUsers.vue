@@ -152,6 +152,7 @@
 								duration: 2000
 							})
 						} else {
+							console.log(data)
 							this.user.studentId = data.data.student_id
 							this.user.name = data.data.name
 							this.user.collegeName = data.data.college
@@ -171,7 +172,53 @@
 				return config.getGender(this.user.gender)
 			},
 			like() {
-				this.isSubscribe = !this.isSubscribe
+				if (this.isSubscribe) {
+					userApi.unfollow(this.id).then(data => {
+						if (typeof data === "undefined") {
+							uni.showToast({
+								title: "服务器错误",
+								icon: "error",
+								mask: true,
+								duration: 2000
+							})
+						} else if (data.code != 200) {
+							uni.showToast({
+								title: data.msg,
+								icon: "error",
+								mask: true,
+								duration: 2000
+							})
+						} else {
+							if (data.data) {
+								this.user.isSubscribe = false
+								this.refresh()
+							}
+						}
+					})
+				} else {
+					userApi.follow(this.id).then(data => {
+						if (typeof data === "undefined") {
+							uni.showToast({
+								title: "服务器错误",
+								icon: "error",
+								mask: true,
+								duration: 2000
+							})
+						} else if (data.code != 200) {
+							uni.showToast({
+								title: data.msg,
+								icon: "error",
+								mask: true,
+								duration: 2000
+							})
+						} else {
+							if (data.data) {
+								this.user.isSubscribe = true
+								this.refresh()
+							}
+						}
+					})
+				}
 			},
 		}
 	}

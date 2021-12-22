@@ -51,7 +51,7 @@ export function selectAllByStateId(stateId, page=0, pageSize=10) {
 }
 
 // 获取一个评论的所有子评论
-export function selectAllReply(commentId, page=0, pageSize=10) {
+export function selectAllReply(commentId, page=0, pageSize=5) {
 	let url = modelUrl + `/selectAllReply/${commentId}`
 	let data = {
 		page: page,
