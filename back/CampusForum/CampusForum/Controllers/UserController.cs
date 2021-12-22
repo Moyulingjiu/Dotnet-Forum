@@ -60,6 +60,8 @@ namespace WebApi.Controllers
                     //更新hobby数据库
                     Hobby hobby = new Hobby();
                     hobby.user_id = userId;
+                    hobby.gmt_create = DateTime.Now;
+                    hobby.gmt_modified = DateTime.Now;
                     _coreDbContext.Set<Hobby>().Add(hobby);
                     _coreDbContext.SaveChanges();
 
@@ -291,7 +293,7 @@ namespace WebApi.Controllers
 
                     int follower = _coreDbContext.Set<Follow>().Count(d => d.user_id == user.id);
                     int following = _coreDbContext.Set<Follow>().Count(d => d.follower_id == user.id);
-                    Hobby hobby = _coreDbContext.Set<Hobby>().Where(d => d.user_id == id).FirstOrDefault();
+                    Hobby hobby = _coreDbContext.Set<Hobby>().Where(d => d.user_id == user.id).FirstOrDefault();
 
                     int count = _coreDbContext.Set<Follow>().Count(d => d.user_id == user_id && d.follower_id == id);
                     UserRet userRet = new UserRet(user, hobby, count != 0, follower, following);

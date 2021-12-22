@@ -59,7 +59,6 @@ namespace CampusForum.Models
             this.following = following;
             this.gmt_create = user.gmt_create;
             this.gmt_modified = user.gmt_modified;
-            if (hobby == null) hobby = new Hobby();
             this.hobby = hobby;
         }
     }
