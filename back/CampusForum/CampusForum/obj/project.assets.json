@@ -6048,11 +6048,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\fan\\Desktop\\git\\back\\CampusForum\\CampusForum\\CampusForum.csproj",
+      "projectUniqueName": "C:\\Users\\fan\\Desktop\\git2\\back\\CampusForum\\CampusForum\\CampusForum.csproj",
       "projectName": "CampusForum",
-      "projectPath": "C:\\Users\\fan\\Desktop\\git\\back\\CampusForum\\CampusForum\\CampusForum.csproj",
+      "projectPath": "C:\\Users\\fan\\Desktop\\git2\\back\\CampusForum\\CampusForum\\CampusForum.csproj",
       "packagesPath": "C:\\Users\\fan\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\fan\\Desktop\\git\\back\\CampusForum\\CampusForum\\obj\\",
+      "outputPath": "C:\\Users\\fan\\Desktop\\git2\\back\\CampusForum\\CampusForum\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "D:\\visual studio 2022\\Microsoft Visual Studio\\Shared\\NuGetPackages",

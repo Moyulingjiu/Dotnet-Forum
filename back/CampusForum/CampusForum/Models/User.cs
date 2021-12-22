@@ -13,13 +13,18 @@ namespace CampusForum.Models
         public string password { get; set; }
         public string name { set; get; }
         public string college { set; get; }
+        public string department { get; set; }
         public int gender { set; get; }
         public string avater { get; set; }
         public string description { set; get; }
-        /*[RegularExpression("d{4}-d{2}-d{2}", ErrorMessage = "日期格式错误，示例2020-02-02")]*/
         public string birthday { set; get; }
         public string phone { get; set; }
         public string email { get; set; }
+        public string primary_school { get; set; }
+        public string junior_high_school { get; set; }
+        public string high_school { get; set; }
+        public string university { get; set; }
+        public int admin { get; set; }
         public int sign_state { get; set; }
         public int disable { get; set; }
         public DateTime gmt_create { set; get; }
@@ -36,12 +41,18 @@ namespace CampusForum.Models
             this.password = user.password;
             this.name = user.name;
             this.college = user.college;
+            this.department = user.department;
             this.gender = user.gender;
             this.avater = user.avater;
             this.description = user.description;
             this.birthday = user.birthday;
             this.phone = user.phone;
             this.email = user.email;
+            this.primary_school = user.primary_school;
+            this.junior_high_school = user.junior_high_school;
+            this.high_school = user.high_school;
+            this.university = user.university;
+            this.admin = user.admin;
             this.sign_state = user.sign_state;
             this.disable = user.disable;
         }
@@ -52,6 +63,7 @@ namespace CampusForum.Models
             this.password = userReq.password;
             this.name = userReq.name;
             this.college = userReq.college;
+            this.department = userReq.department;
             this.gender = userReq.gender;
             this.avater = userReq.avater;
             this.description = userReq.description;

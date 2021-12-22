@@ -214,6 +214,31 @@ namespace WebApi.Controllers
         }
 
         /// <summary>
+        /// 修改密码
+        /// </summary>
+        /// <param name="passwordReq"></param>
+        /// <returns></returns>
+        [HttpPost("password/update")]
+        public Code UpdatePassword(PasswordReq passwordReq)
+        {
+            string token = HttpContext.Request.Headers["token"];
+
+            long id = JwtToid(token);
+            if (id == 0) return new Code(404, "token错误", null);
+
+            User user = _coreDbContext.Set<User>().Find(id);
+            RSAKey.createRSAKey();
+            string decryptPassword = RSAKey.RSADecrypt(user.password);
+            if (passwordReq.old_password != decryptPassword)
+            {
+                return new Code(403, "旧密码错误", null);
+            }
+            user.password = RSAKey.RSAEncrypt(passwordReq.new_password);
+            _coreDbContext.SaveChanges();
+            return new Code(200, "成功修改", null);
+        }
+
+        /// <summary>
         /// 删除用户
         /// </summary>
         /// <returns></returns>
@@ -265,8 +290,8 @@ namespace WebApi.Controllers
 
                     int follower = _coreDbContext.Set<Follow>().Count(d => d.user_id == user.id);
                     int following = _coreDbContext.Set<Follow>().Count(d => d.follower_id == user.id);
-                    
-                    UserRet userRet = new UserRet(user, follower, following);
+
+                    UserRet userRet = new UserRet(user, false, follower, following);
                     return new Code(200, "成功", userRet);
                 }
                 else
@@ -276,7 +301,8 @@ namespace WebApi.Controllers
                     int follower = _coreDbContext.Set<Follow>().Count(d => d.user_id == user.id);
                     int following = _coreDbContext.Set<Follow>().Count(d => d.follower_id == user.id);
 
-                    UserRet userRet = new UserRet(user, follower, following);
+                    int count = _coreDbContext.Set<Follow>().Count(d => d.user_id == user_id && d.follower_id == id);
+                    UserRet userRet = new UserRet(user, count != 0, follower, following);
                     return new Code(200, "成功", userRet);
                 }
             }
@@ -314,7 +340,9 @@ namespace WebApi.Controllers
                     follower = _coreDbContext.Set<Follow>().Count(d => d.user_id == user.id);
                     following = _coreDbContext.Set<Follow>().Count(d => d.follower_id == user.id);
 
-                    UserRet userRet = new UserRet(user, follower, following);
+                    int count = _coreDbContext.Set<Follow>().Count(d => d.user_id == user.id && d.follower_id == id);
+                    UserRet userRet = new UserRet(user, count != 0, follower, following);
+
                     userRetList.Add(userRet);
                 }
 
@@ -344,14 +372,23 @@ namespace WebApi.Controllers
 
                 if (page > ((pages - 1) > 0 ? (pages - 1) : 0)) return new Code(400, "页码超过记录数", null);
                 List<Follow> followList = _coreDbContext.Set<Follow>().Where(d => d.user_id == id).Skip(page * pageSize).Take(pageSize).ToList();
-                List<long> ids = new List<long>();
                 
-                foreach(Follow follow in followList)
+                int follower, following;
+                List<UserRet> userRetList = new List<UserRet>();
+
+                foreach (Follow follow in followList)
                 {
-                    ids.Add(follow.follower_id);
+                    User user = _coreDbContext.Set<User>().Find(follow.follower_id);
+
+                    follower = _coreDbContext.Set<Follow>().Count(d => d.user_id == follow.follower_id);
+                    following = _coreDbContext.Set<Follow>().Count(d => d.follower_id == follow.follower_id);
+
+                    int count = _coreDbContext.Set<Follow>().Count(d => d.user_id == follow.follower_id && d.follower_id == id);
+                    UserRet userRet = new UserRet(user, count != 0, follower, following);
+                    userRetList.Add(userRet);
                 }
 
-                return new Code(200, "成功", new { total = pages, items = ids });
+                return new Code(200, "成功", new { total = pages, items = userRetList });
 
             }
         }
@@ -359,6 +396,7 @@ namespace WebApi.Controllers
         /// <summary>
         /// 模糊条件查询用户 测试查询姓名“张”正确返回 其余未测试
         /// </summary>
+        /// <param name="token"></param>
         /// <param name="studentId"></param>
         /// <param name="name"></param>
         /// <param name="college"></param>
@@ -367,11 +405,11 @@ namespace WebApi.Controllers
         /// <param name="pageSize"></param>
         /// <returns></returns>
         [HttpGet("selectCondition")]
-        public Code getUserByCondition(long studentId,string name,string college,int gender, int page, int pageSize)
+        public Code getUserByCondition(string token,long studentId,string name,string college,int gender, int page, int pageSize)
         {
             using (CoreDbContext _coreDbContext = new CoreDbContext())
             {
-                string token = HttpContext.Request.Headers["token"];
+                //string token = HttpContext.Request.Headers["token"];
 
                 long id = JwtToid(token);
                 if (id == 0) return new Code(404, "token错误", null);
@@ -385,6 +423,7 @@ namespace WebApi.Controllers
                 List<User> queryUser = queryResult.ToList();
 
                 int total = queryUser.Count();
+                if (total == 0) return new Code(200, "成功", null);
                 int pages = total / pageSize;
                 if (total % pageSize != 0) pages += 1;
                 if (page > ((pages - 1) > 0 ? (pages - 1) : 0)) return new Code(400, "页码超过记录数", null);
@@ -399,7 +438,7 @@ namespace WebApi.Controllers
                     follower = _coreDbContext.Set<Follow>().Count(d => d.user_id == queryUser[i].student_id);
                     following = _coreDbContext.Set<Follow>().Count(d => d.follower_id == queryUser[i].student_id);
 
-                    UserRet userRet = new UserRet(user, follower, following);
+                    UserRet userRet = new UserRet(user, true, follower, following);
                     userRetList.Add(userRet);
                 }
 
@@ -430,14 +469,24 @@ namespace WebApi.Controllers
 
                 if (page > ((pages - 1) > 0 ? (pages - 1) : 0)) return new Code(400, "页码超过记录数", null);
                 List<Follow> followList = _coreDbContext.Set<Follow>().Where(d => d.follower_id == id).Skip(page * pageSize).Take(pageSize).ToList();
-                List<long> ids = new List<long>();
 
-                foreach (Follow follow in followList)
+                int follower, following;
+                List<UserRet> userRetList = new List<UserRet>();
+
+                foreach(Follow follow in followList)
                 {
-                    ids.Add(follow.user_id);
+                    User user = _coreDbContext.Set<User>().Find(follow.user_id);
+
+                    follower = _coreDbContext.Set<Follow>().Count(d => d.user_id == follow.user_id);
+                    following = _coreDbContext.Set<Follow>().Count(d => d.follower_id == follow.user_id);
+
+                    //Hobby hobby = 
+
+                    UserRet userRet = new UserRet(user, true, follower, following);
+                    userRetList.Add(userRet);
                 }
 
-                return new Code(200, "成功", new { total = pages, items = ids });
+                return new Code(200, "成功", new { total = pages, items = userRetList });
 
             }
         }
@@ -466,7 +515,9 @@ namespace WebApi.Controllers
                 {
                     return new Code(404, "用户不存在", false);
                 }
-                
+
+                if (user_id == id) return new Code(400, "不能关注自己", false);
+
                 //是否已关注过
                 int count = _coreDbContext.Set<Follow>().Count(d => d.follower_id == id && d.user_id == user_id);
 

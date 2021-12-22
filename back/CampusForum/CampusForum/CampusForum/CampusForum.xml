@@ -142,6 +142,13 @@
             <param name="userReq"></param>
             <returns></returns>
         </member>
+        <member name="M:WebApi.Controllers.UserController.UpdatePassword(CampusForum.Models.PasswordReq)">
+            <summary>
+            修改密码
+            </summary>
+            <param name="passwordReq"></param>
+            <returns></returns>
+        </member>
         <member name="M:WebApi.Controllers.UserController.delete">
             <summary>
             删除用户
@@ -170,10 +177,11 @@
             <param name="pageSize"></param>
             <returns></returns>
         </member>
-        <member name="M:WebApi.Controllers.UserController.getUserByCondition(System.Int64,System.String,System.String,System.Int32,System.Int32,System.Int32)">
+        <member name="M:WebApi.Controllers.UserController.getUserByCondition(System.String,System.Int64,System.String,System.String,System.Int32,System.Int32,System.Int32)">
             <summary>
             模糊条件查询用户 测试查询姓名“张”正确返回 其余未测试
             </summary>
+            <param name="token"></param>
             <param name="studentId"></param>
             <param name="name"></param>
             <param name="college"></param>
