@@ -7,9 +7,9 @@ namespace CampusForum.Models
 {
     public class CommentReq
     {
-        public long state_id { get; set; }
-        public long father_id { get; set; }
-        public long reply_id { get; set; }
+        public long stateId { get; set; }
+        public long fatherId { get; set; }
+        public long replyId { get; set; }
         public string text { get; set; }
        
     }

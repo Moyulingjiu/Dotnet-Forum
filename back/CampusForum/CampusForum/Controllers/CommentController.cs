@@ -38,7 +38,7 @@ namespace CampusForum.Controllers
 
                 
 
-                State state = _coreDbContext.Set<State>().Find(commentReq.state_id);
+                State state = _coreDbContext.Set<State>().Find(commentReq.stateId);
                 if (state == null) return new Code(404, "没有状态记录", false);
                 if(state.disable == 1) return new Code(404,"状态已被删除",false);
 

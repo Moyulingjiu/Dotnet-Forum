@@ -19,9 +19,9 @@ namespace CampusForum.Models
 
         public Comment(CommentReq commentReq)
         {
-            this.state_id = commentReq.state_id;
-            this.father_id = commentReq.father_id;
-            this.reply_id = commentReq.reply_id;
+            this.state_id = commentReq.stateId;
+            this.father_id = commentReq.fatherId;
+            this.reply_id = commentReq.replyId;
             this.text = commentReq.text;
         }
 
