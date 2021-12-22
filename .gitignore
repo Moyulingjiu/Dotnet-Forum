@@ -1,7 +1,6 @@
 back/CampusForum/.vs/*
 .vs/*
-back/CampusForum/CampusForum/obj/Debug
-back/CampusForum/CampusForum/obj/Release
+back/CampusForum/CampusForum/obj/*
 back/CampusForum/CampusForum/bin
 
 # 忽略word的临时文件
