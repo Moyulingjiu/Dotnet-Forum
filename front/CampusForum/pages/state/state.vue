@@ -9,6 +9,7 @@
 		<view class="state_box" v-for="(item,index) in stateList">
 			<view class="state_title" @click="stateDetail(item.id)">
 				<text>{{ item.title }}</text>
+				<image src="../../static/lock.png" v-if="item.share==0"></image>
 			</view>
 			<view class="state_text" @click="stateDetail(item.id)">
 				<text space="emsp">{{ item.text }}</text>
@@ -131,11 +132,11 @@
 								let stateItem = {
 									id: data.data.items[key].id,
 									title: data.data.items[key].title,
-									userId: data.data.items[key].user_id,
-									userName: data.data.items[key].user_name,
-									userAvater: data.data.items[key].user_avater, // 头像
+									userId: data.data.items[key].userId,
+									userName: data.data.items[key].userName,
+									userAvater: data.data.items[key].userAvater, // 头像
 									text: data.data.items[key].text,
-									share: data.data.items[key].share_state,
+									share: data.data.items[key].shareState,
 									gmtCreate: data.data.items[key].gmt_create
 								}
 								this.stateList.push(stateItem)
@@ -236,7 +237,15 @@
 	.state_box .state_title {
 		font-size: 45rpx;
 		font-weight: bold;
+		display: flex;
 		/* text-shadow: 1px 1px 4px #000000; */
+	}
+	
+	.state_box .state_title image {
+		margin-top: 8rpx;
+		margin-left: 5rpx;
+		width: 45rpx;
+		height: 45rpx;
 	}
 
 	.state_box .state_author {
