@@ -125,18 +125,9 @@
 								userId: 1,
 								username: '作者的名字',
 								userAvater: '../../static/avater.jpg',
-								gmtCreate: '2021年7月20日 20:00'
-							},
-							{
-								id: 3,
-								stateId: 1,
-								fatherId: 1,
-								replyId: 1,
-								text: '一个测试的回复正文2',
-								userId: 1,
-								username: '作者的名字2',
-								userAvater: '../../static/avater.jpg',
-								gmtCreate: '2021年7月20日 20:00'
+								gmtCreate: '2021年7月20日 20:00',
+								reply: '',
+								replyUserId: 0
 							}
 						],
 						subcommentPage: 0,
