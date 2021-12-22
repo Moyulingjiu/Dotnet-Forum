@@ -1,14 +1,14 @@
 <template>
 	<view>
 		<view class="avater_container">
-			<image class="avater" :src="user.avater" mode="aspectFill"></image>
+			<image class="avater" :src="user.avater" mode="aspectFill" @click="chooseAndUploadPic()"></image>
 			<input placeholder="请输入用户名" maxlength="6" class="name" type="text" v-model="user.name" />
 		</view>
 		<view>
 			<input placeholder="请输入用户名" maxlength="6" class="description" type="text" v-model="user.description" />
 		</view>
 		<view class="person_card">
-			<view class="information_card flex_box">
+			<!-- <view class="information_card flex_box">
 				<view>
 					<image class="information_edit" src="../../static/account.png" mode="aspectFill"></image>
 				</view>
@@ -22,7 +22,7 @@
 						<input maxlength=20 type="text" placeholder="请输入学号" v-model="user.studentId" />
 					</view>
 				</view>
-			</view>
+			</view> -->
 			<!-- <view class="information_card flex_box">
 				<view>
 					<image class="information_edit" src="../../static/password.png" mode="aspectFill"></image>
@@ -167,6 +167,9 @@
 						this.user.studentId = data.data.student_id
 						this.user.gmtCreate = data.data.gmt_create
 						this.user.gmtModified = data.data.gmt_modified
+						this.user.avater="/api"+String(data.data.avater).replace(/\\/g, "/")
+						console.log(data.data);
+						console.log(this.user.avater)
 					} else {
 						this.$refs.popup_information_error.open('top')
 					}
@@ -262,7 +265,7 @@
 			            // 做成一个上传对象
 			            var uper = uni.uploadFile({
 			                // 需要上传的地址
-			                url:'/api/picture/insert/'+that.albumId,
+			                url:'/api/picture/head/insert',
 							header: {
 								'token': config.getToken(),
 							},
@@ -273,7 +276,7 @@
 			                    // 显示上传信息
 			                    console.log(res1)
 								uni.navigateTo({
-				                url: '/pages/albumDetail/albumDetail?albumId='+String(that.albumId),
+				                url: '/pages/personInfoChange/personInfoChange',
 								});
 			                }
 			            });
