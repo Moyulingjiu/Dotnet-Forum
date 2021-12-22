@@ -45,6 +45,19 @@
 			<view class="information_card flex_box">
 				<view class="information_container">
 					<view class="information_title">
+						<text>系</text>
+					</view>
+					<view class="information_text">
+						<text>{{ user.departmet }}</text>
+					</view>
+				</view>
+				<view @click="updateUser()">
+					<image class="information_edit" src="../../static/right.png" mode="aspectFill"></image>
+				</view>
+			</view>
+			<view class="information_card flex_box">
+				<view class="information_container">
+					<view class="information_title">
 						<text>性别</text>
 					</view>
 					<view class="information_text">
@@ -95,7 +108,146 @@
 				</view>
 			</view>
 		</view>
-		<button v-if="power" class="bottom_button manager" @click="manage()">管理页面</button>
+
+		<view class="person_card"
+			v-if="user.primarySchool+user.juniorHighSchool+user.highSchool+user.university!=''">
+			<view v-if="user.primarySchool!=''" class="information_card flex_box">
+				<view class="information_container">
+					<view class="information_title">
+						<text>小学</text>
+					</view>
+					<view class="information_text">
+						<text>{{ user.primarySchool }}</text>
+					</view>
+				</view>
+				<view @click="updateUser()">
+					<image class="information_edit" src="../../static/right.png" mode="aspectFill"></image>
+				</view>
+			</view>
+			<view v-if="user.juniorHighSchool!=''" class="information_card flex_box">
+				<view class="information_container">
+					<view class="information_title">
+						<text>初中</text>
+					</view>
+					<view class="information_text">
+						<text>{{ user.juniorHighSchool }}</text>
+					</view>
+				</view>
+				<view @click="updateUser()">
+					<image class="information_edit" src="../../static/right.png" mode="aspectFill"></image>
+				</view>
+			</view>
+			<view v-if="user.highSchool!=''" class="information_card flex_box">
+				<view class="information_container">
+					<view class="information_title">
+						<text>高中</text>
+					</view>
+					<view class="information_text">
+						<text>{{ user.highSchool }}</text>
+					</view>
+				</view>
+				<view @click="updateUser()">
+					<image class="information_edit" src="../../static/right.png" mode="aspectFill"></image>
+				</view>
+			</view>
+			<view v-if="user.university!=''" class="information_card flex_box">
+				<view class="information_container">
+					<view class="information_title">
+						<text>大学</text>
+					</view>
+					<view class="information_text">
+						<text>{{ user.university }}</text>
+					</view>
+				</view>
+				<view @click="updateUser()">
+					<image class="information_edit" src="../../static/right.png" mode="aspectFill"></image>
+				</view>
+			</view>
+		</view>
+
+		<view class="person_card"
+			v-if="user.hobby.other+user.hobby.music+user.hobby.book+user.hobby.movie+user.hobby.game+user.hobby.sport!=''">
+			<view v-if="user.hobby.other!=''" class="information_card flex_box">
+				<view class="information_container">
+					<view class="information_title">
+						<text>爱好</text>
+					</view>
+					<view class="information_text">
+						<text>{{ user.hobby.other }}</text>
+					</view>
+				</view>
+				<view @click="updateUser()">
+					<image class="information_edit" src="../../static/right.png" mode="aspectFill"></image>
+				</view>
+			</view>
+			<view v-if="user.hobby.music!=''" class="information_card flex_box">
+				<view class="information_container">
+					<view class="information_title">
+						<text>喜欢音乐</text>
+					</view>
+					<view class="information_text">
+						<text>{{ user.hobby.music }}</text>
+					</view>
+				</view>
+				<view @click="updateUser()">
+					<image class="information_edit" src="../../static/right.png" mode="aspectFill"></image>
+				</view>
+			</view>
+			<view v-if="user.hobby.book!=''" class="information_card flex_box">
+				<view class="information_container">
+					<view class="information_title">
+						<text>喜欢的书</text>
+					</view>
+					<view class="information_text">
+						<text>{{ user.hobby.book }}</text>
+					</view>
+				</view>
+				<view @click="updateUser()">
+					<image class="information_edit" src="../../static/right.png" mode="aspectFill"></image>
+				</view>
+			</view>
+			<view v-if="user.hobby.movie!=''" class="information_card flex_box">
+				<view class="information_container">
+					<view class="information_title">
+						<text>喜欢的电影</text>
+					</view>
+					<view class="information_text">
+						<text>{{ user.hobby.movie }}</text>
+					</view>
+				</view>
+				<view @click="updateUser()">
+					<image class="information_edit" src="../../static/right.png" mode="aspectFill"></image>
+				</view>
+			</view>
+			<view v-if="user.hobby.game!=''" class="information_card flex_box">
+				<view class="information_container">
+					<view class="information_title">
+						<text>喜欢的游戏</text>
+					</view>
+					<view class="information_text">
+						<text>{{ user.hobby.game }}</text>
+					</view>
+				</view>
+				<view @click="updateUser()">
+					<image class="information_edit" src="../../static/right.png" mode="aspectFill"></image>
+				</view>
+			</view>
+			<view v-if="user.hobby.sport!=''" class="information_card flex_box">
+				<view class="information_container">
+					<view class="information_title">
+						<text>喜欢的运动</text>
+					</view>
+					<view class="information_text">
+						<text>{{ user.hobby.sport }}</text>
+					</view>
+				</view>
+				<view @click="updateUser()">
+					<image class="information_edit" src="../../static/right.png" mode="aspectFill"></image>
+				</view>
+			</view>
+		</view>
+
+		<button v-if="user.admin" class="bottom_button manager" @click="manage()">管理页面</button>
 		<button class="bottom_button function" @click="updateUser()">修改信息</button>
 		<button class="bottom_button function" @click="updatePassword()">修改密码</button>
 		<button class="bottom_button logout" @click="logout()">退出登陆</button>
@@ -123,12 +275,11 @@
 	export default {
 		data() {
 			return {
-				token: '',
-				power: true, // 是否拥有看见管理页面的权利
 				user: {
 					studentId: 22920191234,
 					name: '墨羽翎玖',
 					college: '信息学院',
+					departmet: '',
 					gender: 1,
 					avater: '../../static/avater.jpg',
 					description: '来时山有雪，归时雪满山。',
@@ -136,7 +287,21 @@
 					phone: '12312341234',
 					email: '123456@qq.com',
 					following: 100,
-					follower: 100
+					follower: 100,
+					primarySchool: '',
+					juniorHighSchool: '',
+					highSchool: '',
+					university: '',
+					admin: false,
+					hobby: {
+						other: '',
+						music: '',
+						book: '',
+						movie: '',
+						game: '',
+						comic: '',
+						sport: ''
+					}
 				}
 			}
 		},
@@ -153,10 +318,32 @@
 						if (typeof data === "undefined") {
 							this.$refs.popup_serve_error.open('top')
 						} else if (data.code == 200) {
-							this.user = Object.assign({}, data.data)
+							this.user.id = data.data.id
+							this.user.studentId = data.data.studentId
+							this.user.name = data.data.name
+							this.user.college = data.data.college
+							this.user.departmet = data.data.department
+							this.user.gender = data.data.gender
+							this.user.avater = data.data.avater
+							this.user.description = data.data.description
+							this.user.phone = data.data.phone
+							this.user.email = data.data.email
+
+							this.user.following = data.data.following
+							this.user.follower = data.data.follower
+
 							this.user.gmtCreate = data.data.gmt_create
 							this.user.gmtModified = data.data.gmt_modified
-							this.user.avater="/api"+String(data.data.avater).replace(/\\/g, "/")
+
+							this.user.admin = data.data.admin
+
+							this.user.primarySchool = data.data.primarySchool == null ? '' : data.data
+								.primarySchool
+							this.user.juniorHighSchool = data.data.juniorHighSchool == null ? '' : data.data
+								.juniorHighSchool
+							this.user.highSchool = data.data.highSchool == null ? '' : data.data.highSchool
+							this.user.university = data.data.university == null ? '' : data.data.university
+							// this.user.avater="/api"+String(data.data.avater).replace(/\\/g, "/")
 						} else {
 							this.$refs.popup_information_error.open('top')
 						}
@@ -183,7 +370,8 @@
 			updatePassword() {
 				console.log(this.user.studentId);
 				uni.navigateTo({
-					url: `/pages/personPasswordChange/personPasswordChange?studentId=`+String(this.user.studentId),
+					url: `/pages/personPasswordChange/personPasswordChange?studentId=` + String(this.user
+						.studentId),
 				});
 			},
 			logout() {
@@ -337,7 +525,7 @@
 	.function {
 		background-image: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);
 	}
-	
+
 	.manager {
 		background-image: linear-gradient(to right, #43e97b 0%, #38f9d7 100%);
 	}
