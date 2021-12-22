@@ -406,6 +406,12 @@ namespace CampusForum.Controllers
         }
 
 
+        /// <summary>
+        /// 主页推荐的状态
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
         [HttpGet("recommend")]
         public Code getRecommentState(int page = 0, int pageSize = 10)
         {
@@ -428,100 +434,23 @@ namespace CampusForum.Controllers
             List<StateRet> rets = new List<StateRet>();
             for (int i = 0; i < size; i++)
             {
-                rets[i].id = states[i].id;
-                rets[i].title = states[i].title;
-                rets[i].shareState = states[i].share_state;
-                rets[i].like = (_coreDbContext.Set<Like>().Where(b => b.state_id == states[i].id && b.user_id == user_id) != null);
-                rets[i].likeNumber = _coreDbContext.Set<Like>().Count(b => b.state_id == states[i].id);
-                rets[i].userId = states[i].user_id;
+                StateRet stateRet = new StateRet();
+                stateRet.id = states[i].id;
+                stateRet.title = states[i].title;
+                stateRet.shareState = states[i].share_state;
+                stateRet.like = (_coreDbContext.Set<Like>().Where(b => b.state_id == states[i].id && b.user_id == user_id) != null);
+                stateRet.likeNumber = _coreDbContext.Set<Like>().Count(b => b.state_id == states[i].id);
+                stateRet.userId = states[i].user_id;
                 User user = _coreDbContext.Set<User>().Single(b => b.id == states[i].user_id);
-                rets[i].userName = user.name;
-                rets[i].userAvater = user.avater;
+                stateRet.userName = user.name;
+                stateRet.userAvater = user.avater;
+                rets.Add(stateRet);
             }
             return new Code(200, "成功", new { total = (size - 1) / pageSize + 1, item = rets });
         }
 
 
-        /*/// <summary>
-        /// 主页推荐的状态 未测试
-        /// </summary>
-        /// <param name="page"></param>
-        /// <param name="pageSize"></param>
-        /// <returns></returns>
-        [HttpGet("recommend")]
-        public Code getRecommendState(int page = 0, int pageSize = 10)
-        {
-            using (CoreDbContext _coreDbContext = new CoreDbContext())
-            {
-                string token = HttpContext.Request.Headers["token"];
-
-                //解析token
-                long id = JwtToid(token);
-                if (id == 0) return new Code(404, "token错误", null);
-
-                //List<LikeGroup> likeCount = _coreDbContext.Set<Like>().Where(d => d.disable == 0).GroupBy(d => d.state_id).Select(d => new LikeGroup(d.Key, d.Count())).OrderByDescending(d => d.count).ToList();
-                List<LikeGroup> likeCount = _coreDbContext.Set<Like>().Where(d => d.disable == 0).GroupBy(d => d.state_id).Select(d => new LikeGroup(d.Key, d.Count())).ToList();
-
-
-                List<long> stateIds = new List<long>();
-
-                List<Likes> likesList = new List<Likes>();
-                foreach(LikeGroup likeGroup in likeCount)
-                {
-                    State state = _coreDbContext.Set<State>().Find(likeGroup.state_id);
-                    Likes likes = new Likes(likeGroup.state_id, likeGroup.count, state.gmt_create);
-                    likesList.Add(likes);
-                }
-
-                List<long> recommentIds = new List<long>();
-
-                likesList.OrderBy(d => d.count).ThenByDescending(d => d.gmt_create);
-
-                foreach (Likes likes in likesList) recommentIds.Add(likes.stateId);
-
-                List<Follow> followings = _coreDbContext.Set<Follow>().Where(d => d.follower_id == id).ToList();
-                
-                foreach(Follow follow in followings)
-                {
-                    List<State> stateList = _coreDbContext.Set<State>().Where(d => d.user_id == follow.user_id).ToList();
-                    foreach(State state in stateList)
-                    {
-                        if (!recommentIds.Contains(state.id)) recommentIds.Add(state.id);
-                    }
-                }
-
-                int total = recommentIds.Count()/2;
-                if(total == 0)
-                {
-                    List<State> existStateList = _coreDbContext.Set<State>().ToList();
-                    foreach (State state in existStateList) recommentIds.Add(state.id);
-                    total = recommentIds.Count();
-                }
-    
-                int pages = total / pageSize;
-                if (total % pageSize != 0) pages += 1;
-                if (page > ((pages - 1) > 0 ? (pages - 1) : 0)) return new Code(400, "页码超过记录数", null);
-
-                List<StateRet> stateRetList = new List<StateRet>();
-                int likenum, userlike;
-                bool like;
-                for (int i = page * pageSize; i < total; i++)
-                {
-                    State state = _coreDbContext.Set<State>().Find(recommentIds[i]);
-                    StateText stateText = _coreDbContext.Set<StateText>().Where(d => d.state_id == state.id).ToList().First();
-                    User user = _coreDbContext.Set<User>().Find(state.user_id);
-                    likenum = _coreDbContext.Set<Like>().Count(d => d.state_id == state.id && d.disable == 0);
-                    userlike = _coreDbContext.Set<Like>().Count(d => d.state_id == state.id && d.user_id == state.user_id && d.disable == 0);
-                    if (userlike == 0) like = false;
-                    else like = true;
-
-                    StateRet stateRet = new StateRet(state, stateText, user, likenum, like);
-                    stateRetList.Add(stateRet);
-                }
-
-                return new Code(200, "成功", stateRetList);
-            }
-        }*/
+        
 
 
         /// <summary>
