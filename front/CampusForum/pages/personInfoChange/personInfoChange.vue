@@ -1,13 +1,43 @@
 <template>
 	<view>
 		<view class="avater_container">
-			<image class="avater" :src="user.avater" mode="aspectFill"></image>
+			<image class="avater" :src="user.avater" mode="aspectFill" @click="chooseAndUploadPic()"></image>
 			<input placeholder="请输入用户名" maxlength="6" class="name" type="text" v-model="user.name" />
 		</view>
 		<view>
 			<input placeholder="请输入用户名" maxlength="6" class="description" type="text" v-model="user.description" />
 		</view>
 		<view class="person_card">
+			<!-- <view class="information_card flex_box">
+				<view>
+					<image class="information_edit" src="../../static/account.png" mode="aspectFill"></image>
+				</view>
+				<view class="information_container">
+					<view class="information_title">
+						<uni-badge size="small" text=" " absolute="rightTop" type="error">
+							<text>学号</text>
+						</uni-badge>
+					</view>
+					<view class="information_text">
+						<input maxlength=20 type="text" placeholder="请输入学号" v-model="user.studentId" />
+					</view>
+				</view>
+			</view> -->
+			<!-- <view class="information_card flex_box">
+				<view>
+					<image class="information_edit" src="../../static/password.png" mode="aspectFill"></image>
+				</view>
+				<view class="information_container">
+					<view class="information_title">
+						<uni-badge size="small" text=" " absolute="rightTop" type="error">
+							<text>密码</text>
+						</uni-badge>
+					</view>
+					<view class="information_text">
+						<input maxlength=20 type="text" password="true" placeholder="请输入密码" v-model="user.password" />
+					</view>
+				</view>
+			</view> -->
 			<view class="information_card flex_box">
 				<view>
 					<image class="information_edit" src="../../static/college.png" mode="aspectFill"></image>
@@ -151,7 +181,10 @@
 						this.user.studentId = data.data.student_id
 						this.user.gmtCreate = data.data.gmt_create
 						this.user.gmtModified = data.data.gmt_modified
-					}
+						this.user.avater="/api"+String(data.data.avater).replace(/\\/g, "/")
+						console.log(data.data);
+						console.log(this.user.avater)
+					} 
 				})
 			} else {
 				uni.redirectTo({
@@ -187,12 +220,33 @@
 								duration: 2000
 							})
 						} else {
+							if (data.code == 200) {
+								let token = data.data.token
+								config.saveTokenFroce(token)
+								uni.showToast({
+									title: '修改成功！',
+									icon: "success",
+									mask: true,
+									duration: 2000
+								})
+								setTimeout(() => {
+									uni.reLaunch({
+										url: '../person/person'
+									})
+								}, config.waitTime)
+							} else {
+								uni.showToast({
+									title: '修改失败：' + data.msg,
+									icon: "error",
+									mask: true,
+									duration: 2000})
 							this.$refs.popup_success.open('top')
 							setTimeout(() => {
 								uni.reLaunch({
 									url: '../person/person'
 								})
 							}, config.waitTime)
+						}
 						}
 					})
 				}
@@ -226,7 +280,7 @@
 			            // 做成一个上传对象
 			            var uper = uni.uploadFile({
 			                // 需要上传的地址
-			                url:'/api/picture/insert/'+that.albumId,
+			                url:'/api/picture/head/insert',
 							header: {
 								'token': config.getToken(),
 							},
@@ -237,7 +291,7 @@
 			                    // 显示上传信息
 			                    console.log(res1)
 								uni.navigateTo({
-				                url: '/pages/albumDetail/albumDetail?albumId='+String(that.albumId),
+				                url: '/pages/personInfoChange/personInfoChange',
 								});
 			                }
 			            });

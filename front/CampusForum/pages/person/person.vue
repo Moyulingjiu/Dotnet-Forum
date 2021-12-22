@@ -156,6 +156,7 @@
 							this.user.studentId = data.data.student_id
 							this.user.gmtCreate = data.data.gmt_create
 							this.user.gmtModified = data.data.gmt_modified
+							this.user.avater="/api"+String(data.data.avater).replace(/\\/g, "/")
 						} else {
 							this.$refs.popup_information_error.open('top')
 						}
