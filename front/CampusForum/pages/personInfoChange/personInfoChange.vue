@@ -8,36 +8,6 @@
 			<input placeholder="请输入用户名" maxlength="6" class="description" type="text" v-model="user.description" />
 		</view>
 		<view class="person_card">
-			<!-- <view class="information_card flex_box">
-				<view>
-					<image class="information_edit" src="../../static/account.png" mode="aspectFill"></image>
-				</view>
-				<view class="information_container">
-					<view class="information_title">
-						<uni-badge size="small" text=" " absolute="rightTop" type="error">
-							<text>学号</text>
-						</uni-badge>
-					</view>
-					<view class="information_text">
-						<input maxlength=20 type="text" placeholder="请输入学号" v-model="user.studentId" />
-					</view>
-				</view>
-			</view> -->
-			<!-- <view class="information_card flex_box">
-				<view>
-					<image class="information_edit" src="../../static/password.png" mode="aspectFill"></image>
-				</view>
-				<view class="information_container">
-					<view class="information_title">
-						<uni-badge size="small" text=" " absolute="rightTop" type="error">
-							<text>密码</text>
-						</uni-badge>
-					</view>
-					<view class="information_text">
-						<input maxlength=20 type="text" password="true" placeholder="请输入密码" v-model="user.password" />
-					</view>
-				</view>
-			</view> -->
 			<view class="information_card flex_box">
 				<view>
 					<image class="information_edit" src="../../static/college.png" mode="aspectFill"></image>
@@ -182,8 +152,6 @@
 						this.user.gmtCreate = data.data.gmt_create
 						this.user.gmtModified = data.data.gmt_modified
 						this.user.avater="/api"+String(data.data.avater).replace(/\\/g, "/")
-						console.log(data.data);
-						console.log(this.user.avater)
 					} 
 				})
 			} else {
@@ -236,7 +204,7 @@
 								}, config.waitTime)
 							} else {
 								uni.showToast({
-									title: '修改失败：' + data.msg,
+									title: data.msg,
 									icon: "error",
 									mask: true,
 									duration: 2000})
