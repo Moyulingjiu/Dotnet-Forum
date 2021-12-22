@@ -52,9 +52,12 @@ namespace CampusForum.Controllers
             Album album = _coreDbContext.Set<Album>().Single(b => b.id == album_id);
             if (album == null) return new Code(404, "没有这个相册", null);
             if (album.user_id != user_id) return new Code(403, "没有修改权限", null);
-            album.name = albumReq.name;
-            album.description = albumReq.description;
-            album.cover = albumReq.cover;
+            if(albumReq.name!=null)
+                album.name = albumReq.name;
+            if (albumReq.description != null)
+                album.description = albumReq.description;
+            if (albumReq.cover != null)
+                album.cover = albumReq.cover;
             album.gmt_modified = DateTime.Now;
             _coreDbContext.SaveChanges();
             return new Code(200, "成功", true);
