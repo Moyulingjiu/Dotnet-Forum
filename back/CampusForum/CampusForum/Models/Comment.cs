@@ -17,5 +17,18 @@ namespace CampusForum.Models
         public DateTime gmt_create { set; get; }
         public DateTime gmt_modified { set; get; }
 
+        public Comment(CommentReq commentReq)
+        {
+            this.state_id = commentReq.state_id;
+            this.father_id = commentReq.father_id;
+            this.reply_id = commentReq.reply_id;
+            this.text = commentReq.text;
+        }
+
+        public Comment()
+        {
+
+        }
+
     }
 }

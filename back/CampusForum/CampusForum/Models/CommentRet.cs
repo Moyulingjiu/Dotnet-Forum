@@ -7,6 +7,7 @@ namespace CampusForum.Models
 {
     public class CommentRet
     {
+        public long commentId { get; set; }
         public long state_id { get; set; }
         public long father_id { get; set; }
         public long reply_id { get; set; }
@@ -19,6 +20,7 @@ namespace CampusForum.Models
 
         public CommentRet(Comment comment,User user)
         {
+            this.commentId = comment.id;
             this.state_id = comment.state_id;
             this.father_id = comment.father_id;
             this.reply_id = comment.reply_id;
@@ -26,6 +28,8 @@ namespace CampusForum.Models
             this.userId = comment.user_id;
             this.userAvater = user.avater;
             this.userName = user.name;
+            this.gmt_create = comment.gmt_create;
+            this.gmt_modified = comment.gmt_modified;
         }
     }
 }

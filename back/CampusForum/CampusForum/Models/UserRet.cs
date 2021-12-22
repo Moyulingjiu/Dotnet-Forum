@@ -10,7 +10,7 @@ namespace CampusForum.Models
     {
         public long id { get; set; }
         [Key]
-        public long student_id { set; get; }
+        public long studentId { set; get; }
         public string name { set; get; }
         public string college { set; get; }
         public int gender { set; get; }
@@ -32,7 +32,7 @@ namespace CampusForum.Models
         public UserRet(User user,int follower,int following)
         {
             this.id = user.id;
-            this.student_id = user.student_id;
+            this.studentId = user.student_id;
             this.name = user.name;
             this.college = user.college;
             this.gender = user.gender;
