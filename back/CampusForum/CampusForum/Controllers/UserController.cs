@@ -139,12 +139,47 @@ namespace WebApi.Controllers
 
 
             string user_idStr = RouteData.Values["userId"].ToString();
-            User user = _coreDbContext.Set<User>().Find(id);
+            
             long userId = long.Parse(user_idStr);
 
-            //token中的student_id对应的userId与路径上的userId不一致
-            if (user.id != userId) return new Code(403, "只能修改自己的信息", false);
-            //if (user.student_id != user_id) return new Code(403, "学号不允许修改", false);
+            //修改自己的信息
+            if(userId == 0)
+            {
+                User tokenUser = _coreDbContext.Set<User>().Find(id);
+
+                if (tokenUser.name != userReq.name)
+                    tokenUser.name = userReq.name;
+                if (tokenUser.college != userReq.college)
+                    tokenUser.college = userReq.college;
+                if (tokenUser.gender != userReq.gender)
+                    tokenUser.gender = userReq.gender;
+                if (tokenUser.avater != userReq.avater)
+                    tokenUser.avater = userReq.avater;
+                if (tokenUser.description != userReq.description)
+                    tokenUser.description = userReq.description;
+                if (tokenUser.birthday != userReq.birthday)
+                    tokenUser.birthday = userReq.birthday;
+                if (tokenUser.phone != userReq.phone)
+                    tokenUser.phone = userReq.phone;
+                if (tokenUser.email != userReq.email)
+                    tokenUser.email = userReq.email;
+
+                //更新user对应的gmt_modified
+                tokenUser.gmt_modified = DateTime.Now;
+
+                using (CoreDbContext _coreDbContext = new CoreDbContext())
+                {
+                    _coreDbContext.Set<User>().Update(tokenUser);
+                    _coreDbContext.SaveChanges();
+
+                    string newToken = generateToken(tokenUser.student_id, tokenUser.name);
+                    return new Code(200, "成功", new { token = newToken });
+                }
+
+            }
+
+
+            User user = _coreDbContext.Set<User>().Find(userId);
 
             //更新user信息
             if (user.name != userReq.name) 

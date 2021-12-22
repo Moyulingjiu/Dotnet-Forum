@@ -23,10 +23,10 @@ namespace CampusForum.Controllers
         /// <summary>
         /// 添加评论
         /// </summary>
-        /// <param name="comment"></param>
+        /// <param name="commentReq"></param>
         /// <returns></returns>
         [HttpPost("insert")]
-        public Code insertComment(Comment comment)
+        public Code insertComment(CommentReq commentReq)
         {
             using(CoreDbContext _coreDbContext = new CoreDbContext())
             {
@@ -36,10 +36,13 @@ namespace CampusForum.Controllers
                 long id = JwtToid(token);
                 if (id == 0) return new Code(404, "token错误", null);
 
-                State state = _coreDbContext.Set<State>().Find(comment.state_id);
+                
+
+                State state = _coreDbContext.Set<State>().Find(commentReq.stateId);
                 if (state == null) return new Code(404, "没有状态记录", false);
                 if(state.disable == 1) return new Code(404,"状态已被删除",false);
 
+                Comment comment = new Comment(commentReq);
                 comment.user_id = id;
                 comment.gmt_create =DateTime.Now;
                 comment.gmt_modified = DateTime.Now;
@@ -109,8 +112,16 @@ namespace CampusForum.Controllers
                 long id = JwtToid(token);
                 if (id == 0) return new Code(404, "token错误", null);
 
-                String comment_idStr = RouteData.Values["commentId"].ToString();
-                long comment_id = long.Parse(comment_idStr);
+                long comment_id; 
+                try
+                {
+                    String comment_idStr = RouteData.Values["commentId"].ToString();
+                    comment_id = long.Parse(comment_idStr);
+                }
+                catch(Exception)
+                {
+                    return new Code(400, "参数错误", false);
+                }
 
                 Comment comment = _coreDbContext.Set<Comment>().Find(comment_id);
                 if (comment == null || comment.disable == 1) return new Code(404, "评论不存在或已被删除", null);
@@ -140,8 +151,17 @@ namespace CampusForum.Controllers
                 long id = JwtToid(token);
                 if (id == 0) return new Code(404, "token错误", null);
 
-                String state_idStr = RouteData.Values["stateId"].ToString();
-                long state_id = long.Parse(state_idStr);
+                long state_id; 
+                try
+                {
+                    String state_idStr = RouteData.Values["stateId"].ToString();
+                    state_id = long.Parse(state_idStr);
+                }
+                catch(Exception)
+                {
+                    return new Code(400, "参数错误", false);
+                }
+
 
                 State state = _coreDbContext.Set<State>().Find(state_id);
                 if (state == null) return new Code(404, "没有状态记录", null);
@@ -185,8 +205,16 @@ namespace CampusForum.Controllers
                 long id = JwtToid(token);
                 if (id == 0) return new Code(404, "token错误", null);
 
-                String comment_idStr = RouteData.Values["commentId"].ToString();
-                long comment_id = long.Parse(comment_idStr);
+                long comment_id;
+                try
+                {
+                    String comment_idStr = RouteData.Values["commentId"].ToString();
+                    comment_id = long.Parse(comment_idStr);
+                }
+                catch (Exception)
+                {
+                    return new Code(400, "参数错误", false);
+                }
 
                 Comment comment = _coreDbContext.Set<Comment>().Find(comment_id);
                 if (comment == null || comment.disable == 1) return new Code(404, "评论不存在或已被删除", null);

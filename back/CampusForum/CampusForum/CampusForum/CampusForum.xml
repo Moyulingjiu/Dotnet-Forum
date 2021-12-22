@@ -4,11 +4,11 @@
         <name>CampusForum</name>
     </assembly>
     <members>
-        <member name="M:CampusForum.Controllers.CommentController.insertComment(CampusForum.Models.Comment)">
+        <member name="M:CampusForum.Controllers.CommentController.insertComment(CampusForum.Models.CommentReq)">
             <summary>
             添加评论
             </summary>
-            <param name="comment"></param>
+            <param name="commentReq"></param>
             <returns></returns>
         </member>
         <member name="M:CampusForum.Controllers.CommentController.deleteComment">
@@ -86,7 +86,7 @@
         </member>
         <member name="M:CampusForum.Controllers.StateController.getRecommendState(System.Int32,System.Int32)">
             <summary>
-            主页推荐的状态 返回关注的状态、关注点赞的状态和点赞数超过平台用户半数的状态 未测试
+            主页推荐的状态 未测试
             </summary>
             <param name="page"></param>
             <param name="pageSize"></param>

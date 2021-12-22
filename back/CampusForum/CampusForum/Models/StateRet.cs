@@ -10,12 +10,12 @@ namespace CampusForum.Models
         public long id { get; set; }
         public string title { get; set; }
         public string text { get; set; }
-        public int share_state { get; set; }
+        public int shareState { get; set; }
         public bool like { get; set; }
         public int likeNumber { get; set; }
-        public long user_id { get; set; }
-        public string user_name { get; set; }
-        public string user_avater { get; set; }
+        public long userId { get; set; }
+        public string userName { get; set; }
+        public string userAvater { get; set; }
         public string gmt_create { set; get; }
         public string gmt_modified { set; get; }
 
@@ -27,13 +27,13 @@ namespace CampusForum.Models
         {
             this.id = state.id;
             this.title = state.title;
-            this.share_state = state.share_state;
+            this.shareState = state.share_state;
             this.text = stateText.text;
             this.like = like;
             this.likeNumber = likenum;
-            this.user_id = state.user_id;
-            this.user_name = user.name;
-            this.user_avater = user.avater;
+            this.userId = state.user_id;
+            this.userName = user.name;
+            this.userAvater = user.avater;
 
             //string createTimeSpan = (DateTime.Now - state.gmt_create).ToString();
             TimeSpan createTimeSpan = DateTime.Now.Subtract(state.gmt_create);
