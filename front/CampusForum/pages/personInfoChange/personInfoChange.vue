@@ -107,7 +107,6 @@
 
 	export default {
 		data() {
-
 			return {
 				genderArray: [
 					'保密',
@@ -165,7 +164,9 @@
 				return config.getGender(this.user.gender)
 			},
 			update() {
-				if (this.user.phone.length != 0 && !config.checkPhone(this.user.phone)) {
+				if (this.user.name.length == 0) {
+					this.$refs.popup_error.open('top')
+				} else if (this.user.phone.length != 0 && !config.checkPhone(this.user.phone)) {
 					this.$refs.popup_error_phone.open('top')
 				} else if (this.user.email.length != 0 && !config.checkEmail(this.user.email)) {
 					this.$refs.popup_error_email.open('top')
@@ -186,14 +187,7 @@
 								duration: 2000
 							})
 						} else {
-							let token = data.data.token
-							config.saveTokenFroce(token)
-							uni.showToast({
-								title: '修改成功！',
-								icon: "success",
-								mask: true,
-								duration: 2000
-							})
+							this.$refs.popup_success.open('top')
 							setTimeout(() => {
 								uni.reLaunch({
 									url: '../person/person'
@@ -202,11 +196,6 @@
 						}
 					})
 				}
-			},
-			login() {
-				uni.redirectTo({
-					url: '../login/login'
-				})
 			},
 			bindDateChange(e) { // 改变日期
 				this.user.birthday = e.target.value
