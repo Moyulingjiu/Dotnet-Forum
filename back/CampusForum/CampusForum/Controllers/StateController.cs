@@ -246,7 +246,7 @@ namespace CampusForum.Controllers
                 if (page > ((pages - 1) > 0 ? (pages - 1) : 0)) return new Code(400, "页码超过记录数", null);
 
                 //只返回当前用户未被删除的状态
-                List<State> stateList = _coreDbContext.Set<State>().Where(d => d.user_id == id&& d.disable == 0).Skip(page * pageSize).Take(pageSize).OrderByDescending(d => d.gmt_create).ToList();
+                List<State> stateList = _coreDbContext.Set<State>().Where(d => d.user_id == id&& d.disable == 0).OrderByDescending(d => d.gmt_create).Skip(page * pageSize).Take(pageSize).OrderByDescending(d => d.gmt_create).ToList();
  
                 List<StateRet> stateRetList = new List<StateRet>();
                 int likenum, userlike;
@@ -301,7 +301,7 @@ namespace CampusForum.Controllers
                     if (page > ((pagesOwn - 1) > 0 ? (pagesOwn - 1) : 0)) return new Code(400, "页码超过记录数", null);
 
                     //只返回当前用户未被删除分享的状态
-                    List<State> stateOwnList = _coreDbContext.Set<State>().Where(d => d.user_id == id && d.disable == 0 && d.share_state == 1).Skip(page * pageSize).Take(pageSize).OrderByDescending(d => d.gmt_create).ToList();
+                    List<State> stateOwnList = _coreDbContext.Set<State>().Where(d => d.user_id == id && d.disable == 0 && d.share_state == 1).OrderByDescending(d => d.gmt_create).Skip(page * pageSize).Take(pageSize).ToList();
 
                     List<StateRet> stateOwnRetList = new List<StateRet>();
                     int likeOwnnum, userOwnlike;
@@ -329,7 +329,7 @@ namespace CampusForum.Controllers
                 if (page > ((pages - 1) > 0 ? (pages - 1) : 0)) return new Code(400, "页码超过记录数", null);
 
                 //只返回当前用户未被删除的状态
-                List<State> stateList = _coreDbContext.Set<State>().Where(d => d.user_id == userId && d.disable == 0 && d.share_state == 1 && d.share_state == 1).Skip(page * pageSize).Take(pageSize).OrderByDescending(d => d.gmt_create).ToList();
+                List<State> stateList = _coreDbContext.Set<State>().Where(d => d.user_id == userId && d.disable == 0 && d.share_state == 1 && d.share_state == 1).OrderByDescending(d => d.gmt_create).Skip(page * pageSize).Take(pageSize).ToList();
 
                 List<StateRet> stateRetList = new List<StateRet>();
                 int likenum, userlike;
@@ -405,9 +405,44 @@ namespace CampusForum.Controllers
             }   
         }
 
-        
 
-        /// <summary>
+        [HttpGet("recommend")]
+        public Code getRecommentState(int page = 0, int pageSize = 10)
+        {
+            string token = HttpContext.Request.Headers["token"];
+            long user_id = JwtToid(token);
+            if (user_id == 0) return new Code(404, "token错误", null);
+
+            List<State> states = _coreDbContext.Set<State>().Where(b => b.user_id != user_id).Skip(page * pageSize).Take(pageSize).ToList();
+            int size = states.Count;
+            if (size == 0) return new Code(404, "目前无状态可推荐", null);
+            Random random = new Random();
+            for (int i = 0; i < size; i++)
+            {
+                int randomPos = random.Next(size);
+                State temp = states[i];
+                states[i] = states[randomPos];
+                states[randomPos] = temp;
+            }
+
+            List<StateRet> rets = new List<StateRet>();
+            for (int i = 0; i < size; i++)
+            {
+                rets[i].id = states[i].id;
+                rets[i].title = states[i].title;
+                rets[i].shareState = states[i].share_state;
+                rets[i].like = (_coreDbContext.Set<Like>().Where(b => b.state_id == states[i].id && b.user_id == user_id) != null);
+                rets[i].likeNumber = _coreDbContext.Set<Like>().Count(b => b.state_id == states[i].id);
+                rets[i].userId = states[i].user_id;
+                User user = _coreDbContext.Set<User>().Single(b => b.id == states[i].user_id);
+                rets[i].userName = user.name;
+                rets[i].userAvater = user.avater;
+            }
+            return new Code(200, "成功", new { total = (size - 1) / pageSize + 1, item = rets });
+        }
+
+
+        /*/// <summary>
         /// 主页推荐的状态 未测试
         /// </summary>
         /// <param name="page"></param>
@@ -486,7 +521,7 @@ namespace CampusForum.Controllers
 
                 return new Code(200, "成功", stateRetList);
             }
-        }
+        }*/
 
 
         /// <summary>

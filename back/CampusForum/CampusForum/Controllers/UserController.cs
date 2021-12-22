@@ -420,7 +420,7 @@ namespace WebApi.Controllers
         /// <param name="pageSize"></param>
         /// <returns></returns>
         [HttpGet("selectCondition")]
-        public Code getUserByCondition(string token,long studentId,string name,string college,int gender, int page, int pageSize)
+        public Code getUserByCondition(string token,long studentId,string name,string college,int gender, int page=0, int pageSize=10)
         {
             using (CoreDbContext _coreDbContext = new CoreDbContext())
             {
@@ -431,7 +431,7 @@ namespace WebApi.Controllers
 
                 var queryResult = _coreDbContext.Set<User>().Select(d => d);
                 //if(user.id!=null) queryResult = _coreDbContext.Set<User>().Select(d => d);
-                //if (user.student_id.ToString() != null) queryResult = queryResult.Where(d => d.student_id == user.student_id);
+                if (studentId.ToString() != null) queryResult = queryResult.Where(d => d.student_id == studentId);
                 if (name != null) queryResult = queryResult.Where(d => d.name.Contains(name)||d.name.StartsWith(name)||d.name.EndsWith(name));
                 if (college != null) queryResult = queryResult.Where(d => d.college.Contains(college)||d.college.StartsWith(college)||d.college.EndsWith(college));
                 if (gender== 0|| gender == 1|| gender == 2) queryResult = queryResult.Where(d => d.gender == gender);
@@ -445,13 +445,14 @@ namespace WebApi.Controllers
                 
                 int follower, following;
                 List<UserRet> userRetList = new List<UserRet>();
+       
 
                 for(int i = page * pageSize; i < total; i++)
                 {
-                    User user = _coreDbContext.Set<User>().Find(queryUser[i].student_id);
+                    User user = _coreDbContext.Set<User>().Find(queryUser[i].id);
 
-                    follower = _coreDbContext.Set<Follow>().Count(d => d.user_id == queryUser[i].student_id);
-                    following = _coreDbContext.Set<Follow>().Count(d => d.follower_id == queryUser[i].student_id);
+                    follower = _coreDbContext.Set<Follow>().Count(d => d.user_id == queryUser[i].id);
+                    following = _coreDbContext.Set<Follow>().Count(d => d.follower_id == queryUser[i].id);
                     Hobby hobby = _coreDbContext.Set<Hobby>().Where(d => d.user_id == id).FirstOrDefault();
 
                     UserRet userRet = new UserRet(user, hobby, true, follower, following);
