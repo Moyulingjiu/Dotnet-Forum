@@ -10,36 +10,6 @@
 		<view class="person_card">
 			<view class="information_card flex_box">
 				<view>
-					<image class="information_edit" src="../../static/account.png" mode="aspectFill"></image>
-				</view>
-				<view class="information_container">
-					<view class="information_title">
-						<uni-badge size="small" text=" " absolute="rightTop" type="error">
-							<text>学号</text>
-						</uni-badge>
-					</view>
-					<view class="information_text">
-						<input maxlength=20 type="text" placeholder="请输入学号" v-model="user.studentId" />
-					</view>
-				</view>
-			</view>
-			<!-- <view class="information_card flex_box">
-				<view>
-					<image class="information_edit" src="../../static/password.png" mode="aspectFill"></image>
-				</view>
-				<view class="information_container">
-					<view class="information_title">
-						<uni-badge size="small" text=" " absolute="rightTop" type="error">
-							<text>密码</text>
-						</uni-badge>
-					</view>
-					<view class="information_text">
-						<input maxlength=20 type="text" password="true" placeholder="请输入密码" v-model="user.password" />
-					</view>
-				</view>
-			</view> -->
-			<view class="information_card flex_box">
-				<view>
 					<image class="information_edit" src="../../static/college.png" mode="aspectFill"></image>
 				</view>
 				<view class="information_container">
@@ -114,7 +84,7 @@
 		</view>
 		<button class="register_button" @click="update()">更 新</button>
 		<uni-popup ref="popup_error" type="message">
-			<uni-popup-message type="error" message="学号、密码、用户名不能为空" :duration="2000"></uni-popup-message>
+			<uni-popup-message type="error" message="用户名不能为空" :duration="2000"></uni-popup-message>
 		</uni-popup>
 		<uni-popup ref="popup_error_password" type="message">
 			<uni-popup-message type="error" message="密码长度需在6-16之间" :duration="2000"></uni-popup-message>
@@ -124,6 +94,9 @@
 		</uni-popup>
 		<uni-popup ref="popup_error_phone" type="message">
 			<uni-popup-message type="error" message="电话格式不正确" :duration="2000"></uni-popup-message>
+		</uni-popup>
+		<uni-popup ref="popup_success" type="message">
+			<uni-popup-message type="success" message="修改成功" :duration="2000"></uni-popup-message>
 		</uni-popup>
 	</view>
 </template>
@@ -161,14 +134,24 @@
 			if (config.checkToken()) {
 				userApi.select().then(data => {
 					if (typeof data === "undefined") {
-						this.$refs.popup_serve_error.open('top')
-					} else if (data.code == 200) {
+						uni.showToast({
+							title: '服务器错误',
+							icon: "error",
+							mask: true,
+							duration: 2000
+						})
+					} else if (data.code != 200) {
+						uni.showToast({
+							title: data.msg,
+							icon: "error",
+							mask: true,
+							duration: 2000
+						})
+					} else {
 						this.user = Object.assign({}, data.data)
 						this.user.studentId = data.data.student_id
 						this.user.gmtCreate = data.data.gmt_create
 						this.user.gmtModified = data.data.gmt_modified
-					} else {
-						this.$refs.popup_information_error.open('top')
 					}
 				})
 			} else {
@@ -178,22 +161,16 @@
 			}
 		},
 		methods: {
-			
 			getGender() {
 				return config.getGender(this.user.gender)
 			},
 			update() {
-				console.log("试图更新")
-				console.log(this.user);
-				if (this.user.studentId == '' || this.user.password == '' || this.user.name == '') {
-					this.$refs.popup_error.open('top')
-				} else if (this.user.phone.length != 0 && !config.checkPhone(this.user.phone)) {
+				if (this.user.phone.length != 0 && !config.checkPhone(this.user.phone)) {
 					this.$refs.popup_error_phone.open('top')
 				} else if (this.user.email.length != 0 && !config.checkEmail(this.user.email)) {
 					this.$refs.popup_error_email.open('top')
 				} else {
-					
-					userApi.updateById(this.user.id,this.user).then(data => {
+					userApi.updateById(this.user.id, this.user).then(data => {
 						if (typeof data === "undefined") {
 							uni.showToast({
 								title: '服务器错误',
@@ -201,29 +178,27 @@
 								mask: true,
 								duration: 2000
 							})
+						} else if (data.code != 200) {
+							uni.showToast({
+								title: data.msg,
+								icon: "error",
+								mask: true,
+								duration: 2000
+							})
 						} else {
-							if (data.code == 200) {
-								let token = data.data.token
-								config.saveTokenFroce(token)
-								uni.showToast({
-									title: '修改成功！',
-									icon: "success",
-									mask: true,
-									duration: 2000
+							let token = data.data.token
+							config.saveTokenFroce(token)
+							uni.showToast({
+								title: '修改成功！',
+								icon: "success",
+								mask: true,
+								duration: 2000
+							})
+							setTimeout(() => {
+								uni.reLaunch({
+									url: '../person/person'
 								})
-								setTimeout(() => {
-									uni.reLaunch({
-										url: '../person/person'
-									})
-								}, config.waitTime)
-							} else {
-								uni.showToast({
-									title: '注册失败：' + data.msg,
-									icon: "error",
-									mask: true,
-									duration: 2000
-								})
-							}
+							}, config.waitTime)
 						}
 					})
 				}
