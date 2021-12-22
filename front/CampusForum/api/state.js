@@ -90,12 +90,15 @@ export function selectCondition(page = 0, pageSize = 10, userId, userName, title
 // 主页推荐
 export function recommend(page = 0, pageSize = 10) {
 	let url = modelUrl + `/recommend`
-	let token = config.getToken()
-
-	return {
-		total: 1,
-		item: []
+	let data = {
+		page: page,
+		pageSize: pageSize
 	}
+	return request.service({
+		url: url,
+		data: data,
+		method: 'GET'
+	})
 }
 
 // 点赞状态
