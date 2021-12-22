@@ -301,8 +301,9 @@ namespace WebApi.Controllers
 
                     int follower = _coreDbContext.Set<Follow>().Count(d => d.user_id == user.id);
                     int following = _coreDbContext.Set<Follow>().Count(d => d.follower_id == user.id);
+                    Hobby hobby = _coreDbContext.Set<Hobby>().Where(d => d.user_id == id).FirstOrDefault();
 
-                    UserRet userRet = new UserRet(user, false, follower, following);
+                    UserRet userRet = new UserRet(user, hobby, false, follower, following);
                     return new Code(200, "成功", userRet);
                 }
                 else
@@ -311,9 +312,10 @@ namespace WebApi.Controllers
 
                     int follower = _coreDbContext.Set<Follow>().Count(d => d.user_id == user.id);
                     int following = _coreDbContext.Set<Follow>().Count(d => d.follower_id == user.id);
+                    Hobby hobby = _coreDbContext.Set<Hobby>().Where(d => d.user_id == id).FirstOrDefault();
 
                     int count = _coreDbContext.Set<Follow>().Count(d => d.user_id == user_id && d.follower_id == id);
-                    UserRet userRet = new UserRet(user, count != 0, follower, following);
+                    UserRet userRet = new UserRet(user, hobby, count != 0, follower, following);
                     return new Code(200, "成功", userRet);
                 }
             }
@@ -350,9 +352,10 @@ namespace WebApi.Controllers
                 {
                     follower = _coreDbContext.Set<Follow>().Count(d => d.user_id == user.id);
                     following = _coreDbContext.Set<Follow>().Count(d => d.follower_id == user.id);
+                    Hobby hobby = _coreDbContext.Set<Hobby>().Where(d => d.user_id == user.id).FirstOrDefault();
 
                     int count = _coreDbContext.Set<Follow>().Count(d => d.user_id == user.id && d.follower_id == id);
-                    UserRet userRet = new UserRet(user, count != 0, follower, following);
+                    UserRet userRet = new UserRet(user, hobby, count != 0, follower, following);
 
                     userRetList.Add(userRet);
                 }
@@ -393,9 +396,10 @@ namespace WebApi.Controllers
 
                     follower = _coreDbContext.Set<Follow>().Count(d => d.user_id == follow.follower_id);
                     following = _coreDbContext.Set<Follow>().Count(d => d.follower_id == follow.follower_id);
+                    Hobby hobby = _coreDbContext.Set<Hobby>().Where(d => d.user_id == id).FirstOrDefault();
 
                     int count = _coreDbContext.Set<Follow>().Count(d => d.user_id == follow.follower_id && d.follower_id == id);
-                    UserRet userRet = new UserRet(user, count != 0, follower, following);
+                    UserRet userRet = new UserRet(user, hobby, count != 0, follower, following);
                     userRetList.Add(userRet);
                 }
 
@@ -448,8 +452,9 @@ namespace WebApi.Controllers
 
                     follower = _coreDbContext.Set<Follow>().Count(d => d.user_id == queryUser[i].student_id);
                     following = _coreDbContext.Set<Follow>().Count(d => d.follower_id == queryUser[i].student_id);
+                    Hobby hobby = _coreDbContext.Set<Hobby>().Where(d => d.user_id == id).FirstOrDefault();
 
-                    UserRet userRet = new UserRet(user, true, follower, following);
+                    UserRet userRet = new UserRet(user, hobby, true, follower, following);
                     userRetList.Add(userRet);
                 }
 
@@ -490,8 +495,9 @@ namespace WebApi.Controllers
 
                     follower = _coreDbContext.Set<Follow>().Count(d => d.user_id == follow.user_id);
                     following = _coreDbContext.Set<Follow>().Count(d => d.follower_id == follow.user_id);
+                    Hobby hobby = _coreDbContext.Set<Hobby>().Where(d => d.user_id == id).FirstOrDefault();
 
-                    UserRet userRet = new UserRet(user, true, follower, following);
+                    UserRet userRet = new UserRet(user, hobby, true, follower, following);
                     userRetList.Add(userRet);
                 }
 
