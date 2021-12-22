@@ -24,7 +24,7 @@ namespace CampusForum.Controllers
         //需要注意，这里返回与存入数据库的url并不是可以直接调用的，需要在url字符串前加上端口
         //例如我给的url是\image\1.png，但你需要在这个url前加上localhost:xxxx才能直接调用图片
         [HttpPost("insert/{album_id}")]
-        public Code InsertPictureByAlbumId(IFormFile photo)
+        public Code InsertPictureByAlbumId([FromForm(Name ="file")] IFormFile photo)
         {
             string token = HttpContext.Request.Headers["token"];
             string album_idStr = RouteData.Values["album_id"].ToString();
@@ -84,7 +84,7 @@ namespace CampusForum.Controllers
             var album = _coreDbContext.Album.Find(album_id);
             if (album == null) return new Code(404, "没有这个相册", null);
             if (album.user_id != user_id) return new Code(403, "没有使用权限", null);
-            var picture = _coreDbContext.Album_picture.Skip(page * pageSize).Take(pageSize).Select(b => new { id = b.id, name = b.name, url = b.url });
+            var picture = _coreDbContext.Album_picture.Where(c => c.album_id == album_id).Skip(page * pageSize).Take(pageSize).Select(b => new { id = b.id, name = b.name, url = b.url });
             if (picture == null) return new Code(404, "这页没有图片", null);
             return new Code(200, "成功", new { item = picture });
         }

@@ -78,6 +78,11 @@
 		},
 		methods: {
 			refresh() {
+				let temp = uni.getStorageSync('refreshState')
+				if (temp === true) {
+					uni.setStorageSync('refreshState', false)
+					this.isRefresh = true
+				}
 				if (config.checkToken()) {
 					if (this.isRefresh) {
 						this.isRefresh = false

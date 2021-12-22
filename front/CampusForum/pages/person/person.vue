@@ -95,8 +95,8 @@
 				</view>
 			</view>
 		</view>
-
-		<button v-if="power" class="bottom_button function" @click="manage()">管理页面</button>
+		<button v-if="power" class="bottom_button manager" @click="manage()">管理页面</button>
+		<button v-if="power" class="bottom_button function" @click="updateUser()">修改信息</button>
 		<button class="bottom_button logout" @click="logout()">退出登陆</button>
 
 		<view class="bottom_tips">
@@ -173,6 +173,9 @@
 				uni.navigateTo({
 					url: '/pages/manage/manage',
 				})
+			},
+			updateUser() {
+				console.log('修改个人信息')
 			},
 			logout() {
 				userApi.logout().then(data => {
@@ -319,6 +322,10 @@
 
 	.function {
 		background-image: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);
+	}
+	
+	.manager {
+		background-image: linear-gradient(to right, #43e97b 0%, #38f9d7 100%);
 	}
 
 	.logout {

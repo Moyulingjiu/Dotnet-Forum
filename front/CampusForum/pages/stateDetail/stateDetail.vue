@@ -3,6 +3,7 @@
 		<view class="title">
 			<h1>{{ state.title }}</h1>
 			<image :src="state.like?likeIcon:unlikeIcon" @click="like()"></image>
+			<text>{{ state.likeNumber }}</text>
 		</view>
 		<view class="avater">
 			<image :src="state.userAvater" mode="aspectFill"></image>
@@ -22,11 +23,15 @@
 </template>
 
 <script>
+	import * as stateApi from "../../api/state.js"
+	import * as config from "../../utils/config.js"
+	
 	export default {
 		data() {
 			return {
 				likeIcon: '../../static/like_active.png', // 点赞图标
 				unlikeIcon: '../../static/like.png', // 未点赞图标
+				stateId: 0,
 				state: {
 					id: 2,
 					title: '小石潭记',
@@ -36,12 +41,43 @@
 					text: '  从小丘西行百二十步，隔篁竹，闻水声，如鸣珮环，心乐之。伐竹取道，下见小潭，水尤清冽。全石以为底，近岸，卷石底以出，为坻，为屿，为嵁，为岩。青树翠蔓，蒙络摇缀，参差披拂。(珮 通：佩)\n  潭中鱼可百许头，皆若空游无所依。日光下澈，影布石上，佁然不动；俶尔远逝，往来翕忽。似与游者相乐。(下澈 一作：下彻)\n潭西南而望，斗折蛇行，明灭可见。其岸势犬牙差互，不可知其源。\n坐潭上，四面竹树环合，寂寥无人，凄神寒骨，悄怆幽邃。以其境过清，不可久居，乃记之而去。\n  同游者：吴武陵，龚古，余弟宗玄。隶而从者，崔氏二小生，曰恕己，曰奉壹。',
 					share: true,
 					gmtCreate: '2021年7月20日 20:00',
-					like: false
+					like: false,
+					likeNumber: 0
 				},
 				comment: ''
 			}
 		},
+		onLoad(options) {
+			this.stateId = options.id
+		},
+		onShow() {
+			this.refresh()
+		},
 		methods: {
+			refresh() {
+				if (!config.checkToken()) {
+					uni.redirectTo({
+						url: '../login/login'
+					})
+				} else if (this.stateId == 0 || typeof this.stateId === "undefined") {
+					uni.switchTab({
+						url: '../index/index'
+					})
+				} else {
+					stateApi.select(this.stateId).then(data => {
+						this.state.id = data.data.id
+						this.state.title = data.data.title
+						this.state.text = data.data.text
+						this.state.userId = data.data.user_id
+						this.state.userName = data.data.user_name
+						this.state.userAvater = data.data.user_avater
+						this.state.share = data.data.share_state
+						this.state.gmtCreate = data.data.gmt_create
+						this.state.like = data.data.like
+						this.state.likeNumber = data.data.likeNumber
+					})
+				}
+			},
 			like() {
 				this.state.like = !this.state.like
 			}
@@ -65,6 +101,13 @@
 		margin-left: 20rpx;
 		width: 80rpx;
 		height: 80rpx;
+	}
+	
+	.title text {
+		margin-top: 5rpx;
+		margin-left: 10rpx;
+		font-size: 75rpx;
+		color: #7F7F7F;
 	}
 	
 	.avater {
