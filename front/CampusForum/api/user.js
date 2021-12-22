@@ -89,14 +89,18 @@ export function updateById(id,{
 // 删除用户
 export function deleteById(id) {
 	let url = modelUrl + `/delete/${id}`
-	// 请求
-	return true
+	return request.service({
+		url: url,
+		data: {},
+		method: 'POST'
+	})
 }
 
 
 // 根据id获取用户数据
 export function select(id=0) {
 	let url = modelUrl + `/select/${id}`
+	console.log(url)
 	return request.service({
 		url: url,
 		data: {},
@@ -108,14 +112,14 @@ export function select(id=0) {
 export function selectAll(page=0, pageSize=10) {
 	let url = modelUrl + `/selectAll`
 	let data = {
-		token: token,
 		page: page,
 		pageSize: pageSize
 	}
-	return {
-		total: 1,
-		item: []
-	}
+	return request.service({
+		url: url,
+		data: data,
+		method: 'GET'
+	})
 }
 
 // 模糊查询
@@ -143,21 +147,29 @@ export function selectCondition(page=0, pageSize=10, id, studentId, name, colleg
 // 获取粉丝列表
 export function followers(page=0, pageSize=10) {
 	let url = modelUrl + `/followers`
-	// 模拟请求
-	return {
-		total: 1,
-		item: []
+	let data = {
+		page: page,
+		pageSize: pageSize
 	}
+	return request.service({
+		url: url,
+		data: data,
+		method: 'GET'
+	})
 }
 
 // 获取关注列表
 export function followings(page=0, pageSize=10) {
 	let url = modelUrl + `/followings`
-	// 模拟请求
-	return {
-		total: 1,
-		item: []
+	let data = {
+		page: page,
+		pageSize: pageSize
 	}
+	return request.service({
+		url: url,
+		data: data,
+		method: 'GET'
+	})
 }
 
 // 关注某人
