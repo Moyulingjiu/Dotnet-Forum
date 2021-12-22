@@ -1,6 +1,5 @@
 <template>
 	<view>
-		<view>{{password.oldPassword}}</view>
 		<view class="person_card">
 			<view class="information_card flex_box">
 				<view class="information_container">
@@ -84,9 +83,21 @@
 			register() {
 				console.log(this.password);
 				if (this.password.oldPassword == '') {
-					this.$popup_error_wrong_password.open('top')
-				} else if(this.password.newPassword!=password.confirmPassword){
-					this.$popup_error_diffrent_password.open('top')
+					//this.$popup_error_wrong_password.open('top')
+					uni.showToast({
+						title: '旧密码错误不能为空',
+						icon: 'error',
+						duration: 2000,
+						position: 'top'
+					});
+				} else if(this.password.newPassword!=this.password.confirmPassword){
+					//this.$popup_error_diffrent_password.open('top')
+					uni.showToast({
+						title: '两次输入的新密码不相同',
+						icon: 'error',
+						duration: 2000,
+						position: 'top'
+					});
 				}
 				else {
 					userApi.updatePassword(this.password.oldPassword,this.password.newPassword).then(data => {
@@ -109,7 +120,7 @@
 							setTimeout(() => {
 								uni.reLaunch({
 									url: `/pages/person/person`
-								})
+								}) 
 							}, config.waitTime)
 						}
 					})

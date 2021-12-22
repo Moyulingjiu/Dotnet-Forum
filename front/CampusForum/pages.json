@@ -133,7 +133,14 @@
                 "enablePullDownRefresh": false
             }
             
-        }
+        },{
+			"path" : "pages/personPasswordChange/personPasswordChange",
+			"style" :                                                                                    
+			{
+			    "navigationBarTitleText": "",
+			    "enablePullDownRefresh": false
+			}
+		}
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

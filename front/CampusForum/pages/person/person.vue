@@ -96,7 +96,8 @@
 			</view>
 		</view>
 		<button v-if="power" class="bottom_button manager" @click="manage()">管理页面</button>
-		<button v-if="power" class="bottom_button function" @click="updateUser()">修改信息</button>
+		<button class="bottom_button function" @click="updateUser()">修改信息</button>
+		<button class="bottom_button function" @click="updatePassword()">修改密码</button>
 		<button class="bottom_button logout" @click="logout()">退出登陆</button>
 
 		<view class="bottom_tips">
@@ -177,6 +178,12 @@
 			updateUser() {
 				uni.navigateTo({
 					url: `/pages/personInfoChange/personInfoChange`,
+				});
+			},
+			updatePassword() {
+				console.log(this.user.studentId);
+				uni.navigateTo({
+					url: `/pages/personPasswordChange/personPasswordChange?studentId=`+String(this.user.studentId),
 				});
 			},
 			logout() {
