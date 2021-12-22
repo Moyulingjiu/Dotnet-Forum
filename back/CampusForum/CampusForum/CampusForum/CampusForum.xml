@@ -84,9 +84,9 @@
             <param name="pageSize"></param>
             <returns></returns>
         </member>
-        <member name="M:CampusForum.Controllers.StateController.getRecommendState(System.Int32,System.Int32)">
+        <member name="M:CampusForum.Controllers.StateController.getRecommentState(System.Int32,System.Int32)">
             <summary>
-            主页推荐的状态 未测试
+            主页推荐的状态
             </summary>
             <param name="page"></param>
             <param name="pageSize"></param>
@@ -135,11 +135,11 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:WebApi.Controllers.UserController.updateInfo(CampusForum.Models.UserReq)">
+        <member name="M:WebApi.Controllers.UserController.updateInfo(CampusForum.Models.UserModifiedReq)">
             <summary>
             更新用户数据
             </summary>
-            <param name="userReq"></param>
+            <param name="userModifiedReq"></param>
             <returns></returns>
         </member>
         <member name="M:WebApi.Controllers.UserController.UpdatePassword(CampusForum.Models.PasswordReq)">
@@ -177,11 +177,10 @@
             <param name="pageSize"></param>
             <returns></returns>
         </member>
-        <member name="M:WebApi.Controllers.UserController.getUserByCondition(System.String,System.Int64,System.String,System.String,System.Int32,System.Int32,System.Int32)">
+        <member name="M:WebApi.Controllers.UserController.getUserByCondition(System.Int64,System.String,System.String,System.Int32,System.Int32,System.Int32)">
             <summary>
             模糊条件查询用户 测试查询姓名“张”正确返回 其余未测试
             </summary>
-            <param name="token"></param>
             <param name="studentId"></param>
             <param name="name"></param>
             <param name="college"></param>
