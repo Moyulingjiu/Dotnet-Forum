@@ -21,7 +21,11 @@
 			</view>
 		</view>
 		
-		<view class="person_card">
+		<view class="person_card show_detail" v-if="!showDetail" @click="changeShowDetail()">
+			点击展示详细个人信息
+		</view>
+		
+		<view class="person_card" v-if="showDetail">
 			<view class="information_card flex_box">
 				<view class="information_container">
 					<view class="information_title">
@@ -95,7 +99,7 @@
 		</view>
 
 		<view class="person_card"
-			v-if="user.primarySchool+user.juniorHighSchool+user.highSchool+user.university!=''">
+			v-if="showDetail&&user.primarySchool+user.juniorHighSchool+user.highSchool+user.university!=''">
 			<view v-if="user.primarySchool!=''" class="information_card flex_box">
 				<view class="information_container">
 					<view class="information_title">
@@ -104,9 +108,6 @@
 					<view class="information_text">
 						<text>{{ user.primarySchool }}</text>
 					</view>
-				</view>
-				<view @click="updateUser()">
-					<image class="information_edit" src="../../static/right.png" mode="aspectFill"></image>
 				</view>
 			</view>
 			<view v-if="user.juniorHighSchool!=''" class="information_card flex_box">
@@ -118,9 +119,6 @@
 						<text>{{ user.juniorHighSchool }}</text>
 					</view>
 				</view>
-				<view @click="updateUser()">
-					<image class="information_edit" src="../../static/right.png" mode="aspectFill"></image>
-				</view>
 			</view>
 			<view v-if="user.highSchool!=''" class="information_card flex_box">
 				<view class="information_container">
@@ -130,9 +128,6 @@
 					<view class="information_text">
 						<text>{{ user.highSchool }}</text>
 					</view>
-				</view>
-				<view @click="updateUser()">
-					<image class="information_edit" src="../../static/right.png" mode="aspectFill"></image>
 				</view>
 			</view>
 			<view v-if="user.university!=''" class="information_card flex_box">
@@ -144,14 +139,11 @@
 						<text>{{ user.university }}</text>
 					</view>
 				</view>
-				<view @click="updateUser()">
-					<image class="information_edit" src="../../static/right.png" mode="aspectFill"></image>
-				</view>
 			</view>
 		</view>
 
 		<view class="person_card"
-			v-if="user.hobby.other+user.hobby.music+user.hobby.book+user.hobby.movie+user.hobby.game+user.hobby.sport!=''">
+			v-if="showDetail&&user.hobby.other+user.hobby.music+user.hobby.book+user.hobby.movie+user.hobby.game+user.hobby.sport!=''">
 			<view v-if="user.hobby.other!=''" class="information_card flex_box">
 				<view class="information_container">
 					<view class="information_title">
@@ -160,9 +152,6 @@
 					<view class="information_text">
 						<text>{{ user.hobby.other }}</text>
 					</view>
-				</view>
-				<view @click="updateUser()">
-					<image class="information_edit" src="../../static/right.png" mode="aspectFill"></image>
 				</view>
 			</view>
 			<view v-if="user.hobby.music!=''" class="information_card flex_box">
@@ -174,9 +163,6 @@
 						<text>{{ user.hobby.music }}</text>
 					</view>
 				</view>
-				<view @click="updateUser()">
-					<image class="information_edit" src="../../static/right.png" mode="aspectFill"></image>
-				</view>
 			</view>
 			<view v-if="user.hobby.book!=''" class="information_card flex_box">
 				<view class="information_container">
@@ -186,9 +172,6 @@
 					<view class="information_text">
 						<text>{{ user.hobby.book }}</text>
 					</view>
-				</view>
-				<view @click="updateUser()">
-					<image class="information_edit" src="../../static/right.png" mode="aspectFill"></image>
 				</view>
 			</view>
 			<view v-if="user.hobby.movie!=''" class="information_card flex_box">
@@ -200,9 +183,6 @@
 						<text>{{ user.hobby.movie }}</text>
 					</view>
 				</view>
-				<view @click="updateUser()">
-					<image class="information_edit" src="../../static/right.png" mode="aspectFill"></image>
-				</view>
 			</view>
 			<view v-if="user.hobby.game!=''" class="information_card flex_box">
 				<view class="information_container">
@@ -212,9 +192,6 @@
 					<view class="information_text">
 						<text>{{ user.hobby.game }}</text>
 					</view>
-				</view>
-				<view @click="updateUser()">
-					<image class="information_edit" src="../../static/right.png" mode="aspectFill"></image>
 				</view>
 			</view>
 			<view v-if="user.hobby.sport!=''" class="information_card flex_box">
@@ -226,15 +203,31 @@
 						<text>{{ user.hobby.sport }}</text>
 					</view>
 				</view>
-				<view @click="updateUser()">
-					<image class="information_edit" src="../../static/right.png" mode="aspectFill"></image>
+			</view>
+		</view>
+
+		<view class="state_box" v-for="(item,index) in stateList">
+			<view class="state_title" @click="stateDetail(index)">
+				<text>{{ item.title }}</text>
+			</view>
+			<view class="state_author" @click="userdetail(index)">
+				<image :src="item.userAvater"></image>
+				<text>{{ item.userName }}</text>
+			</view>
+			<view class="state_text" @click="stateDetail(index)">
+				<text space="emsp">{{ item.text }}</text>
+			</view>
+			<view class="state_bottom">
+				<text class="state_date">{{ item.gmtCreate }}</text>
+				<view class="state_icon">
+					<image src="../../static/comment.png" mode="aspectFill" @click="stateDetail(index)"></image>
+					<image :src="item.like?likeIcon:unlikeIcon" @click="like(index)"></image>
 				</view>
 			</view>
 		</view>
 
-
 		<view class="bottom_tips">
-			<text>{{ '- 到底了 -' }}</text>
+			<text>{{ (page >= total - 1) ? bottomTipsNoMore : bottomTips }}</text>
 		</view>
 
 		<uni-popup ref="popup_success" type="message">
@@ -246,12 +239,16 @@
 <script>
 	import * as config from "../../utils/config.js"
 	import * as userApi from "../../api/user.js"
+	import * as stateApi from "../../api/state.js"
 
 	export default {
 		data() {
 			return {
-				subscribeIcon: '../../static/like_active.png', // 点赞图标
-				unsubscribedIcon: '../../static/like.png', // 未点赞图标
+				showDetail: false,
+				likeIcon: '../../static/like_active.png', // 点赞图标
+				unlikeIcon: '../../static/like.png', // 未点赞图标
+				bottomTips: '- 上拉加载更多 -', // 底部提示
+				bottomTipsNoMore: '- 到底了 -', // 底部提示
 				id: 0,
 				user: {
 					studentId: 22920191234,
@@ -282,7 +279,21 @@
 						comic: '',
 						sport: ''
 					}
-				}
+				},
+				page: 0,
+				total: 1,
+				stateList: [{
+					id: 1,
+					title: '测试状态标题1',
+					userId: 1, // 用户id
+					userName: '墨羽翎玖', // 用户名
+					userAvater: '../../static/avater.jpg', // 头像
+					text: '测试的正文1',
+					share: true,
+					gmtCreate: '2021年7月20日 20:00',
+					like: true
+				}],
+				loadLock: false // 上拉加载的锁
 			}
 		},
 		onLoad(options) {
@@ -290,6 +301,16 @@
 		},
 		onShow() {
 			this.refresh()
+		},
+		onReachBottom() {
+			if (!this.loadLock) { // 加锁
+				this.loadLock = true
+				if (this.page < this.total - 1) {
+					this.page++
+					this.loadData()
+				}
+				this.loadLock = false
+			}
 		},
 		methods: {
 			refresh() {
@@ -353,6 +374,10 @@
 							this.user.hobby.sport = data.data.hobby.sport
 						}
 					})
+					this.page = 0
+					this.total = 1
+					this.stateList = []
+					this.loadData()
 				}
 			},
 			getGender() {
@@ -407,6 +432,44 @@
 					})
 				}
 			},
+			loadData(page = this.page) {
+				stateApi.selectAll(page, 10, this.id).then(data => {
+					if (typeof data === "undefined") {
+						uni.showToast({
+							title: '服务器错误',
+							icon: "error",
+							mask: true,
+							duration: 2000
+						})
+					} else if (data.code != 200) {
+						uni.showToast({
+							title: data.msg,
+							icon: "error",
+							mask: true,
+							duration: 2000
+						})
+					} else {
+						this.total = data.data.total
+						for (let key in data.data.items) {
+							let stateItem = {
+								id: data.data.items[key].id,
+								title: data.data.items[key].title,
+								userId: data.data.items[key].userId,
+								userName: data.data.items[key].userName,
+								userAvater: data.data.items[key].userAvater, // 头像
+								text: data.data.items[key].text,
+								share: data.data.items[key].share_state,
+								gmtCreate: data.data.items[key].gmt_create,
+								like: data.data.items[key].like
+							}
+							this.stateList.push(stateItem)
+						}
+					}
+				})
+			},
+			changeShowDetail() {
+				this.showDetail = !this.showDetail
+			}
 		}
 	}
 </script>
@@ -432,6 +495,11 @@
 		padding-bottom: 10rpx;
 		border-radius: 10rpx;
 		box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+	}
+	
+	.show_detail {
+		text-align: center;
+		font-size: 35rpx;
 	}
 
 	.person_avater {
@@ -550,5 +618,91 @@
 		text-align: center;
 		background: #b5aa90;
 		/* box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); */
+	}
+	
+	
+	.state_box {
+		width: 90%;
+		margin-left: 5%;
+		margin-right: 5%;
+		margin-top: 40rpx;
+		padding-left: 10rpx;
+		padding-top: 10rpx;
+		padding-bottom: 10rpx;
+		border-radius: 10rpx;
+		background-color: #F5F5F5;
+		box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+	}
+	
+	.state_box .state_title {
+		font-size: 45rpx;
+		font-weight: bold;
+		/* text-shadow: 1px 1px 4px #000000; */
+	}
+	
+	.state_box .state_author {
+		display: flex;
+		margin-top: 10rpx;
+		margin-left: 10rpx;
+	}
+	
+	.state_box .state_author image {
+		height: 45rpx;
+		width: 45rpx;
+		border-radius: 50%;
+	}
+	
+	.state_box .state_author text {
+		margin-top: 3rpx;
+		margin-left: 10rpx;
+		font-weight: bold;
+		font-size: 30rpx;
+		color: #6F6F6F;
+	}
+	
+	.state_box .state_text {
+		padding-left: 10rpx;
+		padding-right: 10rpx;
+	}
+	
+	.state_box .state_text text {
+		margin-top: 20rpx;
+		font-size: 35rpx;
+		display: -webkit-box;
+		/*弹性伸缩盒子模型显示*/
+		-webkit-box-orient: vertical;
+		/*排列方式*/
+		-webkit-line-clamp: 8;
+		/*显示文本行数*/
+		overflow: hidden;
+		/*溢出隐藏*/
+	}
+	
+	.state_box .state_bottom {
+		padding-top: 20rpx;
+		position: relative;
+	}
+	
+	.state_box .state_bottom .state_date {
+		color: #A8A8A8;
+		font-size: 30rpx;
+		width: 80%;
+		position: relative;
+		display: inline-block;
+	}
+	
+	.state_box .state_bottom .state_icon {
+		margin-bottom: 10rpx;
+		margin-right: 10rpx;
+		height: 30rpx;
+		position: absolute;
+		bottom: 0;
+		right: 0;
+	}
+	
+	.state_box .state_bottom .state_icon image {
+		margin-left: 15rpx;
+		width: 30rpx;
+		height: 30rpx;
 	}
 </style>
