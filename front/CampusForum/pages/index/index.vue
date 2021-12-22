@@ -158,7 +158,7 @@
 				let id = this.stateList[index].id
 				if (this.stateList[index].like) {
 					stateApi.unlike(id).then(data => {
-						if (typeof data === "undefined") {
+						if (typeof data == "undefined") {
 							uni.showToast({
 								title: '服务器错误',
 								icon: "error",

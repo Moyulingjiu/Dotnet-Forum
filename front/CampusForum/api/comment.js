@@ -1,13 +1,21 @@
 import * as config from '../utils/config.js'
+import * as request from './request.js'
 export const modelUrl =  `/comment`
 
 // 插入评论
 export function insert(stateId, fatherId, replyId, text) {
 	let url = modelUrl + `/insert`
-	let token = config.getToken()
-	
-	let commentId = 1
-	return commentId
+	let data = {
+		state_id: stateId,
+		father_id: fatherId,
+		reply_id: replyId,
+		text: text
+	}
+	return request.service({
+		url: url,
+		data: data,
+		method: 'POST'
+	})
 }
 
 // 删除评论
