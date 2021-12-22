@@ -411,7 +411,7 @@ namespace WebApi.Controllers
 
                 var queryResult = _coreDbContext.Set<User>().Select(d => d);
                 //if(user.id!=null) queryResult = _coreDbContext.Set<User>().Select(d => d);
-                if (studentId.ToString() != null) queryResult = queryResult.Where(d => d.student_id == studentId);
+                if (studentId!=0) queryResult = queryResult.Where(d => d.student_id == studentId);
                 if (name != null) queryResult = queryResult.Where(d => d.name.Contains(name)||d.name.StartsWith(name)||d.name.EndsWith(name));
                 if (college != null) queryResult = queryResult.Where(d => d.college.Contains(college)||d.college.StartsWith(college)||d.college.EndsWith(college));
                 if (gender== 0|| gender == 1|| gender == 2) queryResult = queryResult.Where(d => d.gender == gender);

@@ -73,12 +73,18 @@ export function selectAll(page = 0, pageSize = 10, userId = 0) {
 // 条件查询状态
 export function selectCondition(page = 0, pageSize = 10, userId, userName, title) {
 	let url = modelUrl + `/selectCondition`
-	let token = config.getToken()
-
-	return {
-		total: 1,
-		item: []
+	
+	let data={
+		page:page,
+		pageSize:pageSize,
+		title:title
 	}
+
+	return request.service({
+		url: url,
+		data: data,
+		method: 'GET'
+	})
 }
 
 // 主页推荐
