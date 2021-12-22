@@ -60,10 +60,32 @@ export function logout() {
 }
 
 // 修改用户数据
-export function updateById(id) {
+export function updateById(id,{
+		name: name,
+		college: college,
+		gender: gender,
+		avater: avater,
+		description: description,
+		birthday: birthday,
+		phone: phone,
+		email: email}) 
+	{
 	let url = modelUrl + `/update/${id}`
+	let data={
+		name: name,
+		college: college,
+		gender: gender,
+		avater: avater,
+		description: description,
+		birthday: birthday,
+		phone: phone,
+		email: email}
 	// 请求
-	return true
+	return request.service({
+		url: url,
+		data: data,
+		method: 'POST'
+	})
 }
 
 // 删除用户

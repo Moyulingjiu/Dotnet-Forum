@@ -150,9 +150,8 @@
 			},
 			search() {
 				// 搜索
-				var that=this;
 				uni.navigateTo({
-					url: `/pages/search/search?searchCondition`+that.searchCondition
+					url: `/pages/search/search?searchCondition=`+this.searchCondition
 				});
 			},
 			clearCondition() {

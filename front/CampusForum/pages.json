@@ -116,6 +116,15 @@
             }
             
         }
+        ,{
+            "path" : "pages/personInfoChange/personInfoChange",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

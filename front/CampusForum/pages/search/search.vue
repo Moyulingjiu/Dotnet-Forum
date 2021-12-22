@@ -4,10 +4,10 @@
 			<image class="search_icon" src="../../static/search.png"></image>
 			<input class="search_area" type="text" v-model="searchCondition" confirm-type="search" @confirm="search()"
 				placeholder="搜索用户状态等" />
-			<image class="search_cancel" v-if="searchCondition.length!=0" src="../../static/cancel.png"
+			<image class="search_cancel" v-if="searchCondition.length != 0" src="../../static/cancel.png"
 				@click="clearCondition()"></image>
 		</view>
-		
+
 		<view class="tabs">
 		    <scroll-view scroll-x class="scroll-h" >
 		    <block v-for="(tab,index) in tabBars" :key="tab.id">
@@ -18,7 +18,7 @@
 		    </block>            
 		    </scroll-view>
 		</view>
-		
+
 		<view v-if="tabIndex==0"><!-- 综合界面 -->
 			<uni-list>
 					<!-- title、note设置标题和小文字 -->
@@ -30,7 +30,7 @@
 					</uni-list-item>
 			</uni-list>
 		</view>
-		
+
 		<view v-if="tabIndex==1"><!-- 用户界面 -->
 			<uni-list>
 					<!-- title、note设置标题和小文字 -->
@@ -42,7 +42,7 @@
 					</uni-list-item>
 			</uni-list>
 		</view>
-		
+
 		<view v-if="tabIndex==2">
 			<view>当前输入：
 
@@ -51,17 +51,17 @@
 				<view style="text-align: center;">学院:{{searchCollege}}</view>
 				<view style="text-align: center;">系别:{{searchDepartment}}</view>
 				<view style="text-align: center;">专业:{{searchSpeciality}}</view>
-				
+
 			</view>
-			<picker @change="bindPickerChange" :range="array">	<!-- //@change用于获取下拉框改变的值，:range用于循环遍历array数组将数组内容循环 -->
+			<picker @change="bindPickerChange" :range="array">	
 				<label>点击选择输入类型：</label>
-				<label class="mid">{{array[index]}}</label>		<!-- //循环array数组index为索引 -->
+				<label class="mid">{{array[index]}}</label>	
 			</picker>
 
 			<view class="search_box">
 				<input class="search_area" type="text" v-model="searchCondition" confirm-type="search" @confirm="search()"
 					placeholder="搜索用户状态等" />
-				<image class="search_cancel" v-if="searchCondition.length!=0" src="../../static/cancel.png"
+				<image class="search_cancel" :v-if="searchCondition.length!=0" src="../../static/cancel.png"
 					@click="clearCondition()"></image>
 			</view>
 		</view>
@@ -119,7 +119,9 @@
 			}
 		},
 		onLoad(prop){
+			this.searchCondition="";
 			this.searchCondition=prop.searchCondition;
+			console.log(this.searchCondition);
 		},
 		methods: {
 			clearCondition() {
@@ -155,7 +157,6 @@
 </script>
 
 <style>
-
 	.search_box {
 		display: flex;
 		background-color: #F3F3F3;
