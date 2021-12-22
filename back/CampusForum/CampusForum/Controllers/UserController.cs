@@ -57,6 +57,12 @@ namespace WebApi.Controllers
                     _coreDbContext.SaveChanges();
                     long userId = user.id;
 
+                    //更新hobby数据库
+                    Hobby hobby = new Hobby();
+                    hobby.user_id = userId;
+                    _coreDbContext.Set<Hobby>().Add(hobby);
+                    _coreDbContext.SaveChanges();
+
                     return new Code(200, "成功", new { id = userId, token = token });
                 }
 
@@ -150,27 +156,13 @@ namespace WebApi.Controllers
                 bool nameChange = tokenUser.name == userModifiedReq.name;
                 
                 Hobby existHobby = _coreDbContext.Set<Hobby>().Where(d => d.user_id == id).FirstOrDefault();
-                //新建爱好
-                if(existHobby == null)
-                {
-                    using(CoreDbContext _coreDbContext = new CoreDbContext())
-                    {
-                        Hobby hobby = new Hobby(userModifiedReq.hobbyReq);
-                        hobby.gmt_create = DateTime.Now;
-                        hobby.gmt_modified = DateTime.Now;
-                        hobby.user_id = id;
-                        _coreDbContext.Set<Hobby>().Add(hobby);
-                        _coreDbContext.SaveChanges();
-                    }
-                }
+                
                 //修改爱好
-                else 
-                {
-                    existHobby.changeHobby(userModifiedReq.hobbyReq);
-                    existHobby.gmt_modified = DateTime.Now;
-                    _coreDbContext.Set<Hobby>().Update(existHobby);
-                    _coreDbContext.SaveChanges();
-                }
+                existHobby.changeHobby(userModifiedReq.hobbyReq);
+                existHobby.gmt_modified = DateTime.Now;
+                _coreDbContext.Set<Hobby>().Update(existHobby);
+                _coreDbContext.SaveChanges();
+
 
                 //更新user对应的gmt_modified
                 tokenUser.gmt_modified = DateTime.Now;
@@ -194,24 +186,11 @@ namespace WebApi.Controllers
             user.gmt_modified = DateTime.Now;
 
             Hobby modifiedHobby = _coreDbContext.Set<Hobby>().Where(d => d.user_id == userId).FirstOrDefault();
-            //新建爱好
-            if (modifiedHobby == null)
-            {
-                Hobby hobby = new Hobby(userModifiedReq.hobbyReq);
-                hobby.gmt_create = DateTime.Now;
-                hobby.gmt_modified = DateTime.Now;
-                hobby.user_id = id;
-                _coreDbContext.Set<Hobby>().Add(hobby);
-                _coreDbContext.SaveChanges();
-            }
-            //修改爱好
-            else
-            {
-                modifiedHobby.changeHobby(userModifiedReq.hobbyReq);
-                modifiedHobby.gmt_modified = DateTime.Now;
-                _coreDbContext.Set<Hobby>().Update(modifiedHobby);
-                _coreDbContext.SaveChanges();
-            }
+
+            modifiedHobby.changeHobby(userModifiedReq.hobbyReq);
+            modifiedHobby.gmt_modified = DateTime.Now;
+            _coreDbContext.Set<Hobby>().Update(modifiedHobby);
+            _coreDbContext.SaveChanges();
 
             using (CoreDbContext _coreDbContext = new CoreDbContext())
             {
@@ -411,7 +390,6 @@ namespace WebApi.Controllers
         /// <summary>
         /// 模糊条件查询用户 测试查询姓名“张”正确返回 其余未测试
         /// </summary>
-        /// <param name="token"></param>
         /// <param name="studentId"></param>
         /// <param name="name"></param>
         /// <param name="college"></param>
@@ -420,11 +398,11 @@ namespace WebApi.Controllers
         /// <param name="pageSize"></param>
         /// <returns></returns>
         [HttpGet("selectCondition")]
-        public Code getUserByCondition(string token,long studentId,string name,string college,int gender, int page=0, int pageSize=10)
+        public Code getUserByCondition(long studentId,string name,string college,int gender, int page=0, int pageSize=10)
         {
             using (CoreDbContext _coreDbContext = new CoreDbContext())
             {
-                //string token = HttpContext.Request.Headers["token"];
+                string token = HttpContext.Request.Headers["token"];
 
                 long id = JwtToid(token);
                 if (id == 0) return new Code(404, "token错误", null);
