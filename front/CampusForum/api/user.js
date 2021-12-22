@@ -190,3 +190,16 @@ export function unfollow(id) {
 		method: 'POST'
 	})
 }
+
+export function updatePassword(oldpassword,newpassword){
+	let url=modelUrl+`/password/update`
+	let data={
+		old_password:oldpassword,
+		new_password:newpassword
+	}
+	return request.service({
+		url: url,
+		data: data,
+		method: 'POST'
+	})
+}

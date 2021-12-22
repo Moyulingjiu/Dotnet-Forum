@@ -45,7 +45,7 @@
 			<uni-popup-message type="error" message="两次输入的新密码不相同" :duration="3000"></uni-popup-message>
 		</uni-popup>
 		<uni-popup ref="popup_success" type="message">
-			<uni-popup-message type="success" message="新建成功" :duration="3000"></uni-popup-message>
+			<uni-popup-message type="success" message="修改成功" :duration="3000"></uni-popup-message>
 		</uni-popup>
 	</view>
 </template>
