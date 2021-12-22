@@ -374,7 +374,7 @@ namespace CampusForum.Controllers
 
                 var queryResult = _coreDbContext.Set<State>().Select(d => d);
                 if(userId.ToString()!=null) queryResult = queryResult.Where(d => d.user_id == userId);
-                if (userName != null) queryResult = queryResult.Join(User,).Where(d => d.name.Contains(name) || d.name.StartsWith(name) || d.name.EndsWith(name));
+                //if (userName != null) queryResult = queryResult.Join(User,).Where(d => d.name.Contains(name) || d.name.StartsWith(name) || d.name.EndsWith(name));
                 if (title != null) queryResult = queryResult.Where(d => d.title.Contains(title) || d.title.StartsWith(title) || d.title.EndsWith(title));
                 List<State> queryUser = queryResult.ToList();
 
