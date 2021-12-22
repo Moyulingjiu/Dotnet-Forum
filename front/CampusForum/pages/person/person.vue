@@ -8,10 +8,10 @@
 					<view class="person_description">
 						<text>{{ user.description }}</text>
 					</view>
-					<text class="person_follow">关注：</text>
-					<text class="person_follow">{{ user.following }}</text>
-					<text class="person_follow inner_split">粉丝：</text>
-					<text class="person_follow">{{ user.follower }}</text>
+					<text class="person_follow" @click="followDetail(0)">关注：</text>
+					<text class="person_follow" @click="followDetail(0)">{{ user.following }}</text>
+					<text class="person_follow inner_split" @click="followDetail(1)">粉丝：</text>
+					<text class="person_follow" @click="followDetail(1)">{{ user.follower }}</text>
 				</view>
 			</view>
 		</view>
@@ -201,6 +201,11 @@
 						})
 					}
 				})
+			},
+			followDetail(tab) {
+				uni.navigateTo({
+					url: `/pages/followDetail/followDetail?index=${tab}`,
+				});
 			}
 		}
 	}

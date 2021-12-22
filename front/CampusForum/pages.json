@@ -125,6 +125,15 @@
             }
             
         }
+        ,{
+            "path" : "pages/followDetail/followDetail",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
