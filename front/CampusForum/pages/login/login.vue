@@ -59,38 +59,41 @@
 					});
 					return
 				}
-				userApi.login(this.studentId, this.password)
-					.then(data => {
-						let result = true
-						if (typeof data === "undefined") {
-							result = false
-						} else {
-							let token = data.data.token
-							if (config.saveToken(token)) {
-								uni.showToast({
-									title: '登陆成功',
-									icon: "success",
-									mask: true,
-									duration: 2000
-								})
-								setTimeout(() => {
-									uni.reLaunch({
-										url: '../index/index'
-									})
-								}, config.waitTime)
-							} else {
-								result = false
-							}
-						}
-						if (!result) {
+				uni.showLoading({
+					title: 'loading'
+				})
+				userApi.login(this.studentId, this.password).then(data => {
+					let result = true
+					if (typeof data === "undefined") {
+						result = false
+					} else {
+						let token = data.data.token
+						if (config.saveToken(token)) {
 							uni.showToast({
-								title: '学号或密码错误',
-								icon: "error",
+								title: '登陆成功',
+								icon: "success",
 								mask: true,
 								duration: 2000
-							});
+							})
+							setTimeout(() => {
+								uni.reLaunch({
+									url: '../index/index'
+								})
+							}, config.waitTime)
+						} else {
+							result = false
 						}
-					})
+					}
+					if (!result) {
+						uni.showToast({
+							title: '学号或密码错误',
+							icon: "error",
+							mask: true,
+							duration: 2000
+						});
+					}
+				})
+				uni.hideLoading()
 			},
 			register() {
 				uni.redirectTo({

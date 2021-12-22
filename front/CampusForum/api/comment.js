@@ -37,21 +37,27 @@ export function select(commentId) {
 // 获取一个状态的所有一级评论
 export function selectAllByStateId(stateId, page=0, pageSize=10) {
 	let url = modelUrl + `/selectAll/${stateId}`
-	let token = config.getToken()
-	
-	return {
-		total: 1,
-		item: []
+	let data = {
+		page: page,
+		pageSize: pageSize
 	}
+	return request.service({
+		url: url,
+		data: data,
+		method: 'GET'
+	})
 }
 
 // 获取一个评论的所有子评论
 export function selectAllReply(commentId, page=0, pageSize=10) {
-	let url = modelUrl + `/selectAllReply/${stateId}`
-	let token = config.getToken()
-	
-	return {
-		total: 1,
-		item: []
+	let url = modelUrl + `/selectAllReply/${commentId}`
+	let data = {
+		page: page,
+		pageSize: pageSize
 	}
+	return request.service({
+		url: url,
+		data: data,
+		method: 'GET'
+	})
 }

@@ -103,8 +103,8 @@
 						this.isRefresh = false
 						this.stateList = []
 						this.page = 0
+						this.loadData()
 					}
-					this.loadData()
 				} else {
 					uni.redirectTo({
 						url: '../login/login'
