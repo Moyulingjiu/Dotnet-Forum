@@ -16,3 +16,12 @@ export function getPictureByAlbumId(id,{page, pageSize=20}) {
 	})
 }
 
+export function deletePicture(pritureId)
+{
+	let url=modelUrl+`/delete/${pritureId}`
+	return request.service({
+		url: url,
+		method: 'DELETE'
+	})
+}
+

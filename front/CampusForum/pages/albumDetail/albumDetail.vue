@@ -5,11 +5,15 @@
 		<view class="container":style="{'--picWidth':this.picWidth}">
 			<view v-for="(item,index) in this.picture.Item">
 				<template>
-					<image :src="item.url" mode="aspectFill" class="text" @click="clickPic(item.Id)"></image>
+					<image :src="item.url" mode="aspectFill" class="text" @click="clickPic(index)"></image>
 				</template>
 			</view>
 		</view>
+		<uni-popup ref="popup_success" type="message">
+			<uni-popup-message type="success" message="删除成功" :duration="3000"></uni-popup-message>
+		</uni-popup>
 	</view>
+	
 </template>
 
 
@@ -19,6 +23,7 @@
 	export default {
 		data() {
 			return {
+				delete:0,
 				albumId:0,
 				windowWidth:0,
 				picWidthNum:0,
@@ -46,6 +51,30 @@
 					]
 				}
 			}
+		},
+		onNavigationBarButtonTap:function(e){
+			if(this.delete==0){
+				this.delete=1
+				uni.showToast({
+					title: '进入删除模式，点击相片删除，再次点击删除按钮退出删除模式',
+					icon: "error",
+					mask: true,
+					duration: 2000
+				})
+			}
+			else {
+				this.delete=0
+				uni.showToast({
+					title: '退出删除模式',
+					icon: "error",
+					mask: true,
+					duration: 2000
+				})
+			}
+		    console.log(e.text);//提交
+		
+		    console.log(e.fontSize);//16px
+			
 		},
 		onLoad(prop) {
 			//获取picture数据，还要传page和pagesize
@@ -89,11 +118,76 @@
 		},
 		
 		methods: {
-			// clickPic(pictureId){
-			// 	uni.navigateTo({
-			// 	                url: '/pages/albumDetail/albumDetail?pictureId='+{pictureId}.pictureId,
-			// 	            });
-			// },
+			refresh() {
+				if (config.checkToken()) {
+					let len
+					this.picture=pictureApi.getPictureByAlbumId(this.albumId,this.pageInfo).then(data => {
+								console.log("ok");
+								len=data.data.item.length
+								console.log(data);
+								this.picture={totle:0,Item:[]};
+								console.log("len:"+len);
+								for(let i=0;i<len;i++)
+								{
+									console.log("i:"+i);
+									let temp={"id":data.data.item[i].id,
+												"name":data.data.item[i].name,
+												"url":data.data.item[i].url}
+									this.picture.Item.push(temp);
+									console.log(this.picture.Item)
+									this.picture.Item[i].url="/api"+String(this.picture.Item[i].url).replace(/\\/g, "/");
+								}
+								console.log(this.picture.Item);
+							})
+				} else {
+					uni.redirectTo({
+						url: '../login/login'
+					})
+				}
+			},
+			clickPic(index){
+				let that=this
+				console.log(this.delete)
+				if(this.delete==0){
+					window.location.href=String(this.picture.Item[index].url).replace(/\/api/g, "http://localhost:20673")
+					uni.navigateTo({
+									url: String(this.picture.Item[index].url).replace(/\/api/g, "http://localhost:20673")
+								});
+				}
+				else
+				{
+					uni.showModal({
+					    title: '确定要删除此相片吗?',
+					    content: ' ',
+					    success: function(res) {
+					        if (res.confirm) {
+					           console.log(that.picture)
+								pictureApi.deletePicture(that.picture.Item[index].id).then(data=>{
+									console.log(data)
+									if (typeof data === "undefined") {
+										uni.showToast({
+											title: '服务器错误',
+											icon: "error",
+											mask: true,
+											duration: 2000
+										})
+									} else if (data.code == 200) {
+										that.$refs.popup_success.open('top')
+										that.refresh();
+									} else {
+										uni.showToast({
+											title: '删除失败:'+ data.msg,
+											icon: "error",
+											mask: true,
+											duration: 2000
+										})
+									}
+								})
+					        }
+					    }
+					});
+				}
+			},
 			chooseAndUploadPic(){
 				var that=this;
 			    uni.chooseImage({

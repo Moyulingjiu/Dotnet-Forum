@@ -120,7 +120,7 @@
 										that.refresh();
 									} else {
 										uni.showToast({
-											title: '删除失败'+ data.msg,
+											title: '删除失败:'+ data.msg,
 											icon: "error",
 											mask: true,
 											duration: 2000

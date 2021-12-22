@@ -77,7 +77,29 @@
 			"path": "pages/albumDetail/albumDetail",
 			"style": {
 				"navigationBarTitleText": "相册详情",
-				"enablePullDownRefresh": false
+				"enablePullDownRefresh": false,
+				"app-plus":{
+				    "titleNView":{
+				        "buttons":[
+				            // {
+				            //     "text":"编辑",
+				            //     "type":"none",
+				            //     "color":"#007AFF",
+				            //     "background":"#000000",
+				            //     "fontSize":"16px"
+				            //     "float":"left"
+				            // }
+							// ,
+				            {
+				                "text":"删除",
+				                "type":"none",
+				                "color":"#FF0000",
+				                "background":"#000000",
+				                "fontSize":"16px"
+				                }
+				            ]
+				    }
+				}
 			}
 
 		}, 
