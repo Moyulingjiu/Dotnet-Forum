@@ -63,9 +63,20 @@
 					title: 'loading'
 				})
 				userApi.login(this.studentId, this.password).then(data => {
-					let result = true
 					if (typeof data === "undefined") {
-						result = false
+						uni.showToast({
+							title: '服务器错误',
+							icon: "error",
+							mask: true,
+							duration: 2000
+						})
+					} else if (data.code != 200) {
+						uni.showToast({
+							title: data.msg,
+							icon: "error",
+							mask: true,
+							duration: 2000
+						})
 					} else {
 						let token = data.data.token
 						if (config.saveToken(token)) {
@@ -83,14 +94,6 @@
 						} else {
 							result = false
 						}
-					}
-					if (!result) {
-						uni.showToast({
-							title: '学号或密码错误',
-							icon: "error",
-							mask: true,
-							duration: 2000
-						});
 					}
 				})
 				uni.hideLoading()
