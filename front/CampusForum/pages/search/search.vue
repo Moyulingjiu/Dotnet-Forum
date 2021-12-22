@@ -189,7 +189,7 @@
 					this.comprehensiveInfo=data.data.items;
 					for(let i=0;i<data.data.items.length;i++)
 					{
-						this.comprehensiveInfo[i].avater='/api'+String(this.comprehensiveInfo[i].avater).replace(/\\/g, "/")
+						this.comprehensiveInfo[i].userAvater='/api'+String(this.comprehensiveInfo[i].userAvater).replace(/\\/g, "/")
 					}
 					console.log(data)
 					// setTimeout(() => {
@@ -223,7 +223,8 @@
 					{
 						this.userInfo[i].avater='/api'+String(this.userInfo[i].avater).replace(/\\/g, "/")
 					}
-					console.log(data)
+					console.log(this.userInfo)
+					console.log(this.applicationList)
 					// setTimeout(() => {
 					// 	uni.reLaunch({
 					// 		url: `/pages/album/album`
