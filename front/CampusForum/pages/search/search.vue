@@ -7,21 +7,28 @@
 			<image class="search_cancel" v-if="searchCondition.length != 0" src="../../static/cancel.png"
 				@click="clearCondition()"></image>
 		</view>
+	<!-- <view>
+		<view v-if="tabIndex!=2" class="search_box">
+			<image class="search_icon" src="../../static/search.png"></image>
+			<input class="search_area" type="text" v-model="searchCondition" confirm-type="search" @confirm="search()"
+				placeholder="搜索用户状态等" />
+			<image class="search_cancel" v-if="searchCondition.length != 0" src="../../static/cancel.png"
+				@click="clearCondition()"></image>
+		</view>
 
 		<view class="tabs">
 		    <scroll-view scroll-x class="scroll-h" >
 		    <block v-for="(tab,index) in tabBars" :key="tab.id">
 		    <view class="uni-tab-item" :class="{'uni-tab-item-title-active' :tabIndex==index}" @tap="tabtap(index)">
-		    <!-- 1 {{tab.name}} -->
+
 				<text class="uni-tab-item-title" :class="tabIndex==index ? 'uni-tab-item-title-active' : ''">{{tab.name}}</text>
 		    </view>
 		    </block>            
 		    </scroll-view>
 		</view>
 
-		<view v-if="tabIndex==0"><!-- 综合界面 -->
+		<view v-if="tabIndex==0">
 			<uni-list>
-					<!-- title、note设置标题和小文字 -->
 					<uni-list-item irection="row" v-for="(item,index) in comprehensiveInfo" :key="index" :title="item.title":note="item.description"
 				@click="clickMessage(item.id)" link>
 						<template v-slot:header>
@@ -31,9 +38,8 @@
 			</uni-list>
 		</view>
 
-		<view v-if="tabIndex==1"><!-- 用户界面 -->
+		<view v-if="tabIndex==1">
 			<uni-list>
-					<!-- title、note设置标题和小文字 -->
 					<uni-list-item irection="row" v-for="(item,index) in userInfo" :key="index" :title="item.username":note="item.description"
 				@click="clickUser(item.id)" link>
 						<template v-slot:header>
@@ -64,6 +70,54 @@
 				<image class="search_cancel" :v-if="searchCondition.length!=0" src="../../static/cancel.png"
 					@click="clearCondition()"></image>
 			</view>
+		</view>
+	</view> -->
+	
+		<view class="big">
+			<view class="trade">
+				<view class="texts" :class="curr==0?'active':''" data-index="0" @tap="setCurr">
+					综合
+				</view>
+				<view class="texts" :class="curr==1?'active':''" data-index="1" @tap="setCurr">
+					用户
+				</view>
+			</view>
+			<swiper :current="curr" @change="setCurr">
+				<swiper-item>
+					<scroll-view>
+						<view v-for="(item,index) in comprehensiveInfo">
+							<view class="person_container">
+								<image class="user_avater" :src="item.coverUrl"></image>
+								<view class="user">
+									<text class="user_name">{{ item.title }}</text>
+									<br />
+									<text class="user_description">{{ item.description }}</text>
+								</view>
+								<!-- <view :class="item.isFollow?'follow':'unfollow'">
+									{{ item.isFollow?'已关注':'关注' }}
+								</view> -->
+							</view>
+						</view>
+					</scroll-view>
+				</swiper-item>
+				<swiper-item>
+					<scroll-view>
+						<view v-for="(item,index) in userInfo">
+							<view class="person_container">
+								<image class="user_avater" :src="item.imgUrl"></image>
+								<view class="user">
+									<text class="user_name">{{ item.username }}</text>
+									<br />
+									<text class="user_description">{{ item.description }}</text>
+								</view>
+								<!-- <view :class="item.isFollow?'follow':'unfollow'">
+									{{ item.isFollow?'已关注':'关注' }}
+								</view> -->
+							</view>
+						</view>
+					</scroll-view>
+				</swiper-item>
+			</swiper>
 		</view>
 	</view>
 </template>
@@ -273,5 +327,76 @@
 	
 	  top: 0; left: 0; bottom: 0; right: 0;
 	
+	}
+	
+	
+	.trade {
+		margin-top: 30rpx;
+		width: 100%;
+		overflow: auto;
+	}
+	
+	.trade view {
+		text-align: center;
+		width: 50%;
+		float: left;
+		font-size: 40rpx;
+		font-weight: bold;
+		padding-bottom: 10rpx;
+	}
+	
+	.trade .texts.active {
+		border-bottom: 8rpx solid #00A1D6;
+	}
+	
+	.person_container {
+		margin-bottom: 20rpx;
+		padding: 10rpx;
+		display: flex;
+	}
+	
+	.user_avater {
+		width: 100rpx;
+		height: 100rpx;
+		border-radius: 50%;
+	}
+	
+	.user {
+		margin-left: 15rpx;
+	}
+	
+	.user_name {
+		font-size: 45rpx;
+		font-weight: bold;
+	}
+	
+	.user_description {
+		font-size: 35rpx;
+		color: #555555;
+	}
+	
+	.unfollow {
+		position: absolute;
+		right: 30rpx;
+		font-size: 40rpx;
+		color: white;
+		margin-top: 30rpx;
+		width: 200rpx;
+		height: 60rpx;
+		text-align: center;
+		background: #83cbac;
+	}
+	
+	.follow {
+		position: absolute;
+		right: 30rpx;
+		font-size: 40rpx;
+		color: white;
+		margin-top: 30rpx;
+		width: 200rpx;
+		height: 60rpx;
+		text-align: center;
+		background: #b5aa90;
+		/* box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); */
 	}
 </style>
