@@ -9,7 +9,7 @@
 		<button class="bottom" @click="sendstate()">发布状态</button>
 		<view class="state_share">
 			<text>是否分享该状态</text>
-			<switch :checked="getShare()" @change="switchShare" />
+			<switch :checked="getShare()" @change="switchShare()" />
 		</view>
 		<uni-popup ref="popup_success" type="message">
 			<uni-popup-message type="success" message="发布成功" :duration="1500"></uni-popup-message>
@@ -81,14 +81,14 @@
 				}
 			},
 			switchShare() {
-				if (this.state.isShare == 0) {
-					this.state.isShare = 1
+				if (this.state.shareState == 0) {
+					this.state.shareState = 1
 				} else {
-					this.state.isShare = 0
+					this.state.shareState = 0
 				}
 			},
 			getShare() {
-				if (this.state.isShare == 0)
+				if (this.state.shareState == 0)
 					return false
 				return true
 			}

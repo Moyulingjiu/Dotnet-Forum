@@ -352,6 +352,7 @@
 
 							this.user.following = data.data.following
 							this.user.follower = data.data.follower
+							this.user.follow = data.data.follow
 
 							this.user.gmtCreate = data.data.gmt_create
 							this.user.gmtModified = data.data.gmt_modified
@@ -469,6 +470,12 @@
 			},
 			changeShowDetail() {
 				this.showDetail = !this.showDetail
+			},
+			stateDetail(index) {
+				let id = this.stateList[index].id
+				uni.navigateTo({
+					url: `/pages/stateDetail/stateDetail?id=${id}`
+				})
 			}
 		}
 	}

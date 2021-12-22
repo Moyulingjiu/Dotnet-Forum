@@ -199,6 +199,7 @@ namespace CampusForum.Controllers
                 //State对象
                 State state = _coreDbContext.Set<State>().Find(state_id);
                 if (state == null) return new Code(404, "没有记录", false);
+                if (state.share_state == 0) return new Code(404, "状态不可见", false);
                 if(state.disable == 1) return new Code(404,"状态已被删除",false);
 
                 //StateText对象
@@ -294,7 +295,7 @@ namespace CampusForum.Controllers
 
                 if (userId == 0)
                 {
-                    int totalOwn = _coreDbContext.Set<State>().Where(d => d.user_id == id && d.disable == 0 && d.share_state == 1).Count();
+                    int totalOwn = _coreDbContext.Set<State>().Where(d => d.user_id == id && d.disable == 0).Count();
                     int pagesOwn = totalOwn / pageSize;
                     if (totalOwn % pageSize != 0) pagesOwn += 1;
 
@@ -329,7 +330,7 @@ namespace CampusForum.Controllers
                 if (page > ((pages - 1) > 0 ? (pages - 1) : 0)) return new Code(400, "页码超过记录数", null);
 
                 //只返回当前用户未被删除的状态
-                List<State> stateList = _coreDbContext.Set<State>().Where(d => d.user_id == userId && d.disable == 0 && d.share_state == 1 && d.share_state == 1).OrderByDescending(d => d.gmt_create).Skip(page * pageSize).Take(pageSize).ToList();
+                List<State> stateList = _coreDbContext.Set<State>().Where(d => d.user_id == userId && d.disable == 0 && d.share_state == 1).OrderByDescending(d => d.gmt_create).Skip(page * pageSize).Take(pageSize).ToList();
 
                 List<StateRet> stateRetList = new List<StateRet>();
                 int likenum, userlike;
@@ -373,7 +374,7 @@ namespace CampusForum.Controllers
 
                 var queryResult = _coreDbContext.Set<State>().Select(d => d);
                 if(userId.ToString()!=null) queryResult = queryResult.Where(d => d.user_id == userId);
-                //if (userName != null) queryResult = queryResult.Where(d => d.name.Contains(name) || d.name.StartsWith(name) || d.name.EndsWith(name));
+                //if (userName != null) queryResult = queryResult.Join(User,).Where(d => d.name.Contains(name) || d.name.StartsWith(name) || d.name.EndsWith(name));
                 if (title != null) queryResult = queryResult.Where(d => d.title.Contains(title) || d.title.StartsWith(title) || d.title.EndsWith(title));
                 List<State> queryUser = queryResult.ToList();
 
@@ -448,10 +449,6 @@ namespace CampusForum.Controllers
             }
             return new Code(200, "成功", new { total = (size - 1) / pageSize + 1, item = rets });
         }
-
-
-        
-
 
         /// <summary>
         /// 点赞状态

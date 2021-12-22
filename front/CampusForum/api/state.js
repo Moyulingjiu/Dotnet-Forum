@@ -6,7 +6,7 @@ export const modelUrl = `/state`
 export function insert({
 	title,
 	text,
-	shareState = 0
+	shareState
 }) {
 	let url = modelUrl + `/insert`
 	let data = {
