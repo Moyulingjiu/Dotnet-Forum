@@ -302,7 +302,7 @@ namespace CampusForum.Controllers
                     if (page > ((pagesOwn - 1) > 0 ? (pagesOwn - 1) : 0)) return new Code(400, "页码超过记录数", null);
 
                     //只返回当前用户未被删除分享的状态
-                    List<State> stateOwnList = _coreDbContext.Set<State>().Where(d => d.user_id == id && d.disable == 0 && d.share_state == 1).OrderByDescending(d => d.gmt_create).Skip(page * pageSize).Take(pageSize).ToList();
+                    List<State> stateOwnList = _coreDbContext.Set<State>().Where(d => d.user_id == id && d.disable == 0).OrderByDescending(d => d.gmt_create).Skip(page * pageSize).Take(pageSize).ToList();
 
                     List<StateRet> stateOwnRetList = new List<StateRet>();
                     int likeOwnnum, userOwnlike;
@@ -323,14 +323,30 @@ namespace CampusForum.Controllers
                     return new Code(200, "成功", new { total = pagesOwn, items = stateOwnRetList });
                 }
 
-                int total = _coreDbContext.Set<State>().Where(d => d.user_id == userId && d.disable == 0 && d.share_state == 1).Count();
+                int total;
+                if (userId == id) // 如果是自己需要查询全部状态
+                {
+                    total = _coreDbContext.Set<State>().Where(d => d.user_id == userId && d.disable == 0).Count();
+                }
+                else
+                {
+                    total = _coreDbContext.Set<State>().Where(d => d.user_id == userId && d.disable == 0 && d.share_state == 1).Count();
+                }
                 int pages = total / pageSize;
                 if (total % pageSize != 0) pages += 1;
 
                 if (page > ((pages - 1) > 0 ? (pages - 1) : 0)) return new Code(400, "页码超过记录数", null);
 
                 //只返回当前用户未被删除的状态
-                List<State> stateList = _coreDbContext.Set<State>().Where(d => d.user_id == userId && d.disable == 0 && d.share_state == 1).OrderByDescending(d => d.gmt_create).Skip(page * pageSize).Take(pageSize).ToList();
+                List<State> stateList;
+                if (userId == id) // 如果是自己则可以看见全部状态
+                {
+                    stateList = _coreDbContext.Set<State>().Where(d => d.user_id == userId && d.disable == 0).OrderByDescending(d => d.gmt_create).Skip(page * pageSize).Take(pageSize).ToList();
+                }
+                else
+                {
+                    stateList = _coreDbContext.Set<State>().Where(d => d.user_id == userId && d.disable == 0 && d.share_state == 1).OrderByDescending(d => d.gmt_create).Skip(page * pageSize).Take(pageSize).ToList();
+                }
 
                 List<StateRet> stateRetList = new List<StateRet>();
                 int likenum, userlike;
