@@ -11,15 +11,36 @@
 		<swiper :current="curr" @change="setCurr">
 			<swiper-item>
 				<scroll-view>
-					<view class="person_container" v-for="(item,index) in follower">
-						<image class="user_avater" src="../../static/avater.jpg"></image>
-						<view class="user_name">{{ item.name }}</view>
+					<view v-for="(item,index) in following">
+						<view class="person_container">
+							<image class="user_avater" src="../../static/avater.jpg"></image>
+							<view class="user">
+								<text class="user_name">{{ item.name }}</text>
+								<br />
+								<text class="user_description">{{ item.description }}</text>
+							</view>
+							<view :class="item.isFollow?'follow':'unfollow'">
+								{{ item.isFollow?'已关注':'关注' }}
+							</view>
+						</view>
 					</view>
 				</scroll-view>
 			</swiper-item>
 			<swiper-item>
 				<scroll-view>
-					bbb
+					<view v-for="(item,index) in follower">
+						<view class="person_container">
+							<image class="user_avater" src="../../static/avater.jpg"></image>
+							<view class="user">
+								<text class="user_name">{{ item.name }}</text>
+								<br />
+								<text class="user_description">{{ item.description }}</text>
+							</view>
+							<view :class="item.isFollow?'follow':'unfollow'">
+								{{ item.isFollow?'已关注':'关注' }}
+							</view>
+						</view>
+					</view>
 				</scroll-view>
 			</swiper-item>
 		</swiper>
@@ -34,17 +55,39 @@
 		data() {
 			return {
 				curr: 0,
-				follower: [
+				follower: [ // 粉丝
 					{
 						id: 1,
 						name: '用户',
-						avater: '../../static/avater.jpg'
+						avater: '../../static/avater.jpg',
+						description: '这个人没有个性签名',
+						isFollow: true
+					},
+					{
+						id: 1,
+						name: '用户',
+						avater: '../../static/avater.jpg',
+						description: '这个人没有个性签名',
+						isFollow: false
 					}
 				],
 				followerPage: 0,
 				followerTotal: 1,
 				following: [
-
+					{
+						id: 1,
+						name: '用户',
+						avater: '../../static/avater.jpg',
+						description: '这个人没有个性签名',
+						isFollow: true
+					},
+					{
+						id: 1,
+						name: '用户',
+						avater: '../../static/avater.jpg',
+						description: '这个人没有个性签名',
+						isFollow: true
+					}
 				],
 				followingPage: 0,
 				followingTotal: 1
@@ -180,14 +223,55 @@
 	.trade .texts.active {
 		border-bottom: 8rpx solid #00A1D6;
 	}
-	
+
 	.person_container {
+		margin-bottom: 20rpx;
+		padding: 10rpx;
 		display: flex;
 	}
-	
+
 	.user_avater {
-		width: 80rpx;
-		height: 80rpx;
+		width: 100rpx;
+		height: 100rpx;
 		border-radius: 50%;
+	}
+
+	.user {
+		margin-left: 15rpx;
+	}
+
+	.user_name {
+		font-size: 45rpx;
+		font-weight: bold;
+	}
+
+	.user_description {
+		font-size: 35rpx;
+		color: #555555;
+	}
+
+	.unfollow {
+		position: absolute;
+		right: 30rpx;
+		font-size: 40rpx;
+		color: white;
+		margin-top: 30rpx;
+		width: 200rpx;
+		height: 60rpx;
+		text-align: center;
+		background: #83cbac;
+	}
+
+	.follow {
+		position: absolute;
+		right: 30rpx;
+		font-size: 40rpx;
+		color: white;
+		margin-top: 30rpx;
+		width: 200rpx;
+		height: 60rpx;
+		text-align: center;
+		background: #b5aa90;
+		/* box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); */
 	}
 </style>
