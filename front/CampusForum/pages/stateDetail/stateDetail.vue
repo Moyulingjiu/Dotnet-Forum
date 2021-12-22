@@ -214,7 +214,8 @@
 							this.state.text = data.data.text
 							this.state.userId = data.data.userId
 							this.state.userName = data.data.userName
-							this.state.userAvater = data.data.userAvater
+							this.state.userAvater = data.data.userAvater							
+							this.state.userAvater = "/api" + String(this.state.userAvater).replace(/\\/g, "/")
 							this.state.share = data.data.shareState
 							this.state.gmtCreate = data.data.gmt_create
 							this.state.like = data.data.like
@@ -265,6 +266,7 @@
 									replyText: '',
 									replyCommentId: 1
 								}
+								commentItem.userAvater = "/api" + String(commentItem.userAvater).replace(/\\/g, "/")
 								commentApi.selectAllReply(commentItem.id).then(subdata => {
 									if (typeof subdata == 'undefined') {
 										uni.showToast({
@@ -296,6 +298,7 @@
 												reply: '',
 												replyUserId: 0
 											}
+											subCommentItem.userAvater = "/api" + String(subCommentItem.userAvater).replace(/\\/g, "/")
 											if (subCommentItem.replyId != subCommentItem.fatherId) {
 												commentApi.select(subCommentItem.id).then(data3 => {
 													if (typeof data3 != 'undefined' && data3.code == 200) {
@@ -346,6 +349,7 @@
 								reply: '',
 								replyUserId: 0
 							}
+							subCommentItem.userAvater = "/api" + String(subCommentItem.userAvater).replace(/\\/g, "/")
 							if (subCommentItem.replyId != subCommentItem.fatherId) {
 								commentApi.select(subCommentItem.id).then(data3 => {
 									if (typeof data3 != 'undefined' && data3.code == 200) {

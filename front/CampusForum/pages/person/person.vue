@@ -109,8 +109,7 @@
 			</view>
 		</view>
 
-		<view class="person_card"
-			v-if="user.primarySchool+user.juniorHighSchool+user.highSchool+user.university!=''">
+		<view class="person_card" v-if="user.primarySchool+user.juniorHighSchool+user.highSchool+user.university!=''">
 			<view v-if="user.primarySchool!=''" class="information_card flex_box">
 				<view class="information_container">
 					<view class="information_title">
@@ -324,7 +323,8 @@
 							this.user.college = data.data.college
 							this.user.departmet = data.data.department
 							this.user.gender = data.data.gender
-							this.user.avater = data.data.avater
+							// this.user.avater = data.data.avater
+							this.user.avater = "/api" + String(data.data.avater).replace(/\\/g, "/")
 							this.user.description = data.data.description
 							this.user.phone = data.data.phone
 							this.user.email = data.data.email
@@ -343,8 +343,7 @@
 								.juniorHighSchool
 							this.user.highSchool = data.data.highSchool == null ? '' : data.data.highSchool
 							this.user.university = data.data.university == null ? '' : data.data.university
-							// this.user.avater="/api"+String(data.data.avater).replace(/\\/g, "/")
-							
+
 							this.user.hobby.other = data.data.hobby.other
 							this.user.hobby.music = data.data.hobby.music
 							this.user.hobby.book = data.data.hobby.book
