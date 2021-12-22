@@ -109,6 +109,32 @@ namespace CampusForum.Controllers
 
             return id;
         }
+        
+        [HttpPost("head/insert")]
+        public Code InsertHeadPicture([FromForm(Name = "file")] IFormFile photo)
+        {
+            string token = HttpContext.Request.Headers["token"];
+            long user_id = JwtToid(token);
+            if (user_id == 0) return new Code(404, "token错误", null);
+
+            string uuid = System.Guid.NewGuid().ToString();
+            string url = @"\head" + "\\" + uuid + photo.FileName;
+            var newPicture = new Album_picture { name = photo.FileName, url = url };
+            newPicture.gmt_create = DateTime.Now;
+            newPicture.gmt_modified = DateTime.Now;
+            _coreDbContext.Set<Album_picture>().Add(newPicture);
+            _coreDbContext.SaveChanges();
+
+            string path = @"wwwroot" + url;
+            using (var stream = System.IO.File.Create(path))
+            {
+                photo.CopyTo(stream);
+            }
+            var user = _coreDbContext.Set<User>().Single(b => b.id == user_id);
+            user.avater = url;
+            _coreDbContext.SaveChanges();
+            return new Code(200, "成功", new { name = photo.FileName, url = url });
+        }
     }
 
 }
