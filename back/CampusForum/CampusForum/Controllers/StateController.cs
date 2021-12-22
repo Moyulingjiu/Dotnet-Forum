@@ -199,7 +199,7 @@ namespace CampusForum.Controllers
                 //State对象
                 State state = _coreDbContext.Set<State>().Find(state_id);
                 if (state == null) return new Code(404, "没有记录", false);
-                if (state.share_state == 0) return new Code(404, "状态不可见", false);
+                if (state.share_state == 0 && state_id != id) return new Code(404, "状态不可见", false);
                 if(state.disable == 1) return new Code(404,"状态已被删除",false);
 
                 //StateText对象
@@ -436,11 +436,11 @@ namespace CampusForum.Controllers
             long user_id = JwtToid(token);
             if (user_id == 0) return new Code(404, "token错误", null);
 
-            List<State> states = _coreDbContext.Set<State>().Where(b => b.user_id != user_id).OrderByDescending(d => d.gmt_create).Skip(page * pageSize).Take(pageSize).ToList();
+            List<State> states = _coreDbContext.Set<State>().Where(b => b.user_id != user_id && b.share_state != 0).OrderByDescending(d => d.gmt_create).Skip(page * pageSize).Take(pageSize).ToList();
             int size = states.Count;
             if (size == 0) return new Code(404, "目前无状态可推荐", null);
 
-            int total = _coreDbContext.Set<State>().Where(b => b.user_id != user_id).Count();
+            int total = _coreDbContext.Set<State>().Where(b => b.user_id != user_id && b.share_state != 0).Count();
             int pages = total / pageSize;
             if (total % pageSize != 0) pages += 1;
 

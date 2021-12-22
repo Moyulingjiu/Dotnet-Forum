@@ -476,6 +476,52 @@
 				uni.navigateTo({
 					url: `/pages/stateDetail/stateDetail?id=${id}`
 				})
+			},
+			like(index) {
+				let id = this.stateList[index].id
+				if (this.stateList[index].like) {
+					stateApi.unlike(id).then(data => {
+						if (typeof data == "undefined") {
+							uni.showToast({
+								title: '服务器错误',
+								icon: "error",
+								mask: true,
+								duration: 2000
+							})
+						} else if (data.code != 200) {
+							uni.showToast({
+								title: data.msg,
+								icon: "error",
+								mask: true,
+								duration: 2000
+							})
+						} else {
+							this.stateList[index].like = false
+							this.$forceUpdate()
+						}
+					})
+				} else {
+					stateApi.like(id).then(data => {
+						if (typeof data === "undefined") {
+							uni.showToast({
+								title: '服务器错误',
+								icon: "error",
+								mask: true,
+								duration: 2000
+							})
+						} else if (data.code != 200) {
+							uni.showToast({
+								title: data.msg,
+								icon: "error",
+								mask: true,
+								duration: 2000
+							})
+						} else {
+							this.stateList[index].like = true
+							this.$forceUpdate()
+						}
+					})
+				}
 			}
 		}
 	}
