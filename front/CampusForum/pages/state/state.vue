@@ -7,10 +7,10 @@
 			</view>
 		</view>
 		<view class="state_box" v-for="(item,index) in stateList">
-			<view class="state_title">
+			<view class="state_title" @click="stateDetail(item.id)">
 				<text>{{ item.title }}</text>
 			</view>
-			<view class="state_text">
+			<view class="state_text" @click="stateDetail(item.id)">
 				<text space="emsp">{{ item.text }}</text>
 			</view>
 			<view class="state_bottom">
@@ -173,6 +173,11 @@
 				let stateId = this.stateList[index].id
 				uni.navigateTo({
 				    url: `/pages/editStatus/updateStatus?id=${stateId}`
+				})
+			},
+			stateDetail(stateId) {
+				uni.navigateTo({
+					url: `/pages/stateDetail/stateDetail?id=${stateId}`
 				})
 			}
 		}

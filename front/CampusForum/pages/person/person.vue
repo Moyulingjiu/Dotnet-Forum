@@ -25,7 +25,7 @@
 						<text>{{ user.studentId }}</text>
 					</view>
 				</view>
-				<view>
+				<view @click="updateUser()">
 					<image class="information_edit" src="../../static/right.png" mode="aspectFill"></image>
 				</view>
 			</view>
@@ -38,7 +38,7 @@
 						<text>{{ user.college }}</text>
 					</view>
 				</view>
-				<view>
+				<view @click="updateUser()">
 					<image class="information_edit" src="../../static/right.png" mode="aspectFill"></image>
 				</view>
 			</view>
@@ -51,7 +51,7 @@
 						<text>{{ getGender() }}</text>
 					</view>
 				</view>
-				<view>
+				<view @click="updateUser()">
 					<image class="information_edit" src="../../static/right.png" mode="aspectFill"></image>
 				</view>
 			</view>
@@ -64,7 +64,7 @@
 						<text>{{ user.phone }}</text>
 					</view>
 				</view>
-				<view>
+				<view @click="updateUser()">
 					<image class="information_edit" src="../../static/right.png" mode="aspectFill"></image>
 				</view>
 			</view>
@@ -77,7 +77,7 @@
 						<text>{{ user.email }}</text>
 					</view>
 				</view>
-				<view>
+				<view @click="updateUser()">
 					<image class="information_edit" src="../../static/right.png" mode="aspectFill"></image>
 				</view>
 			</view>
@@ -90,7 +90,7 @@
 						<text>{{ user.birthday }}</text>
 					</view>
 				</view>
-				<view>
+				<view @click="updateUser()">
 					<image class="information_edit" src="../../static/right.png" mode="aspectFill"></image>
 				</view>
 			</view>
@@ -153,7 +153,6 @@
 							this.$refs.popup_serve_error.open('top')
 						} else if (data.code == 200) {
 							this.user = Object.assign({}, data.data)
-							this.user.studentId = data.data.student_id
 							this.user.gmtCreate = data.data.gmt_create
 							this.user.gmtModified = data.data.gmt_modified
 							this.user.avater="/api"+String(data.data.avater).replace(/\\/g, "/")
