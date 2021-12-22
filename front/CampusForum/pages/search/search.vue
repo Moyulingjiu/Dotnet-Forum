@@ -76,7 +76,7 @@
 		<view class="big">
 			<view class="trade">
 				<view class="texts" :class="curr==0?'active':''" data-index="0" @tap="setCurr">
-					综合
+					状态
 				</view>
 				<view class="texts" :class="curr==1?'active':''" data-index="1" @tap="setCurr">
 					用户
@@ -86,12 +86,12 @@
 				<swiper-item>
 					<scroll-view>
 						<view v-for="(item,index) in comprehensiveInfo">
-							<view class="person_container">
-								<image class="user_avater" :src="item.coverUrl"></image>
+							<view class="person_container" @click="enterState(item.id)">
+								<image class="user_avater" :src="item.userAvater"></image>
 								<view class="user">
 									<text class="user_name">{{ item.title }}</text>
 									<br />
-									<text class="user_description">{{ item.description }}</text>
+									<text class="user_description">{{ item.text }}</text>
 								</view>
 								<!-- <view :class="item.isFollow?'follow':'unfollow'">
 									{{ item.isFollow?'已关注':'关注' }}
@@ -103,10 +103,10 @@
 				<swiper-item>
 					<scroll-view>
 						<view v-for="(item,index) in userInfo">
-							<view class="person_container">
-								<image class="user_avater" :src="item.imgUrl"></image>
+							<view class="person_container" @click="enterUser(item.id)">
+								<image class="user_avater" :src="item.avater"></image>
 								<view class="user">
-									<text class="user_name">{{ item.username }}</text>
+									<text class="user_name">{{ item.name }}</text>
 									<br />
 									<text class="user_description">{{ item.description }}</text>
 								</view>
@@ -133,19 +133,9 @@
 				pageSize:10,
 				
 				curr:0,
-				searchName:"asd",
-				searchNum:"asd",
-				searchCollege:"asd",
-				searchDepartment:"asd",
-				searchSpeciality:"asasdd",
-				
+
 				searchCondition: '', // 搜索条件
-				tabIndex:0,
-				tabBars:[
-				    { name:"综合",id:"application"},
-				    { name:"用户",id:"user"},
-					{name:"test",id:"111"}
-				],
+
 				
 				comprehensiveInfo:[
 					{
@@ -179,8 +169,81 @@
 			this.searchCondition="";
 			this.searchCondition=prop.searchCondition;
 			console.log(this.searchCondition);
+			stateApi.selectCondition(this.page,this.pageSize,null,null,this.searchCondition).then(data => {
+				if (typeof data === "undefined") {
+					uni.showToast({
+						title: '服务器错误',
+						icon: "error",
+						mask: true,
+						duration: 2000
+					})
+				} else if (data.code != 200) {
+					
+					uni.showToast({
+						title: data.msg,
+						icon: "error",
+						mask: true,
+						duration: 2000
+					})
+				} else {
+					this.comprehensiveInfo=data.data.items;
+					for(let i=0;i<data.data.items.length;i++)
+					{
+						this.comprehensiveInfo[i].avater='/api'+String(this.comprehensiveInfo[i].avater).replace(/\\/g, "/")
+					}
+					console.log(data)
+					// setTimeout(() => {
+					// 	uni.reLaunch({
+					// 		url: `/pages/album/album`
+					// 	})
+					// }, config.waitTime)
+				}
+				
+			})
+			
+			userApi.selectCondition(this.page,this.pageSize,null,null,this.searchCondition,null,null,null,null).then(data =>{
+				if (typeof data === "undefined") {
+					uni.showToast({
+						title: '服务器错误',
+						icon: "error",
+						mask: true,
+						duration: 2000
+					})
+				} else if (data.code != 200) {
+					
+					uni.showToast({
+						title: data.msg,
+						icon: "error",
+						mask: true,
+						duration: 2000
+					})
+				} else {
+					this.userInfo=data.data.items;
+					for(let i=0;i<data.data.items.length;i++)
+					{
+						this.userInfo[i].avater='/api'+String(this.userInfo[i].avater).replace(/\\/g, "/")
+					}
+					console.log(data)
+					// setTimeout(() => {
+					// 	uni.reLaunch({
+					// 		url: `/pages/album/album`
+					// 	})
+					// }, config.waitTime)
+				}
+			})
 		},
 		methods: {
+			enterState(stateId){
+				uni.navigateTo({
+				    url: `/pages/stateDetail/stateDetail?id=${stateId}`
+				})
+			},
+			enterUser(userId){
+				console.log(userId)
+				uni.navigateTo({
+				    url: `/pages/otherUsers/otherUsers?id=${userId}`
+				})
+			},
 			setCurr(e) {
 				let thisCurr = e.detail.current || e.currentTarget.dataset.index || 0;
 				this.curr = thisCurr;
@@ -207,7 +270,11 @@
 							duration: 2000
 						})
 					} else {
-						this.comprehensiveInfo=data.data;
+						this.comprehensiveInfo=data.data.items;
+						for(let i=0;i<data.data.items.length;i++)
+						{
+							this.comprehensiveInfo[i].avater='/api'+String(this.comprehensiveInfo[i].avater).replace(/\\/g, "/")
+						}
 						console.log(data)
 						// setTimeout(() => {
 						// 	uni.reLaunch({
@@ -235,7 +302,11 @@
 							duration: 2000
 						})
 					} else {
-						this.userInfo=data.data;
+						this.userInfo=data.data.items;
+						for(let i=0;i<data.data.items.length;i++)
+						{
+							this.userInfo[i].avater='/api'+String(this.userInfo[i].avater).replace(/\\/g, "/")
+						}
 						console.log(data)
 						// setTimeout(() => {
 						// 	uni.reLaunch({

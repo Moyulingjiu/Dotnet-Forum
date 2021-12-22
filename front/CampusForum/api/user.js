@@ -152,11 +152,11 @@ export function selectAll(page=0, pageSize=10) {
 export function selectCondition(page=0, pageSize=10, id, studentId, name, college, gender, beginDate, endDate) {
 	let url = modelUrl + `/selectCondition`
 	let data = {
-		id: id,
-		studentId: studentId,
+		// id: id,
+		// studentId: studentId,
 		name: name,
-		college: college,
-		gender: gender,
+		// college: college,
+		// gender: gender,
 		// beginDate: beginDate,
 		// endDate: endDate,
 		page: page,
