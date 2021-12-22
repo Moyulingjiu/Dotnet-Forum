@@ -13,14 +13,14 @@
 				<scroll-view>
 					<view v-for="(item,index) in following">
 						<view class="person_container">
-							<image class="user_avater" src="../../static/avater.jpg"></image>
-							<view class="user">
+							<image class="user_avater" :src="item.avater" @click="userdetail(item.id)"></image>
+							<view class="user" @click="userdetail(item.id)">
 								<text class="user_name">{{ item.name }}</text>
 								<br />
 								<text class="user_description">{{ item.description }}</text>
 							</view>
-							<view :class="item.isFollow?'follow':'unfollow'">
-								{{ item.isFollow?'已关注':'关注' }}
+							<view :class="item.follow?'follow':'unfollow'" @click="changeFollow(index)">
+								{{ item.follow?'已关注':'关注' }}
 							</view>
 						</view>
 					</view>
@@ -30,20 +30,24 @@
 				<scroll-view>
 					<view v-for="(item,index) in follower">
 						<view class="person_container">
-							<image class="user_avater" src="../../static/avater.jpg"></image>
-							<view class="user">
+							<image class="user_avater" :src="item.avater" @click="userdetail(item.id)"></image>
+							<view class="user" @click="userdetail(item.id)">
 								<text class="user_name">{{ item.name }}</text>
 								<br />
 								<text class="user_description">{{ item.description }}</text>
 							</view>
-							<view :class="item.isFollow?'follow':'unfollow'">
-								{{ item.isFollow?'已关注':'关注' }}
+							<view :class="item.follow?'follow':'unfollow'" @click="changeFollow(index)">
+								{{ item.follow?'已关注':'关注' }}
 							</view>
 						</view>
 					</view>
 				</scroll-view>
 			</swiper-item>
 		</swiper>
+		
+		<uni-popup ref="popup_success_refresh" type="message">
+			<uni-popup-message type="success" message="刷新成功" :duration="2000"></uni-popup-message>
+		</uni-popup>
 	</view>
 </template>
 
@@ -61,34 +65,12 @@
 						name: '用户',
 						avater: '../../static/avater.jpg',
 						description: '这个人没有个性签名',
-						isFollow: true
-					},
-					{
-						id: 1,
-						name: '用户',
-						avater: '../../static/avater.jpg',
-						description: '这个人没有个性签名',
-						isFollow: false
+						follow: true
 					}
 				],
 				followerPage: 0,
 				followerTotal: 1,
-				following: [
-					{
-						id: 1,
-						name: '用户',
-						avater: '../../static/avater.jpg',
-						description: '这个人没有个性签名',
-						isFollow: true
-					},
-					{
-						id: 1,
-						name: '用户',
-						avater: '../../static/avater.jpg',
-						description: '这个人没有个性签名',
-						isFollow: true
-					}
-				],
+				following: [],
 				followingPage: 0,
 				followingTotal: 1
 			}
@@ -100,7 +82,12 @@
 			}
 		},
 		onShow() {
-			// this.refresh()
+			this.refresh()
+		},
+		onPullDownRefresh() {
+			this.refresh()
+			uni.stopPullDownRefresh();
+			this.$refs.popup_success_refresh.open('top')
 		},
 		methods: {
 			setCurr(e) {
@@ -124,7 +111,6 @@
 			},
 			loadData(followerPage = this.followerPage, followingPage = this.followingPage) {
 				userApi.followers(followerPage).then(data => {
-					let followerId = []
 					if (typeof data === "undefined") {
 						uni.showToast({
 							title: '服务器错误',
@@ -142,36 +128,18 @@
 					} else {
 						this.followerTotal = data.data.total
 						for (let key in data.data.items) {
-							if (key != 'length') {
-								followerId.push(data.data.items[key])
+							let userItem = {
+								id: data.data.items[key].id,
+								name: data.data.items[key].name,
+								avater: data.data.items[key].avater,
+								description: data.data.items[key].description,
+								follow: data.data.items[key].follow
 							}
+							this.follower.push(userItem)
 						}
-					}
-					return followerId
-				}).then(data => {
-					for (let key in data) {
-						userApi.select(data[key]).then(information => {
-							console.log(information)
-							if (typeof information === "undefined") {
-								uni.showToast({
-									title: '服务器错误',
-									icon: "error",
-									mask: true,
-									duration: 2000
-								})
-							} else if (information.code != 200) {
-								uni.showToast({
-									title: information.msg,
-									icon: "error",
-									mask: true,
-									duration: 2000
-								})
-							} else {}
-						})
 					}
 				})
 				userApi.followings(followingPage).then(data => {
-					let followingId = []
 					if (typeof data === "undefined") {
 						uni.showToast({
 							title: '服务器错误',
@@ -189,16 +157,82 @@
 					} else {
 						this.followingTotal = data.data.total
 						for (let key in data.data.items) {
-							if (key != 'length') {
-								followingId.push(data.data.items[key])
+							let userItem = {
+								id: data.data.items[key].id,
+								name: data.data.items[key].name,
+								avater: data.data.items[key].avater,
+								description: data.data.items[key].description,
+								follow: data.data.items[key].follow
 							}
+							this.following.push(userItem)
 						}
 					}
-					return followingId
-				}).then(data => {
-					// console.log(data)
 				})
-
+			},
+			userdetail(userId) {
+				uni.navigateTo({
+					url: `/pages/otherUsers/otherUsers?id=${userId}`
+				})
+			},
+			changeFollow(index) {
+				let userId = 0
+				let follow = false
+				if (this.curr == 0) {
+					userId = this.following[index].id
+					follow = this.following[index].follow
+				} else {
+					userId = this.follower[index].id
+					follow = this.follower[index].follow
+				}
+				if (follow) {
+					userApi.unfollow(userId).then(data => {
+						if (typeof data === "undefined") {
+							uni.showToast({
+								title: '服务器错误',
+								icon: "error",
+								mask: true,
+								duration: 2000
+							})
+						} else if (data.code != 200) {
+							uni.showToast({
+								title: data.msg,
+								icon: "error",
+								mask: true,
+								duration: 2000
+							})
+						} else {
+							if (this.curr == 0) {
+								this.following[index].follow = false
+							} else {
+								this.follower[index].follow = false
+							}
+						}
+					})
+				} else {
+					userApi.follow(userId).then(data => {
+						if (typeof data === "undefined") {
+							uni.showToast({
+								title: '服务器错误',
+								icon: "error",
+								mask: true,
+								duration: 2000
+							})
+						} else if (data.code != 200) {
+							uni.showToast({
+								title: data.msg,
+								icon: "error",
+								mask: true,
+								duration: 2000
+							})
+						} else {
+							if (this.curr == 0) {
+								this.following[index].follow = true
+							} else {
+								this.follower[index].follow = true
+							}
+						}
+					})
+				}
 			}
 		}
 	}

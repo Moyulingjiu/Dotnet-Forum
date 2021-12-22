@@ -5,9 +5,10 @@
 				<image class="person_avater" :src="user.avater" mode="aspectFill"></image>
 				<view class="person_information">
 					<text class="person_name">{{ user.name }}</text>
-					<view>
-						<image class="subscribe_icon" :src="isSubscribe?subscribeIcon:unsubscribedIcon" @click="like()"
-							mode='aspectFit'></image>
+					<view class="follow_container">
+						<view :class="user.follow?'follow':'unfollow'" @click="changeFollow()">
+							{{ user.follow?'已关注':'关注' }}
+						</view>
 					</view>
 					<view class="person_description">
 						<text>{{ user.description }}</text>
@@ -19,6 +20,7 @@
 				</view>
 			</view>
 		</view>
+		
 		<view class="person_card">
 			<view class="information_card flex_box">
 				<view class="information_container">
@@ -250,7 +252,6 @@
 			return {
 				subscribeIcon: '../../static/like_active.png', // 点赞图标
 				unsubscribedIcon: '../../static/like.png', // 未点赞图标
-				isSubscribe: false,
 				id: 0,
 				user: {
 					studentId: 22920191234,
@@ -263,6 +264,7 @@
 					birthday: '2021-12-15',
 					phone: '12312341234',
 					email: '123456@qq.com',
+					follow: false,
 					following: 100,
 					follower: 100,
 					primarySchool: '',
@@ -348,8 +350,8 @@
 			getGender() {
 				return config.getGender(this.user.gender)
 			},
-			like() {
-				if (this.isSubscribe) {
+			changeFollow() {
+				if (this.user.follow) {
 					userApi.unfollow(this.id).then(data => {
 						if (typeof data === "undefined") {
 							uni.showToast({
@@ -367,7 +369,7 @@
 							})
 						} else {
 							if (data.data) {
-								this.user.isSubscribe = false
+								this.user.follow = false
 								this.refresh()
 							}
 						}
@@ -390,7 +392,7 @@
 							})
 						} else {
 							if (data.data) {
-								this.user.isSubscribe = true
+								this.user.follow = true
 								this.refresh()
 							}
 						}
@@ -448,6 +450,12 @@
 		/*显示文本行数*/
 		overflow: hidden;
 		/*溢出隐藏*/
+	}
+	
+	.follow_container {
+		position: absolute;
+		top: -20rpx;
+		right: 10rpx;
 	}
 
 	.person_follow {
@@ -511,25 +519,28 @@
 		bottom: 0;
 	}
 
-	.bottom_button {
-		width: 90%;
-		margin: 30rpx 5%;
-		box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-	}
-
-	.function {
-		background-image: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);
-	}
-
-	.logout {
-		background-image: linear-gradient(to right, #f78ca0 0%, #f9748f 19%, #fd868c 60%, #fe9a8b 100%);
-	}
-
-	.subscribe_icon {
-		width: 20px;
-		height: 20px;
+	.unfollow {
 		position: absolute;
-		top: 6px;
-		right: 18px;
+		right: 30rpx;
+		font-size: 40rpx;
+		color: white;
+		margin-top: 30rpx;
+		width: 200rpx;
+		height: 60rpx;
+		text-align: center;
+		background: #83cbac;
+	}
+
+	.follow {
+		position: absolute;
+		right: 30rpx;
+		font-size: 40rpx;
+		color: white;
+		margin-top: 30rpx;
+		width: 200rpx;
+		height: 60rpx;
+		text-align: center;
+		background: #b5aa90;
+		/* box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); */
 	}
 </style>
