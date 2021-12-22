@@ -65,10 +65,6 @@
 					duration: 2000
 				})
 			}
-		    console.log(e.text);//提交
-		
-		    console.log(e.fontSize);//16px
-			
 		},
 		onShow() {
 			this.refresh()
@@ -83,13 +79,10 @@
 				if (config.checkToken()) {
 					albumApi.getAlbumByUserId().then(data => {
 						this.albumArr = data.data.item;
-						console.log(this.albumArr)
 						let len=this.albumArr.length
 						for(let i=0;i<len;i++)
 						{
-							console.log(this.albumArr[i])
 							this.albumArr[i].cover="/api"+String(this.albumArr[i].cover).replace(/\\/g, "/")
-							console.log(this.albumArr[i].cover)
 						}
 					})
 				} else {
@@ -115,7 +108,6 @@
 					        if (res.confirm) {
 					           
 								albumApi.deleteAlbum(albumId).then(data=>{
-									console.log(data)
 									if (typeof data === "undefined") {
 										uni.showToast({
 											title: '服务器错误',
@@ -155,8 +147,6 @@
 					name: 'imgFile',
 					success: (uploadFileRes) => {
 						let imgData = JSON.parse(uploadFileRes.data)
-						console.log(UploadFileRes);
-						console.log(this);
 					}
 				})
 			},
@@ -166,9 +156,7 @@
 					sizeType: ['original', 'compressed'], //original 原图，compressed 压缩图，默认二者都有
 					sourceType: ['album', 'camera'], //album 从相册选图，camera 使用相机，默认二者都有。如需直接开相机或直接选相册，请只使用一个选项
 					success: function(res) {
-						console.log(JSON.stringify(res.tempFilePaths));
 						this.uploadImgArr = res.tempFilePaths;
-						console.log(this.uploadImgArr);
 						this.upload();
 					}
 				});

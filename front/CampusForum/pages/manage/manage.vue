@@ -8,17 +8,17 @@
 				用户
 			</view>
 		</view>
-		<swiper :current="curr" @change="setCurr">
+		<swiper :current="curr" @change="setCurr" style="height: 700px;">
 			<swiper-item>
 				<scroll-view>
 					<view v-for="(item,index) in applicationList.data">
 						<view class="person_container">
 							<view class="user">
 								<text class="user_name">{{ item.username }}</text>
-								<!-- <br />
-								<text class="user_description">{{ item.description }}</text> -->
+								<br />
+								<text class="user_description">{{ item.description }}</text>
 							</view>
-							<view :class="item.isPassed?'follow':'unfollow'" @click="cilckPass()">
+							<view :class="item.isPassed?'follow':'unfollow'" @click="cilckPass(item.id)">
 								{{ item.isPassed?'通过':'已通过' }}
 							</view>
 						</view>
@@ -28,10 +28,10 @@
 			<swiper-item>
 				<scroll-view>
 					<view v-for="(item,index) in userList.data">
-						<view class="person_container">
+						<view class="person_container" @click="enterUser(item.id)">
 							<image class="user_avater" :src="item.avater"></image>
 							<view class="user">
-								<text class="user_name">{{ item.username }}</text>
+								<text class="user_name">{{ item.name }}</text>
 								<br />
 								<text class="user_description">{{ item.description }}</text>
 							</view>
@@ -47,9 +47,11 @@
 </template>
 
 <script>
+	import * as userApi from "../../api/user.js"
 	export default {
 		data() {
 			return {
+				curr:0,
 				windowWidth:'',
 				applicationList:{
 					"totle":"50",
@@ -59,7 +61,8 @@
 						{
 							"id":"1",
 							"username":"facedawn",
-							"isPassed":0
+							"isPassed":0,
+							"description":"???"
 						},
 						{
 							"id":"2",
@@ -71,6 +74,7 @@
 							"username":"b",
 							"isPassed":0
 						},
+						
 					]
 				},
 				userList:{
@@ -82,8 +86,8 @@
 							"id":"21313",
 							"username":"xxxx",
 							"avater":"",
-							"description":"",
-							"isbanned":0
+							"description":"asdasdsad",
+							"isbanned":0,
 						}
 					]
 				},
@@ -104,8 +108,39 @@
 					that.windowWidth=res.windowWidth+'px';	
 			    }
 			});
+			
+			userApi.selectAll().then(data=>{
+				console.log(data)
+				if (typeof data === "undefined") {
+					uni.showToast({
+						title: '服务器错误',
+						icon: "error",
+						mask: true,
+						duration: 2000
+					})
+				} else if (data.code != 200) {
+					uni.showToast({
+						title: data.msg,
+						icon: "error",
+						mask: true,
+						duration: 2000
+					})
+				} else {
+					this.userList.data=data.data.items
+				}
+			})
 		},
 		methods: {
+			enterUser(userId){
+				console.log(userId)
+				uni.navigateTo({
+				    url: `/pages/otherUsers/otherUsers?id=${userId}`
+				})
+			},
+			setCurr(e) {
+				let thisCurr = e.detail.current || e.currentTarget.dataset.index || 0;
+				this.curr = thisCurr;
+			},
 			clickBan(id){
 				console.log(id+"ban")
 			},
