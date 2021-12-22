@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "fCiLTcKzwClnsaOYQaMEPBJ6uD/avAG1pvJbSXaCznPNkVjtn+tAxwK0BihfCYXEu54fQvjv8ew6D07yxjZJfA==",
+  "dgSpecHash": "azyewoPZLAuh1jE+2KiDnQOWKounAu+l8J0ZOp5qtrErNg8raEpBQbPWtWaJl3nmRl5u+/aE8rQK4wCO2HLPdg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\fan\\Desktop\\git\\back\\CampusForum\\CampusForum\\CampusForum.csproj",
+  "projectFilePath": "C:\\Users\\fan\\Desktop\\git2\\back\\CampusForum\\CampusForum\\CampusForum.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\fan\\.nuget\\packages\\google.protobuf\\3.5.1\\google.protobuf.3.5.1.nupkg.sha512",
     "C:\\Users\\fan\\.nuget\\packages\\microsoft.csharp\\4.5.0\\microsoft.csharp.4.5.0.nupkg.sha512",

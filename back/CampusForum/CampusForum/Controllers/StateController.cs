@@ -246,7 +246,7 @@ namespace CampusForum.Controllers
                 if (page > ((pages - 1) > 0 ? (pages - 1) : 0)) return new Code(400, "页码超过记录数", null);
 
                 //只返回当前用户未被删除的状态
-                List<State> stateList = _coreDbContext.Set<State>().Where(d => d.user_id == id&& d.disable == 0).Skip(page * pageSize).Take(pageSize).ToList();
+                List<State> stateList = _coreDbContext.Set<State>().Where(d => d.user_id == id&& d.disable == 0).Skip(page * pageSize).Take(pageSize).OrderByDescending(d => d.gmt_create).ToList();
  
                 List<StateRet> stateRetList = new List<StateRet>();
                 int likenum, userlike;
