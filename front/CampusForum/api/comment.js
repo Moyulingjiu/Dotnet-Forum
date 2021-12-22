@@ -31,9 +31,11 @@ export function deleteComment(commentId) {
 // 根据id获取评论
 export function select(commentId) {
 	let url = modelUrl + `/select/${commentId}`
-	let token = config.getToken()
-	
-	return {}
+	return request.service({
+		url: url,
+		data: {},
+		method: 'GET'
+	})
 }
 
 // 获取一个状态的所有一级评论
