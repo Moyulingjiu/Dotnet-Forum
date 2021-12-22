@@ -17,7 +17,9 @@
 				</template>
 			</uni-list-item>
 		</uni-list>
-		
+		<uni-popup ref="popup_success" type="message">
+			<uni-popup-message type="success" message="删除成功" :duration="3000"></uni-popup-message>
+		</uni-popup>
 		<uni-popup ref="popup_success_refresh" type="message">
 			<uni-popup-message type="success" message="刷新成功" :duration="2000"></uni-popup-message>
 		</uni-popup>
@@ -32,6 +34,7 @@
 	export default {
 		data() {
 			return {
+				delete:0,
 				albumArr: [{
 						"id": "1",
 						"name": "1",
@@ -42,6 +45,30 @@
 			}
 		},
 		onLoad() {
+		},
+		onNavigationBarButtonTap:function(e){
+			if(this.delete==0){
+				this.delete=1
+				uni.showToast({
+					title: '进入删除模式，点击相册删除，再次点击删除按钮退出删除模式',
+					icon: "error",
+					mask: true,
+					duration: 2000
+				})
+			}
+			else {
+				this.delete=0
+				uni.showToast({
+					title: '退出删除模式',
+					icon: "error",
+					mask: true,
+					duration: 2000
+				})
+			}
+		    console.log(e.text);//提交
+		
+		    console.log(e.fontSize);//16px
+			
 		},
 		onShow() {
 			this.refresh()
@@ -64,9 +91,47 @@
 				}
 			},
 			clickAlbum(albumId) {
-				uni.navigateTo({
-					url: `/pages/albumDetail/albumDetail?albumId=${albumId}`
-				});
+				var that = this
+				if(this.delete==0)
+				{
+					uni.navigateTo({
+						url: `/pages/albumDetail/albumDetail?albumId=${albumId}`
+					});
+				}
+				else
+				{
+					uni.showModal({
+					    title: '确定要删除此相册吗?',
+					    content: ' ',
+					    success: function(res) {
+					        if (res.confirm) {
+					           
+								albumApi.deleteAlbum(albumId).then(data=>{
+									console.log(data)
+									if (typeof data === "undefined") {
+										uni.showToast({
+											title: '服务器错误',
+											icon: "error",
+											mask: true,
+											duration: 2000
+										})
+									} else if (data.code == 200) {
+										that.$refs.popup_success.open('top')
+										that.refresh();
+									} else {
+										uni.showToast({
+											title: '删除失败'+ data.msg,
+											icon: "error",
+											mask: true,
+											duration: 2000
+										})
+									}
+								})
+					        }
+				        }
+		            });
+					
+				}
 
 			},
 			clickToAddAlbum() {

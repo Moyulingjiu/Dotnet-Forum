@@ -43,3 +43,11 @@ export function insertAlbum({
 		method: 'POST'
 	})
 }
+
+export function deleteAlbum(albumId){
+	let url=modelUrl+`/delete/${albumId}`
+	return request.service({
+		url: url,
+		method: 'DELETE'
+	})
+}
