@@ -388,7 +388,6 @@
 						this.$refs.popup_serve_error.open('top')
 					} else if (data.code == 200) {
 						config.saveToken('')
-						this.user = {}
 						this.$refs.popup_success.open('top')
 						setTimeout(() => {
 							uni.redirectTo({
