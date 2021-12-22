@@ -152,22 +152,22 @@ export function selectAll(page=0, pageSize=10) {
 export function selectCondition(page=0, pageSize=10, id, studentId, name, college, gender, beginDate, endDate) {
 	let url = modelUrl + `/selectCondition`
 	let data = {
-		token: token,
 		id: id,
 		studentId: studentId,
 		name: name,
 		college: college,
 		gender: gender,
-		beginDate: beginDate,
-		endDate: endDate,
+		// beginDate: beginDate,
+		// endDate: endDate,
 		page: page,
 		pageSize: pageSize
 	}
 	// 模拟请求
-	return {
-		total: 1,
-		item: []
-	}
+	return request.service({
+		url: url,
+		data: data,
+		method: 'GET'
+	})
 }
 
 // 获取粉丝列表

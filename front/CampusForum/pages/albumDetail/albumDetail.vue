@@ -117,7 +117,7 @@
 			refresh() {
 				if (config.checkToken()) {
 					let len
-					this.picture=pictureApi.getPictureByAlbumId(this.albumId,this.pageInfo).then(data => {
+					pictureApi.getPictureByAlbumId(this.albumId,this.pageInfo).then(data => {
 								len=data.data.item.length
 								this.picture={totle:0,Item:[]};
 								console.log(String(data.data.item[0].url).replace(/\\/g, "/"))

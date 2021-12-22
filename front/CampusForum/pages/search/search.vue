@@ -123,13 +123,16 @@
 </template>
 
 <script>
+	import * as userApi from "../../api/user.js"
+	import * as stateApi from "../../api/state.js"
 	export default {
 		data() {
 			return {			
 				
-				array:['---请选择---','姓名','学号','学院','系','专业'],
-				index:0,
+				page:0,
+				pageSize:10,
 				
+				curr:0,
 				searchName:"asd",
 				searchNum:"asd",
 				searchCollege:"asd",
@@ -178,11 +181,69 @@
 			console.log(this.searchCondition);
 		},
 		methods: {
+			setCurr(e) {
+				let thisCurr = e.detail.current || e.currentTarget.dataset.index || 0;
+				this.curr = thisCurr;
+			},
 			clearCondition() {
 				this.searchCondition = ''
 			},
 			search(){
+				console.log("search")
+				stateApi.selectCondition(this.page,this.pageSize,null,null,this.searchCondition).then(data => {
+					if (typeof data === "undefined") {
+						uni.showToast({
+							title: '服务器错误',
+							icon: "error",
+							mask: true,
+							duration: 2000
+						})
+					} else if (data.code != 200) {
+						
+						uni.showToast({
+							title: data.msg,
+							icon: "error",
+							mask: true,
+							duration: 2000
+						})
+					} else {
+						this.comprehensiveInfo=data.data;
+						console.log(data)
+						// setTimeout(() => {
+						// 	uni.reLaunch({
+						// 		url: `/pages/album/album`
+						// 	})
+						// }, config.waitTime)
+					}
+					
+				})
 				
+				userApi.selectCondition(this.page,this.pageSize,null,null,this.searchCondition,null,null,null,null).then(data =>{
+					if (typeof data === "undefined") {
+						uni.showToast({
+							title: '服务器错误',
+							icon: "error",
+							mask: true,
+							duration: 2000
+						})
+					} else if (data.code != 200) {
+						
+						uni.showToast({
+							title: data.msg,
+							icon: "error",
+							mask: true,
+							duration: 2000
+						})
+					} else {
+						this.userInfo=data.data;
+						console.log(data)
+						// setTimeout(() => {
+						// 	uni.reLaunch({
+						// 		url: `/pages/album/album`
+						// 	})
+						// }, config.waitTime)
+					}
+				})
 			},
 			pageChange(e){
 				//重新加载applicationList
