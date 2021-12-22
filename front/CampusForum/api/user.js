@@ -100,7 +100,6 @@ export function deleteById(id) {
 // 根据id获取用户数据
 export function select(id=0) {
 	let url = modelUrl + `/select/${id}`
-	console.log(url)
 	return request.service({
 		url: url,
 		data: {},
