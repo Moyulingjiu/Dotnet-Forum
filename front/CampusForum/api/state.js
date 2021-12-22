@@ -57,8 +57,8 @@ export function select(stateId) {
 }
 
 // 查询所有状态
-export function selectAll(page = 0, pageSize = 10) {
-	let url = modelUrl + `/selectAll`
+export function selectAll(page = 0, pageSize = 10, userId = 0) {
+	let url = modelUrl + `/selectAll/${userId}`
 	let data = {
 		page: page,
 		pageSize: pageSize

@@ -345,6 +345,14 @@
 							this.user.highSchool = data.data.highSchool == null ? '' : data.data.highSchool
 							this.user.university = data.data.university == null ? '' : data.data.university
 							// this.user.avater="/api"+String(data.data.avater).replace(/\\/g, "/")
+							
+							this.user.hobby.other = data.data.hobby.other
+							this.user.hobby.music = data.data.hobby.music
+							this.user.hobby.book = data.data.hobby.book
+							this.user.hobby.movie = data.data.hobby.movie
+							this.user.hobby.game = data.data.hobby.game
+							this.user.hobby.comic = data.data.hobby.comic
+							this.user.hobby.sport = data.data.hobby.sport
 						} else {
 							this.$refs.popup_information_error.open('top')
 						}

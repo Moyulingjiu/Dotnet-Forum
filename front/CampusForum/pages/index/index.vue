@@ -80,7 +80,8 @@
 					gmtCreate: '2021年7月20日 20:00',
 					like: true
 				}],
-				isRefresh: true
+				isRefresh: true,
+				loadLock: false // 上拉加载的锁
 			}
 		},
 		onLoad() {
@@ -95,6 +96,16 @@
 			this.refresh()
 			uni.stopPullDownRefresh();
 			this.$refs.popup_success_refresh.open('top')
+		},
+		onReachBottom() {
+			if (!this.loadLock) { // 加锁
+				this.loadLock = true
+				if (this.page < this.total - 1) {
+					this.page++
+					this.loadData()
+				}
+				this.loadLock = false
+			}
 		},
 		methods: {
 			refresh() {

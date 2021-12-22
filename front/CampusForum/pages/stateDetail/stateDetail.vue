@@ -46,7 +46,7 @@
 							</view>
 						</view>
 					</view>
-					<view v-if="item.subcommentPage<item.subcommentTotal-1" class="comment_show_more">
+					<view v-if="item.subcommentPage<item.subcommentTotal-1" class="comment_show_more" @click="loadSubComment(index, ++item.subcommentPage)">
 						<text>点击展开更多评论</text>
 					</view>
 					<view class="comment_reply_box" v-if="item.needReply">
@@ -137,7 +137,8 @@
 						replyCommentId: 1 // 想要回复的评论id
 					}
 				],
-				mycomment: ''
+				mycomment: '',
+				loadLock: false // 上拉加载的锁
 			}
 		},
 		onLoad(options) {
@@ -151,6 +152,16 @@
 			this.refresh()
 			uni.stopPullDownRefresh();
 			this.$refs.popup_success_refresh.open('top')
+		},
+		onReachBottom() {
+			if (!this.loadLock) { // 加锁
+				this.loadLock = true
+				if (this.commentPage < this.commentTotal - 1) {
+					this.commentPage++
+					this.loadComment()
+				}
+				this.loadLock = false
+			}
 		},
 		methods: {
 			refresh() {
@@ -303,6 +314,51 @@
 					}
 				})
 			},
+			loadSubComment(index, page) {
+				commentApi.selectAllReply(this.comment[index].id, page).then(data => {
+					if (typeof data == 'undefined') {
+						uni.showToast({
+							title: '服务器错误',
+							icon: "error",
+							mask: true,
+							duration: 2000
+						})
+					} else if (data.code != 200) {
+						uni.showToast({
+							title: data.msg,
+							icon: "error",
+							mask: true,
+							duration: 2000
+						})
+					} else {
+						this.comment[index].subcommentTotal = data.data.total
+						for (let key in data.data.items) {
+							let subCommentItem = {
+								id: data.data.items[key].commentId,
+								stateId: data.data.items[key].state_id,
+								fatherId: data.data.items[key].father_id,
+								replyId: data.data.items[key].reply_id,
+								text: data.data.items[key].text,
+								userId: data.data.items[key].userId,
+								userName: data.data.items[key].userName,
+								userAvater: data.data.items[key].userAvater,
+								gmtCreate: data.data.items[key].gmt_create,
+								reply: '',
+								replyUserId: 0
+							}
+							if (subCommentItem.replyId != subCommentItem.fatherId) {
+								commentApi.select(subCommentItem.id).then(data3 => {
+									if (typeof data3 != 'undefined' && data3.code == 200) {
+										subCommentItem.reply = '@' + data3.data.userName
+										subCommentItem.replyUserId = data3.data.userId
+									}
+								})
+							}
+							this.comment[index].subcomment.push(subCommentItem)
+						}
+					}
+				})
+			},
 			like() {
 				let id = this.stateId
 				if (this.state.like) {
@@ -380,13 +436,7 @@
 						return commentApi.deleteComment(commentId)
 					}
 				}).then(data => {
-					if (typeof data === "undefined") {
-						uni.showToast({
-							title: '服务器错误',
-							icon: "error",
-							mask: true,
-							duration: 2000
-						})
+					if (typeof data == "undefined") {
 					} else if (data.code == 200) {
 						this.$refs.popup_delete_success.open('top')
 						this.refresh()
@@ -421,6 +471,7 @@
 							})
 						} else {
 							this.$refs.popup_success.open('top')
+							this.mycomment = ''
 							this.refresh()
 						}
 					})
@@ -447,7 +498,48 @@
 							})
 						} else {
 							this.$refs.popup_success.open('top')
-							this.refresh()
+							this.comment[index].replyText = ''
+							let tempId = data.data.id
+							commentApi.select(tempId).then(data2 => {
+								if (typeof data == 'undefined') {
+									uni.showToast({
+										title: '服务器错误',
+										icon: "error",
+										mask: true,
+										duration: 2000
+									})
+								} else if (data.code != 200) {
+									uni.showToast({
+										title: data.msg,
+										icon: "error",
+										mask: true,
+										duration: 2000
+									})
+								} else {
+									let subCommentItem = {
+										id: data2.data.commentId,
+										stateId: data2.data.state_id,
+										fatherId: data2.data.father_id,
+										replyId: data2.data.reply_id,
+										text: data2.data.text,
+										userId: data2.data.userId,
+										userName: data2.data.userName,
+										userAvater: data2.data.userAvater,
+										gmtCreate: data2.data.gmt_create,
+										reply: '',
+										replyUserId: 0
+									}
+									if (subCommentItem.replyId != subCommentItem.fatherId) {
+										commentApi.select(subCommentItem.id).then(data3 => {
+											if (typeof data3 != 'undefined' && data3.code == 200) {
+												subCommentItem.reply = '@' + data3.data.userName
+												subCommentItem.replyUserId = data3.data.userId
+											}
+										})
+									}
+									this.comment[index].subcomment.unshift(subCommentItem)
+								}
+							})
 						}
 					})
 				}
