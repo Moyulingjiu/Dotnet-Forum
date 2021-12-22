@@ -6041,25 +6041,25 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\fan\\.nuget\\packages\\": {},
-    "D:\\visual studio 2022\\Microsoft Visual Studio\\Shared\\NuGetPackages": {},
+    "C:\\Users\\BeforeDawn\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {},
     "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\fan\\Desktop\\git2\\back\\CampusForum\\CampusForum\\CampusForum.csproj",
+      "projectUniqueName": "E:\\厦门大学\\大学四年的学习资料\\大三\\大三上\\.Net平台技术-杨律青\\大作业\\项目\\back\\CampusForum\\CampusForum\\CampusForum.csproj",
       "projectName": "CampusForum",
-      "projectPath": "C:\\Users\\fan\\Desktop\\git2\\back\\CampusForum\\CampusForum\\CampusForum.csproj",
-      "packagesPath": "C:\\Users\\fan\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\fan\\Desktop\\git2\\back\\CampusForum\\CampusForum\\obj\\",
+      "projectPath": "E:\\厦门大学\\大学四年的学习资料\\大三\\大三上\\.Net平台技术-杨律青\\大作业\\项目\\back\\CampusForum\\CampusForum\\CampusForum.csproj",
+      "packagesPath": "C:\\Users\\BeforeDawn\\.nuget\\packages\\",
+      "outputPath": "E:\\厦门大学\\大学四年的学习资料\\大三\\大三上\\.Net平台技术-杨律青\\大作业\\项目\\back\\CampusForum\\CampusForum\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
-        "D:\\visual studio 2022\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
         "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
       ],
       "configFilePaths": [
-        "C:\\Users\\fan\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\BeforeDawn\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
@@ -6122,7 +6122,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.403\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.100\\RuntimeIdentifierGraph.json"
       }
     }
   }
