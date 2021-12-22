@@ -221,7 +221,7 @@
 								}, config.waitTime)
 							} else {
 								uni.showToast({
-									title: '注册失败：' + data.msg,
+									title: '修改失败：' + data.msg,
 									icon: "error",
 									mask: true,
 									duration: 2000
