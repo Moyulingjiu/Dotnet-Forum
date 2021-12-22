@@ -155,7 +155,7 @@
 				}).then(data => {
 					if (typeof data === "undefined") {
 						
-					} else if (data.data) {
+					} else if (data.code == 200) {
 						this.$refs.popup_success.open('top')
 						this.isRefresh = true
 						this.stateList.splice(index, 1)

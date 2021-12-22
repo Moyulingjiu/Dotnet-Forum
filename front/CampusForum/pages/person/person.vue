@@ -176,9 +176,7 @@
 				})
 			},
 			updateUser() {
-				console.log('修改个人信息')
 				uni.navigateTo({
-					//url: `/pages/personInfoChange/personInfoChange`,
 					url: `/pages/personInfoChange/personInfoChange`,
 				});
 			},

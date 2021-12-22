@@ -6,9 +6,9 @@ export const modelUrl =  `/comment`
 export function insert(stateId, fatherId, replyId, text) {
 	let url = modelUrl + `/insert`
 	let data = {
-		state_id: stateId,
-		father_id: fatherId,
-		reply_id: replyId,
+		stateId: stateId,
+		fatherId: fatherId,
+		replyId: replyId,
 		text: text
 	}
 	return request.service({
@@ -21,9 +21,11 @@ export function insert(stateId, fatherId, replyId, text) {
 // 删除评论
 export function deleteComment(commentId) {
 	let url = modelUrl + `/delete/${commentId}`
-	let token = config.getToken()
-	
-	return true
+	return request.service({
+		url: url,
+		data: {},
+		method: 'POST'
+	})
 }
 
 // 根据id获取评论

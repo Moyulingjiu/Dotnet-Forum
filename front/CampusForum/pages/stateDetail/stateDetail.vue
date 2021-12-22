@@ -19,7 +19,7 @@
 		<view class="comment">
 			<view class="comment_box" v-for="(item , index) in comment">
 				<view class="comment_avater">
-					<image :src="subitem.userAvater" mode="aspectFill"></image>
+					<image :src="item.userAvater" mode="aspectFill"></image>
 				</view>
 				<view class="comment_text_container">
 					<view space="emsp" class="comment_user">{{ item.userName }}</view>
@@ -27,6 +27,7 @@
 					<view class="comment_button">
 						<text>{{ item.gmtCreate }}</text>
 						<text class="comment_reply" @click="showReplyBox(index, item.id)">回复</text>
+						<text class="comment_delete" @click="deleteComment(item.id)" v-if="item.userId = userId">删除</text>
 					</view>
 					<view class="subcomment" v-for="(subitem , subindex) in item.subcomment">
 						<view class="comment_avater">
@@ -38,6 +39,7 @@
 							<view class="comment_button">
 								<text>{{ subitem.gmtCreate }}</text>
 								<text class="comment_reply" @click="showReplyBox(index, subitem.id)">回复</text>
+								<text class="comment_delete" @click="deleteComment(subitem.id)" v-if="subitem.userId = userId">删除</text>
 							</view>
 						</view>
 					</view>
@@ -45,7 +47,7 @@
 						<text>点击展开更多评论</text>
 					</view>
 					<view class="comment_reply_box" v-if="item.needReply">
-						<textarea auto-height placeholder="在此输入回复"></textarea>
+						<textarea auto-height placeholder="在此输入回复" v-model="item.replyText"></textarea>
 						<view @click="sendReplyComment(index)"><text>回复</text></view>
 					</view>
 				</view>
@@ -62,12 +64,16 @@
 		<uni-popup ref="popup_success" type="message">
 			<uni-popup-message type="success" message="评论成功" :duration="2000"></uni-popup-message>
 		</uni-popup>
+		<uni-popup ref="popup_delete_success" type="message">
+			<uni-popup-message type="success" message="删除成功" :duration="2000"></uni-popup-message>
+		</uni-popup>
 	</view>
 </template>
 
 <script>
 	import * as stateApi from "../../api/state.js"
 	import * as commentApi from "../../api/comment.js"
+	import * as userApi from "../../api/user.js"
 	import * as config from "../../utils/config.js"
 
 	export default {
@@ -77,6 +83,7 @@
 				bottomTipsNoMore: '- 到底了 -', // 底部提示
 				likeIcon: '../../static/like_active.png', // 点赞图标
 				unlikeIcon: '../../static/like.png', // 未点赞图标
+				userId: 0, // 用户id
 				stateId: 0,
 				state: {
 					id: 2,
@@ -130,50 +137,6 @@
 						needReply: false, // 是否显示回复框
 						replyText: '', // 想要回复的text
 						replyCommentId: 1 // 想要回复的评论id
-					},
-					{
-						id: 1,
-						stateId: 2,
-						fatherId: 0,
-						replyId: 1,
-						text: '一个测试正文！你好世界',
-						userId: 1,
-						username: '作者的名字',
-						userAvater: '../../static/avater.jpg',
-						gmtCreate: '2021年7月20日 20:00',
-						subcomment: [],
-						subcommentPage: 0,
-						subcommentTotal: 1,
-						needReply: false, // 是否显示回复框
-						replyText: '', // 想要回复的text
-						replyCommentId: 1 // 想要回复的评论id
-					},
-					{
-						id: 1,
-						stateId: 2,
-						fatherId: 0,
-						replyId: 1,
-						text: '一个测试的正文',
-						userId: 1,
-						username: '作者的名字',
-						userAvater: '../../static/avater.jpg',
-						gmtCreate: '2021年7月20日 20:00',
-						subcomment: [{
-							id: 2,
-							stateId: 1,
-							fatherId: 1,
-							replyId: 1,
-							text: '一个测试的回复正文',
-							userId: 1,
-							username: '作者的名字',
-							userAvater: '../../static/avater.jpg',
-							gmtCreate: '2021年7月20日 20:00'
-						}],
-						subcommentPage: 0,
-						subcommentTotal: 1,
-						needReply: false, // 是否显示回复框
-						replyText: '', // 想要回复的text
-						replyCommentId: 1 // 想要回复的评论id
 					}
 				],
 				mycomment: ''
@@ -196,6 +159,25 @@
 						url: '../index/index'
 					})
 				} else {
+					userApi.select().then(data => {
+						if (typeof data == 'undefined') {
+							uni.showToast({
+								title: '服务器错误',
+								icon: "error",
+								mask: true,
+								duration: 2000
+							})
+						} else if (data.code != 200) {
+							uni.showToast({
+								title: data.msg,
+								icon: "error",
+								mask: true,
+								duration: 2000
+							})
+						} else {
+							this.userId = data.data.id
+						}
+					})
 					stateApi.select(this.stateId).then(data => {
 						if (typeof data == 'undefined') {
 							uni.showToast({
@@ -215,10 +197,10 @@
 							this.state.id = data.data.id
 							this.state.title = data.data.title
 							this.state.text = data.data.text
-							this.state.userId = data.data.user_id
-							this.state.userName = data.data.user_name
-							this.state.userAvater = data.data.user_avater
-							this.state.share = data.data.share_state
+							this.state.userId = data.data.userId
+							this.state.userName = data.data.userName
+							this.state.userAvater = data.data.userAvater
+							this.state.share = data.data.shareState
 							this.state.gmtCreate = data.data.gmt_create
 							this.state.like = data.data.like
 							this.state.likeNumber = data.data.likeNumber
@@ -251,7 +233,7 @@
 						for (let key in data.data.items) {
 							if (key != 'length') {
 								let commentItem = {
-									id: data.data.items[key].id,
+									id: data.data.items[key].commentId,
 									stateId: data.data.items[key].state_id,
 									fatherId: data.data.items[key].father_id,
 									replyId: data.data.items[key].reply_id,
@@ -287,7 +269,7 @@
 										commentItem.subcommentTotal = subdata.data.total
 										for (let key2 in subdata.data.items) {
 											let subCommentItem = {
-												id: subdata.data.items[key].id,
+												id: subdata.data.items[key].commentId,
 												stateId: subdata.data.items[key].state_id,
 												fatherId: subdata.data.items[key].father_id,
 												replyId: subdata.data.items[key].reply_id,
@@ -365,6 +347,35 @@
 					}
 				}
 			},
+			deleteComment(commentId) {
+				new Promise((resolve, reject) => {
+					uni.showModal({
+						title: '确定删除此评论吗?',
+						content: ' ',
+						success: function(res) {
+							resolve(res)
+						}
+					})
+				}).then(data => {
+					if (data.confirm) {
+						return commentApi.deleteComment(commentId)
+					}
+				}).then(data => {
+					if (typeof data === "undefined") {
+						
+					} else if (data.code == 200) {
+						this.$refs.popup_delete_success.open('top')
+						this.refresh()
+					} else {
+						uni.showToast({
+							title: data.msg,
+							icon: "error",
+							mask: true,
+							duration: 2000
+						})
+					}
+				})
+			},
 			sendComment() {
 				if (this.mycomment.length == 0) {
 					this.$refs.popup_error_empty.open('top')
@@ -386,6 +397,7 @@
 							})
 						} else {
 							this.$refs.popup_success.open('top')
+							this.refresh()
 						}
 					})
 				}
@@ -394,7 +406,26 @@
 				if (this.comment[index].replyText.length == 0) {
 					this.$refs.popup_error_empty.open('top')
 				} else {
-					
+					commentApi.insert(this.stateId, this.comment[index].id, this.comment[index].replyCommentId, this.comment[index].replyText).then(data => {
+						if (typeof data == 'undefined') {
+							uni.showToast({
+								title: '服务器错误',
+								icon: "error",
+								mask: true,
+								duration: 2000
+							})
+						} else if (data.code != 200) {
+							uni.showToast({
+								title: data.msg,
+								icon: "error",
+								mask: true,
+								duration: 2000
+							})
+						} else {
+							this.$refs.popup_success.open('top')
+							this.refresh()
+						}
+					})
 				}
 			}
 		}
@@ -526,7 +557,7 @@
 
 	.comment_button {
 		margin-top: 15rpx;
-		font-size: 30rpx;
+		font-size: 25rpx;
 		color: #99A2AA;
 	}
 
@@ -537,6 +568,16 @@
 
 	.comment_reply:hover {
 		color: #00A1D6;
+		border-radius: 10rpx;
+		background-color: #E5E9EF;
+	}
+	
+	.comment_delete {
+		padding: 0rpx 15rpx;
+	}
+
+	.comment_delete:hover {
+		color: #FF0000;
 		border-radius: 10rpx;
 		background-color: #E5E9EF;
 	}

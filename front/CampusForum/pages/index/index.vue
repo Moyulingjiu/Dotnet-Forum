@@ -134,9 +134,9 @@
 								let stateItem = {
 									id: data.data.items[key].id,
 									title: data.data.items[key].title,
-									userId: data.data.items[key].user_id,
-									userName: data.data.items[key].user_name,
-									userAvater: data.data.items[key].user_avater, // 头像
+									userId: data.data.items[key].userId,
+									userName: data.data.items[key].userName,
+									userAvater: data.data.items[key].userAvater, // 头像
 									text: data.data.items[key].text,
 									share: data.data.items[key].share_state,
 									gmtCreate: data.data.items[key].gmt_create,
