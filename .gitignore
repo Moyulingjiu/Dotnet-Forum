@@ -2,6 +2,7 @@ back/CampusForum/.vs/*
 .vs/*
 back/CampusForum/CampusForum/obj/*
 back/CampusForum/CampusForum/bin
+back/CampusForum/CampusForum/wwwroot
 
 # 忽略word的临时文件
 ~*.docx
