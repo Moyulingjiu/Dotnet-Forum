@@ -23,7 +23,13 @@ namespace CampusForum.Models
 
         public Hobby()
         {
-
+            this.music = "";
+            this.book = "";
+            this.movie = "";
+            this.game = "";
+            this.comic = "";
+            this.sport = "";
+            this.other = "";
         }
         public Hobby(HobbyReq hobbyReq)
         {
