@@ -345,7 +345,8 @@
 							this.user.college = data.data.college
 							this.user.departmet = data.data.department
 							this.user.gender = data.data.gender
-							this.user.avater = data.data.avater
+							// this.user.avater = data.data.avater
+							this.user.avater = "/api" + String(data.data.avater).replace(/\\/g, "/")
 							this.user.description = data.data.description
 							this.user.phone = data.data.phone
 							this.user.email = data.data.email
@@ -463,6 +464,7 @@
 								gmtCreate: data.data.items[key].gmt_create,
 								like: data.data.items[key].like
 							}
+							stateItem.userAvater = "/api" + String(stateItem.userAvater).replace(/\\/g, "/")
 							this.stateList.push(stateItem)
 						}
 					}
@@ -476,6 +478,52 @@
 				uni.navigateTo({
 					url: `/pages/stateDetail/stateDetail?id=${id}`
 				})
+			},
+			like(index) {
+				let id = this.stateList[index].id
+				if (this.stateList[index].like) {
+					stateApi.unlike(id).then(data => {
+						if (typeof data == "undefined") {
+							uni.showToast({
+								title: '服务器错误',
+								icon: "error",
+								mask: true,
+								duration: 2000
+							})
+						} else if (data.code != 200) {
+							uni.showToast({
+								title: data.msg,
+								icon: "error",
+								mask: true,
+								duration: 2000
+							})
+						} else {
+							this.stateList[index].like = false
+							this.$forceUpdate()
+						}
+					})
+				} else {
+					stateApi.like(id).then(data => {
+						if (typeof data === "undefined") {
+							uni.showToast({
+								title: '服务器错误',
+								icon: "error",
+								mask: true,
+								duration: 2000
+							})
+						} else if (data.code != 200) {
+							uni.showToast({
+								title: data.msg,
+								icon: "error",
+								mask: true,
+								duration: 2000
+							})
+						} else {
+							this.stateList[index].like = true
+							this.$forceUpdate()
+						}
+					})
+				}
 			}
 		}
 	}

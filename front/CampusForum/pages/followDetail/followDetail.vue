@@ -161,6 +161,7 @@
 									description: data.data.items[key].description,
 									follow: data.data.items[key].follow
 								}
+								userItem.avater = "/api" + String(userItem.avater).replace(/\\/g, "/")
 								this.follower.push(userItem)
 							}
 						}
@@ -193,6 +194,7 @@
 									description: data.data.items[key].description,
 									follow: data.data.items[key].follow
 								}
+								userItem.avater = "/api" + String(userItem.avater).replace(/\\/g, "/")
 								this.following.push(userItem)
 							}
 						}
@@ -338,7 +340,7 @@
 		background: #b5aa90;
 		/* box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); */
 	}
-	
+
 	.bottom_tips {
 		margin-top: 30rpx;
 		text-align: center;
