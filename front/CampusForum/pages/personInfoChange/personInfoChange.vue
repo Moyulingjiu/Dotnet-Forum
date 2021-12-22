@@ -5,7 +5,7 @@
 			<input placeholder="请输入用户名" maxlength="6" class="name" type="text" v-model="user.name" />
 		</view>
 		<view>
-			<input placeholder="请输入用户名" maxlength="6" class="description" type="text" v-model="user.description" />
+			<input placeholder="请输入个性签名" maxlength="50" class="description" type="text" v-model="user.description" />
 		</view>
 		<view class="person_card">
 			<view class="information_card flex_box">
@@ -18,6 +18,19 @@
 					</view>
 					<view class="information_text">
 						<input maxlength=20 type="text" placeholder="请输入学院" v-model="user.college" />
+					</view>
+				</view>
+			</view>
+			<view class="information_card flex_box">
+				<view>
+					<image class="information_edit" src="../../static/college.png" mode="aspectFill"></image>
+				</view>
+				<view class="information_container">
+					<view class="information_title">
+						<text>系别</text>
+					</view>
+					<view class="information_text">
+						<input maxlength=20 type="text" placeholder="请输入系" v-model="user.departmet" />
 					</view>
 				</view>
 			</view>
@@ -81,8 +94,63 @@
 					</view>
 				</view>
 			</view>
+		
+			<view class="information_card flex_box">
+				<view>
+					<image class="information_edit" src="../../static/school.png" mode="aspectFill"></image>
+				</view>
+				<view class="information_container">
+					<view class="information_title">
+						<text>小学</text>
+					</view>
+					<view class="information_text">
+						<input maxlength=20 type="text" placeholder="请输入小学" v-model="user.primarySchool" />
+					</view>
+				</view>
+			</view>
+			<view class="information_card flex_box">
+				<view>
+					<image class="information_edit" src="../../static/school.png" mode="aspectFill"></image>
+				</view>
+				<view class="information_container">
+					<view class="information_title">
+						<text>初中</text>
+					</view>
+					<view class="information_text">
+						<input maxlength=20 type="text" placeholder="请输入初中" v-model="user.juniorHighSchool" />
+					</view>
+				</view>
+			</view>
+			<view class="information_card flex_box">
+				<view>
+					<image class="information_edit" src="../../static/school.png" mode="aspectFill"></image>
+				</view>
+				<view class="information_container">
+					<view class="information_title">
+						<text>高中</text>
+					</view>
+					<view class="information_text">
+						<input maxlength=50 type="text" placeholder="请输入高中" v-model="user.highSchool" />
+					</view>
+				</view>
+			</view>
+			<view class="information_card flex_box">
+				<view>
+					<image class="information_edit" src="../../static/school.png" mode="aspectFill"></image>
+				</view>
+				<view class="information_container">
+					<view class="information_title">
+						<text>大学</text>
+					</view>
+					<view class="information_text">
+						<input maxlength=50 type="text" placeholder="请输入大学" v-model="user.university" />
+					</view>
+				</view>
+			</view>
 		</view>
+		
 		<button class="register_button" @click="update()">更 新</button>
+		
 		<uni-popup ref="popup_error" type="message">
 			<uni-popup-message type="error" message="用户名不能为空" :duration="2000"></uni-popup-message>
 		</uni-popup>
@@ -114,22 +182,36 @@
 					'女'
 				],
 				user: {
-					studentId: '',
-					password: '',
-					name: '用户名',
+					studentId: 22920191234,
+					name: '墨羽翎玖',
+					college: '信息学院',
+					departmet: '',
+					gender: 1,
 					avater: '../../static/avater.jpg',
-					description:"??",
-					gender: 0,
-					phone: '',
-					email: '',
-					college: '',
-					description: '这个人没有个性签名',
-					birthday: this.getToday(),
+					description: '来时山有雪，归时雪满山。',
+					birthday: '2021-12-15',
+					phone: '12312341234',
+					email: '123456@qq.com',
+					following: 100,
+					follower: 100,
+					primarySchool: '',
+					juniorHighSchool: '',
+					highSchool: '',
+					university: '',
+					admin: false,
+					hobby: {
+						other: '',
+						music: '',
+						book: '',
+						movie: '',
+						game: '',
+						comic: '',
+						sport: ''
+					}
 				}
 			}
 		},
-		onLoad(prop)
-		{
+		onLoad(prop) {
 			if (config.checkToken()) {
 				userApi.select().then(data => {
 					if (typeof data === "undefined") {
@@ -147,12 +229,30 @@
 							duration: 2000
 						})
 					} else {
-						this.user = Object.assign({}, data.data)
-						this.user.studentId = data.data.student_id
+						this.user.id = data.data.id
+						this.user.studentId = data.data.studentId
+						this.user.name = data.data.name
+						this.user.college = data.data.college
+						this.user.departmet = data.data.department
+						this.user.gender = data.data.gender
+						this.user.avater = data.data.avater
+						this.user.description = data.data.description
+						this.user.phone = data.data.phone
+						this.user.email = data.data.email
+
+						this.user.following = data.data.following
+						this.user.follower = data.data.follower
+
 						this.user.gmtCreate = data.data.gmt_create
 						this.user.gmtModified = data.data.gmt_modified
-						this.user.avater="/api"+String(data.data.avater).replace(/\\/g, "/")
-					} 
+
+						this.user.admin = data.data.admin
+
+						this.user.primarySchool = data.data.primarySchool
+						this.user.juniorHighSchool = data.data.juniorHighSchool
+						this.user.highSchool = data.data.highSchool
+						this.user.university = data.data.university
+					}
 				})
 			} else {
 				uni.redirectTo({
@@ -207,14 +307,15 @@
 									title: data.msg,
 									icon: "error",
 									mask: true,
-									duration: 2000})
-							this.$refs.popup_success.open('top')
-							setTimeout(() => {
-								uni.reLaunch({
-									url: '../person/person'
+									duration: 2000
 								})
-							}, config.waitTime)
-						}
+								this.$refs.popup_success.open('top')
+								setTimeout(() => {
+									uni.reLaunch({
+										url: '../person/person'
+									})
+								}, config.waitTime)
+							}
 						}
 					})
 				}
@@ -234,38 +335,38 @@
 			bindGenderChange(e) { // 改变性别
 				this.user.gender = e.target.value
 			},
-			chooseAndUploadPic(){
-			    uni.chooseImage({
-			        count: 1,
-			        sizeType:['copressed'],
-			        success(res) {
-			            //因为有一张图片， 输出下标[0]， 直接输出地址
-			            var imgFiles = res.tempFilePaths[0]
-						
-			            console.log(imgFiles)
+			chooseAndUploadPic() {
+				uni.chooseImage({
+					count: 1,
+					sizeType: ['copressed'],
+					success(res) {
+						//因为有一张图片， 输出下标[0]， 直接输出地址
+						var imgFiles = res.tempFilePaths[0]
+
+						console.log(imgFiles)
 						console.log(config.getToken())
-			            // 上传图片
-			            // 做成一个上传对象
-			            var uper = uni.uploadFile({
-			                // 需要上传的地址
-			                url:'/api/picture/head/insert',
+						// 上传图片
+						// 做成一个上传对象
+						var uper = uni.uploadFile({
+							// 需要上传的地址
+							url: '/api/picture/head/insert',
 							header: {
 								'token': config.getToken(),
 							},
-			                // filePath  需要上传的文件
-			                filePath: imgFiles,
-			                name: 'file',
-			                success(res1) {
-			                    // 显示上传信息
-			                    console.log(res1)
+							// filePath  需要上传的文件
+							filePath: imgFiles,
+							name: 'file',
+							success(res1) {
+								// 显示上传信息
+								console.log(res1)
 								uni.navigateTo({
-				                url: '/pages/personInfoChange/personInfoChange',
+									url: '/pages/personInfoChange/personInfoChange',
 								});
-			                }
-			            });
-			        }
-			    })
-				
+							}
+						});
+					}
+				})
+
 			},
 		}
 	}
@@ -295,12 +396,13 @@
 		/* border-bottom: 2rpx solid #A0A0A0; */
 		border-bottom: none;
 	}
-	
+
 	.description {
 		width: 40%;
+		margin-top: 10rpx;
 		margin-left: 30%;
-		font-size: 20rpx;
-		font-weight: bold;
+		font-size: 25rpx;
+		color: #808080;
 		/* border-bottom: 2rpx solid #A0A0A0; */
 		border-bottom: none;
 		text-align: center;

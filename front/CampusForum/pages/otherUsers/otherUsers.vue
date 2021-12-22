@@ -23,6 +23,16 @@
 			<view class="information_card flex_box">
 				<view class="information_container">
 					<view class="information_title">
+						<text>注册时间</text>
+					</view>
+					<view class="information_text">
+						<text>{{ user.gmtCreate }}</text>
+					</view>
+				</view>
+			</view>
+			<view class="information_card flex_box">
+				<view class="information_container">
+					<view class="information_title">
 						<text>学号</text>
 					</view>
 					<view class="information_text">
@@ -82,6 +92,144 @@
 			</view>
 		</view>
 
+		<view class="person_card"
+			v-if="user.primarySchool+user.juniorHighSchool+user.highSchool+user.university!=''">
+			<view v-if="user.primarySchool!=''" class="information_card flex_box">
+				<view class="information_container">
+					<view class="information_title">
+						<text>小学</text>
+					</view>
+					<view class="information_text">
+						<text>{{ user.primarySchool }}</text>
+					</view>
+				</view>
+				<view @click="updateUser()">
+					<image class="information_edit" src="../../static/right.png" mode="aspectFill"></image>
+				</view>
+			</view>
+			<view v-if="user.juniorHighSchool!=''" class="information_card flex_box">
+				<view class="information_container">
+					<view class="information_title">
+						<text>初中</text>
+					</view>
+					<view class="information_text">
+						<text>{{ user.juniorHighSchool }}</text>
+					</view>
+				</view>
+				<view @click="updateUser()">
+					<image class="information_edit" src="../../static/right.png" mode="aspectFill"></image>
+				</view>
+			</view>
+			<view v-if="user.highSchool!=''" class="information_card flex_box">
+				<view class="information_container">
+					<view class="information_title">
+						<text>高中</text>
+					</view>
+					<view class="information_text">
+						<text>{{ user.highSchool }}</text>
+					</view>
+				</view>
+				<view @click="updateUser()">
+					<image class="information_edit" src="../../static/right.png" mode="aspectFill"></image>
+				</view>
+			</view>
+			<view v-if="user.university!=''" class="information_card flex_box">
+				<view class="information_container">
+					<view class="information_title">
+						<text>大学</text>
+					</view>
+					<view class="information_text">
+						<text>{{ user.university }}</text>
+					</view>
+				</view>
+				<view @click="updateUser()">
+					<image class="information_edit" src="../../static/right.png" mode="aspectFill"></image>
+				</view>
+			</view>
+		</view>
+
+		<view class="person_card"
+			v-if="user.hobby.other+user.hobby.music+user.hobby.book+user.hobby.movie+user.hobby.game+user.hobby.sport!=''">
+			<view v-if="user.hobby.other!=''" class="information_card flex_box">
+				<view class="information_container">
+					<view class="information_title">
+						<text>爱好</text>
+					</view>
+					<view class="information_text">
+						<text>{{ user.hobby.other }}</text>
+					</view>
+				</view>
+				<view @click="updateUser()">
+					<image class="information_edit" src="../../static/right.png" mode="aspectFill"></image>
+				</view>
+			</view>
+			<view v-if="user.hobby.music!=''" class="information_card flex_box">
+				<view class="information_container">
+					<view class="information_title">
+						<text>喜欢音乐</text>
+					</view>
+					<view class="information_text">
+						<text>{{ user.hobby.music }}</text>
+					</view>
+				</view>
+				<view @click="updateUser()">
+					<image class="information_edit" src="../../static/right.png" mode="aspectFill"></image>
+				</view>
+			</view>
+			<view v-if="user.hobby.book!=''" class="information_card flex_box">
+				<view class="information_container">
+					<view class="information_title">
+						<text>喜欢的书</text>
+					</view>
+					<view class="information_text">
+						<text>{{ user.hobby.book }}</text>
+					</view>
+				</view>
+				<view @click="updateUser()">
+					<image class="information_edit" src="../../static/right.png" mode="aspectFill"></image>
+				</view>
+			</view>
+			<view v-if="user.hobby.movie!=''" class="information_card flex_box">
+				<view class="information_container">
+					<view class="information_title">
+						<text>喜欢的电影</text>
+					</view>
+					<view class="information_text">
+						<text>{{ user.hobby.movie }}</text>
+					</view>
+				</view>
+				<view @click="updateUser()">
+					<image class="information_edit" src="../../static/right.png" mode="aspectFill"></image>
+				</view>
+			</view>
+			<view v-if="user.hobby.game!=''" class="information_card flex_box">
+				<view class="information_container">
+					<view class="information_title">
+						<text>喜欢的游戏</text>
+					</view>
+					<view class="information_text">
+						<text>{{ user.hobby.game }}</text>
+					</view>
+				</view>
+				<view @click="updateUser()">
+					<image class="information_edit" src="../../static/right.png" mode="aspectFill"></image>
+				</view>
+			</view>
+			<view v-if="user.hobby.sport!=''" class="information_card flex_box">
+				<view class="information_container">
+					<view class="information_title">
+						<text>喜欢的运动</text>
+					</view>
+					<view class="information_text">
+						<text>{{ user.hobby.sport }}</text>
+					</view>
+				</view>
+				<view @click="updateUser()">
+					<image class="information_edit" src="../../static/right.png" mode="aspectFill"></image>
+				</view>
+			</view>
+		</view>
+
 
 		<view class="bottom_tips">
 			<text>{{ '- 到底了 -' }}</text>
@@ -105,17 +253,33 @@
 				isSubscribe: false,
 				id: 0,
 				user: {
-					studentId: 10000000001,
-					name: '晨曦氤氲',
-					collegeName: '神秘学院',
+					studentId: 22920191234,
+					name: '墨羽翎玖',
+					college: '信息学院',
+					departmet: '',
 					gender: 1,
 					avater: '../../static/avater.jpg',
-					description: '落花风雨更伤春，不如怜取眼前人。',
-					birthday: '2021-12-20',
+					description: '来时山有雪，归时雪满山。',
+					birthday: '2021-12-15',
 					phone: '12312341234',
-					email: '123456@outlook.com',
+					email: '123456@qq.com',
 					following: 100,
-					follower: 100
+					follower: 100,
+					primarySchool: '',
+					juniorHighSchool: '',
+					highSchool: '',
+					university: '',
+					gmtCreate: '',
+					admin: false,
+					hobby: {
+						other: '',
+						music: '',
+						book: '',
+						movie: '',
+						game: '',
+						comic: '',
+						sport: ''
+					}
 				}
 			}
 		},
@@ -152,18 +316,31 @@
 								duration: 2000
 							})
 						} else {
-							console.log(data)
-							this.user.studentId = data.data.student_id
+							this.user.id = data.data.id
+							this.user.studentId = data.data.studentId
 							this.user.name = data.data.name
-							this.user.collegeName = data.data.college
+							this.user.college = data.data.college
+							this.user.departmet = data.data.department
 							this.user.gender = data.data.gender
 							this.user.avater = data.data.avater
 							this.user.description = data.data.description
-							this.user.birthday = data.data.birthday
 							this.user.phone = data.data.phone
 							this.user.email = data.data.email
-							this.user.follower = data.data.follower
+
 							this.user.following = data.data.following
+							this.user.follower = data.data.follower
+
+							this.user.gmtCreate = data.data.gmt_create
+							this.user.gmtModified = data.data.gmt_modified
+
+							this.user.admin = data.data.admin
+
+							this.user.primarySchool = data.data.primarySchool == null ? '' : data.data
+								.primarySchool
+							this.user.juniorHighSchool = data.data.juniorHighSchool == null ? '' : data.data
+								.juniorHighSchool
+							this.user.highSchool = data.data.highSchool == null ? '' : data.data.highSchool
+							this.user.university = data.data.university == null ? '' : data.data.university
 						}
 					})
 				}
