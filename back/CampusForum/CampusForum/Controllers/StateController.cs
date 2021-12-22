@@ -239,14 +239,14 @@ namespace CampusForum.Controllers
                 long id = JwtToid(token);
                 if (id == 0) return new Code(404, "token错误", null);
 
-                int total = _coreDbContext.Set<State>().Count();
+                int total = _coreDbContext.Set<State>().Where(d => d.user_id == id&& d.disable == 0).Count();
                 int pages = total / pageSize;
                 if (total % pageSize != 0) pages += 1;
 
                 if (page > ((pages - 1) > 0 ? (pages - 1) : 0)) return new Code(400, "页码超过记录数", null);
 
                 //只返回当前用户未被删除的状态
-                List<State> stateList = _coreDbContext.Set<State>().Where(d => d.user_id == id&& d.disable == 0).Skip(page * pageSize).Take(pageSize).OrderByDescending(d => d.gmt_create).ToList();
+                List<State> stateList = _coreDbContext.Set<State>().Where(d => d.user_id == id&& d.disable == 0).Skip(page * pageSize).Take(pageSize).ToList();
  
                 List<StateRet> stateRetList = new List<StateRet>();
                 int likenum, userlike;
@@ -505,8 +505,16 @@ namespace CampusForum.Controllers
                 return 0;
             }
 
-            long studentId = long.Parse(studentIdStr);
-            long id = _coreDbContext.Set<User>().Where(d => d.student_id == studentId).FirstOrDefault().id;
+            long id = 0;
+            try
+            {
+                long studentId = long.Parse(studentIdStr);
+                id = _coreDbContext.Set<User>().Where(d => d.student_id == studentId).FirstOrDefault().id;
+            }
+            catch (Exception)
+            {
+                return 0;
+            }
 
             return id;
         }

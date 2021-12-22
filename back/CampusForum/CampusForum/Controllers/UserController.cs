@@ -127,16 +127,15 @@ namespace WebApi.Controllers
         /// <summary>
         /// 更新用户数据
         /// </summary>
-        /// <param name="userReq"></param>
+        /// <param name="userModifiedReq"></param>
         /// <returns></returns>
         [HttpPost("update/{userId}")]
-        public Code updateInfo(UserReq userReq)
+        public Code updateInfo(UserModifiedReq userModifiedReq)
         {
             string token = HttpContext.Request.Headers["token"];
 
             long id = JwtToid(token);
             if (id == 0) return new Code(404, "token错误", null);
-
 
             string user_idStr = RouteData.Values["userId"].ToString();
             
@@ -147,60 +146,72 @@ namespace WebApi.Controllers
             {
                 User tokenUser = _coreDbContext.Set<User>().Find(id);
 
-                if (tokenUser.name != userReq.name)
-                    tokenUser.name = userReq.name;
-                if (tokenUser.college != userReq.college)
-                    tokenUser.college = userReq.college;
-                if (tokenUser.gender != userReq.gender)
-                    tokenUser.gender = userReq.gender;
-                if (tokenUser.avater != userReq.avater)
-                    tokenUser.avater = userReq.avater;
-                if (tokenUser.description != userReq.description)
-                    tokenUser.description = userReq.description;
-                if (tokenUser.birthday != userReq.birthday)
-                    tokenUser.birthday = userReq.birthday;
-                if (tokenUser.phone != userReq.phone)
-                    tokenUser.phone = userReq.phone;
-                if (tokenUser.email != userReq.email)
-                    tokenUser.email = userReq.email;
+                tokenUser.modifyUser(userModifiedReq);
+                bool nameChange = tokenUser.name == userModifiedReq.name;
+                
+                Hobby existHobby = _coreDbContext.Set<Hobby>().Where(d => d.user_id == id).FirstOrDefault();
+                //新建爱好
+                if(existHobby == null)
+                {
+                    using(CoreDbContext _coreDbContext = new CoreDbContext())
+                    {
+                        Hobby hobby = new Hobby(userModifiedReq.hobbyReq);
+                        hobby.gmt_create = DateTime.Now;
+                        hobby.gmt_modified = DateTime.Now;
+                        hobby.user_id = id;
+                        _coreDbContext.Set<Hobby>().Add(hobby);
+                        _coreDbContext.SaveChanges();
+                    }
+                }
+                //修改爱好
+                else 
+                {
+                    existHobby.changeHobby(userModifiedReq.hobbyReq);
+                    existHobby.gmt_modified = DateTime.Now;
+                    _coreDbContext.Set<Hobby>().Update(existHobby);
+                    _coreDbContext.SaveChanges();
+                }
 
                 //更新user对应的gmt_modified
                 tokenUser.gmt_modified = DateTime.Now;
-
-                using (CoreDbContext _coreDbContext = new CoreDbContext())
+                _coreDbContext.Set<User>().Update(tokenUser);
+                _coreDbContext.SaveChanges();
+                
+                if(nameChange == true)
                 {
-                    _coreDbContext.Set<User>().Update(tokenUser);
-                    _coreDbContext.SaveChanges();
-
-                    string newToken = generateToken(tokenUser.student_id, tokenUser.name);
+                    string newToken = generateToken(id, userModifiedReq.name);
                     return new Code(200, "成功", new { token = newToken });
                 }
-
+                return new Code(200, "成功", new { token = token });
+           
             }
-
 
             User user = _coreDbContext.Set<User>().Find(userId);
 
-            //更新user信息
-            if (user.name != userReq.name) 
-                user.name = userReq.name;
-            if (user.college != userReq.college) 
-                user.college = userReq.college;
-            if (user.gender != userReq.gender) 
-                user.gender = userReq.gender;
-            if (user.avater != userReq.avater)
-                user.avater = userReq.avater;
-            if (user.description != userReq.description)
-                user.description = userReq.description;
-            if (user.birthday != userReq.birthday)
-                user.birthday = userReq.birthday;
-            if (user.phone != userReq.phone)
-                user.phone = userReq.phone;
-            if (user.email != userReq.email)
-                user.email = userReq.email;
+            user.modifyUser(userModifiedReq);
 
             //更新user对应的gmt_modified
             user.gmt_modified = DateTime.Now;
+
+            Hobby modifiedHobby = _coreDbContext.Set<Hobby>().Where(d => d.user_id == userId).FirstOrDefault();
+            //新建爱好
+            if (modifiedHobby == null)
+            {
+                Hobby hobby = new Hobby(userModifiedReq.hobbyReq);
+                hobby.gmt_create = DateTime.Now;
+                hobby.gmt_modified = DateTime.Now;
+                hobby.user_id = id;
+                _coreDbContext.Set<Hobby>().Add(hobby);
+                _coreDbContext.SaveChanges();
+            }
+            //修改爱好
+            else
+            {
+                modifiedHobby.changeHobby(userModifiedReq.hobbyReq);
+                modifiedHobby.gmt_modified = DateTime.Now;
+                _coreDbContext.Set<Hobby>().Update(modifiedHobby);
+                _coreDbContext.SaveChanges();
+            }
 
             using (CoreDbContext _coreDbContext = new CoreDbContext())
             {
@@ -479,8 +490,6 @@ namespace WebApi.Controllers
 
                     follower = _coreDbContext.Set<Follow>().Count(d => d.user_id == follow.user_id);
                     following = _coreDbContext.Set<Follow>().Count(d => d.follower_id == follow.user_id);
-
-                    //Hobby hobby = 
 
                     UserRet userRet = new UserRet(user, true, follower, following);
                     userRetList.Add(userRet);

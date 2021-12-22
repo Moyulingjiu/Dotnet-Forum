@@ -173,7 +173,7 @@ namespace CampusForum.Controllers
 
                 if (page > ((pages - 1) > 0 ? (pages - 1) : 0)) return new Code(400, "页码超过记录数", null);
 
-                List<Comment> commentList = _coreDbContext.Set<Comment>().Where(d => d.state_id == state_id && d.father_id == 0 && d.disable == 0).Skip(page * pageSize).Take(pageSize).ToList();
+                List<Comment> commentList = _coreDbContext.Set<Comment>().Where(d => d.state_id == state_id && d.father_id == 0 && d.disable == 0).Skip(page * pageSize).Take(pageSize).OrderByDescending(d => d.gmt_create).ToList();
                 List<CommentRet> commentRetList = new List<CommentRet>();
 
                 foreach(Comment comment in commentList)
@@ -225,7 +225,7 @@ namespace CampusForum.Controllers
 
                 if (page > ((pages - 1) > 0 ? (pages - 1) : 0)) return new Code(400, "页码超过记录数", null);
 
-                List<Comment> commentList = _coreDbContext.Set<Comment>().Where(d => d.father_id == comment_id && d.disable == 0).Skip(page * pageSize).Take(pageSize).ToList();
+                List<Comment> commentList = _coreDbContext.Set<Comment>().Where(d => d.father_id == comment_id && d.disable == 0).Skip(page * pageSize).Take(pageSize).OrderByDescending(d => d.gmt_create).ToList();
                 List<CommentRet> commentRetList = new List<CommentRet>();
 
                 foreach(Comment existComment in commentList)
@@ -254,8 +254,16 @@ namespace CampusForum.Controllers
                 return 0;
             }
 
-            long studentId = long.Parse(studentIdStr);
-            long id = _coreDbContext.Set<User>().Where(d => d.student_id == studentId).FirstOrDefault().id;
+            long id;
+            try
+            {
+                long studentId = long.Parse(studentIdStr);
+                id = _coreDbContext.Set<User>().Where(d => d.student_id == studentId).FirstOrDefault().id;
+            }
+            catch (Exception)
+            {
+                return 0;
+            }
 
             return id;
         }
