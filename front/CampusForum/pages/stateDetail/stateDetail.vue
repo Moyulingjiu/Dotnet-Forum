@@ -35,7 +35,10 @@
 						</view>
 						<view class="comment_text_container">
 							<view space="emsp" class="comment_user" @click="userdetail(subitem.userId)">{{ subitem.userName }}</view>
-							<view space="emsp" class="comment_text">{{ subitem.text }}</view>
+							<view space="emsp" class="comment_text">
+								<text class="reply_text" v-if="subitem.reply.length!=0" @click="userdetail(subitem.replyUserId)">{{ subitem.reply }}</text>
+								<text>{{ subitem.text }}</text>
+							</view>
 							<view class="comment_button">
 								<text>{{ subitem.gmtCreate }}</text>
 								<text class="comment_reply" @click="showReplyBox(index, subitem.id)">回复</text>
@@ -43,7 +46,7 @@
 							</view>
 						</view>
 					</view>
-					<view class="comment_show_more">
+					<view v-if="item.subcommentPage<item.subcommentTotal-1" class="comment_show_more">
 						<text>点击展开更多评论</text>
 					</view>
 					<view class="comment_reply_box" v-if="item.needReply">
@@ -66,6 +69,10 @@
 		</uni-popup>
 		<uni-popup ref="popup_delete_success" type="message">
 			<uni-popup-message type="success" message="删除成功" :duration="2000"></uni-popup-message>
+		</uni-popup>
+		
+		<uni-popup ref="popup_success_refresh" type="message">
+			<uni-popup-message type="success" message="刷新成功" :duration="2000"></uni-popup-message>
 		</uni-popup>
 	</view>
 </template>
@@ -147,6 +154,12 @@
 		},
 		onShow() {
 			this.refresh()
+		},
+		onPullDownRefresh() {
+			this.isRefresh = true
+			this.refresh()
+			uni.stopPullDownRefresh();
+			this.$refs.popup_success_refresh.open('top')
 		},
 		methods: {
 			refresh() {
@@ -269,15 +282,25 @@
 										commentItem.subcommentTotal = subdata.data.total
 										for (let key2 in subdata.data.items) {
 											let subCommentItem = {
-												id: subdata.data.items[key].commentId,
-												stateId: subdata.data.items[key].state_id,
-												fatherId: subdata.data.items[key].father_id,
-												replyId: subdata.data.items[key].reply_id,
-												text: subdata.data.items[key].text,
-												userId: subdata.data.items[key].userId,
-												userName: subdata.data.items[key].userName,
-												userAvater: subdata.data.items[key].userAvater,
-												gmtCreate: subdata.data.items[key].gmt_create,
+												id: subdata.data.items[key2].commentId,
+												stateId: subdata.data.items[key2].state_id,
+												fatherId: subdata.data.items[key2].father_id,
+												replyId: subdata.data.items[key2].reply_id,
+												text: subdata.data.items[key2].text,
+												userId: subdata.data.items[key2].userId,
+												userName: subdata.data.items[key2].userName,
+												userAvater: subdata.data.items[key2].userAvater,
+												gmtCreate: subdata.data.items[key2].gmt_create,
+												reply: '',
+												replyUserId: 0
+											}
+											if (subCommentItem.replyId != subCommentItem.fatherId) {
+												commentApi.select(subCommentItem.id).then(data3 => {
+													if (typeof data3 != 'undefined' && data3.code == 200) {
+														subCommentItem.reply = '@' + data3.data.userName
+														subCommentItem.replyUserId = data3.data.userId
+													}
+												})
 											}
 											commentItem.subcomment.push(subCommentItem)
 										}
@@ -367,7 +390,12 @@
 					}
 				}).then(data => {
 					if (typeof data === "undefined") {
-						
+						uni.showToast({
+							title: '服务器错误',
+							icon: "error",
+							mask: true,
+							duration: 2000
+						})
 					} else if (data.code == 200) {
 						this.$refs.popup_delete_success.open('top')
 						this.refresh()
@@ -650,5 +678,10 @@
 	.bottom_tips text {
 		color: #A8A8A8;
 		bottom: 0;
+	}
+	
+	.reply_text {
+		color: #00A1D6;
+		margin-right: 10rpx;
 	}
 </style>

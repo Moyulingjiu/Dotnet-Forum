@@ -69,7 +69,7 @@
 			"path": "pages/stateDetail/stateDetail",
 			"style": {
 				"navigationBarTitleText": "状态详情",
-				"enablePullDownRefresh": false
+				"enablePullDownRefresh": true
 			}
 
 		}, 
