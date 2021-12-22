@@ -1,62 +1,48 @@
 <template>
-	<view>
-		<view class="tabs">
-		    <scroll-view scroll-x class="scroll-h" >
-		    <block v-for="(tab,index) in tabBars" :key="tab.id">
-		    <view class="uni-tab-item" :class="{'uni-tab-item-title-active' :tabIndex==index}" @tap="tabtap(index)">
-		    <!-- 1 {{tab.name}} -->
-				<text class="uni-tab-item-title" :class="tabIndex==index ? 'uni-tab-item-title-active' : ''">{{tab.name}}</text>
-		    </view>
-		    </block>            
-		    </scroll-view>
+	<view class="big">
+		<view class="trade">
+			<view class="texts" :class="curr==0?'active':''" data-index="0" @tap="setCurr">
+				关注
+			</view>
+			<view class="texts" :class="curr==1?'active':''" data-index="1" @tap="setCurr">
+				粉丝
+			</view>
 		</view>
-		<view v-if="tabIndex==0">
-			<table :style="{'width':this.windowWidth}" border="1px solid #ccc" cellspacing="0" cellpadding="0">
-				<thead>
-					<tr>
-						<th class="idRow">id</th>
-						<th class="usernameRow">username</th>
-						<th>通 过</th>
-						<th>取 消</th>
-					</tr>
-				</thead>
-				<br>
-				<tr v-for="(item,index) in applicationList.data">
-					<th class="idRow">{{item.id}}</th>
-					<th class="usernameRow">{{item.username}}</th>
-					<th><button class="passButton" @click="cilckPass(item.id)">通 过</button></th>
-					<th><button class="cancelButton" @click="cilckCancel(item.id)">取 消</button></th>
-				</tr>
-			</table>
-		</view>
-		
-		<view v-if="tabIndex==1">
-			<table :style="{'width':this.windowWidth}" border="1px solid #ccc" cellspacing="0" cellpadding="0">
-				<thead>
-					<tr>
-						<th class="idRow">id</th>
-						<th class="usernameRow">username</th>
-						<th>封 禁</th>
-						<th>注 销</th>
-					</tr>
-				</thead>
-				<br>
-				<tr v-for="(item,index) in userList.data">
-					<th class="idRow">{{item.id}}</th>
-					<th class="usernameRow">{{item.username}}</th>
-					<th><button class="passButton" @click="cilckPass(item.id)">封 禁</button></th>
-					<th><button class="cancelButton" @click="cilckCancel(item.id)">注 销</button></th>
-				</tr>
-			</table>
-		</view>
-		
-		<uni-pagination id="pagination"
-		    show-icon="true" 
-		    :total="applicationList.totle" 
-		    :current="applicationList.page"
-			:pageSize="applicationList.pageSize"
-			@change="pageChange">
-		</uni-pagination>
+		<swiper :current="curr" @change="setCurr">
+			<swiper-item>
+				<scroll-view>
+					<view v-for="(item,index) in applicationList.data">
+						<view class="person_container">
+							<view class="user">
+								<text class="user_name">{{ item.username }}</text>
+								<!-- <br />
+								<text class="user_description">{{ item.description }}</text> -->
+							</view>
+							<view :class="item.isPassed?'follow':'unfollow'">
+								{{ item.isPassed?'通过':'已通过' }}
+							</view>
+						</view>
+					</view>
+				</scroll-view>
+			</swiper-item>
+			<swiper-item>
+				<scroll-view>
+					<view v-for="(item,index) in userList.data">
+						<view class="person_container">
+							<image class="user_avater" :src="item.avater"></image>
+							<view class="user">
+								<text class="user_name">{{ item.username }}</text>
+								<br />
+								<text class="user_description">{{ item.description }}</text>
+							</view>
+							<view :class="item.isBanned?'follow':'unfollow'">
+								{{ item.isBanned?'封禁':'已封禁' }}
+							</view>
+						</view>
+					</view>
+				</scroll-view>
+			</swiper-item>
+		</swiper>
 	</view>
 </template>
 
@@ -73,14 +59,17 @@
 						{
 							"id":"1",
 							"username":"facedawn",
+							"isPassed":0
 						},
 						{
 							"id":"2",
 							"username":"s",
+							"isPassed":1
 						},
 						{
 							"id":"3",
 							"username":"b",
+							"isPassed":0
 						},
 					]
 				},
@@ -91,7 +80,10 @@
 					"data":[
 						{
 							"id":"21313",
-							"username":"xxxx"
+							"username":"xxxx",
+							"avater":"",
+							"description":"",
+							"isbanned":0
 						}
 					]
 				},
@@ -195,5 +187,75 @@
 	
 	.uni-tab-item-title-active {
 	    color: #007AFF;
+	}
+	
+	.trade {
+		margin-top: 30rpx;
+		width: 100%;
+		overflow: auto;
+	}
+	
+	.trade view {
+		text-align: center;
+		width: 50%;
+		float: left;
+		font-size: 40rpx;
+		font-weight: bold;
+		padding-bottom: 10rpx;
+	}
+	
+	.trade .texts.active {
+		border-bottom: 8rpx solid #00A1D6;
+	}
+	
+	.person_container {
+		margin-bottom: 20rpx;
+		padding: 10rpx;
+		display: flex;
+	}
+	
+	.user_avater {
+		width: 100rpx;
+		height: 100rpx;
+		border-radius: 50%;
+	}
+	
+	.user {
+		margin-left: 15rpx;
+	}
+	
+	.user_name {
+		font-size: 45rpx;
+		font-weight: bold;
+	}
+	
+	.user_description {
+		font-size: 35rpx;
+		color: #555555;
+	}
+	
+	.unfollow {
+		position: absolute;
+		right: 30rpx;
+		font-size: 40rpx;
+		color: white;
+		margin-top: 30rpx;
+		width: 200rpx;
+		height: 60rpx;
+		text-align: center;
+		background: #83cbac;
+	}
+	
+	.follow {
+		position: absolute;
+		right: 30rpx;
+		font-size: 40rpx;
+		color: white;
+		margin-top: 30rpx;
+		width: 200rpx;
+		height: 60rpx;
+		text-align: center;
+		background: #b5aa90;
+		/* box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); */
 	}
 </style>
