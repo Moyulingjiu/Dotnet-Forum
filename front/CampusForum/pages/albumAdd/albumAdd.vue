@@ -42,6 +42,7 @@
 	export default {
 		data() {
 			return {
+				cilck:0,
 				albumInfo: {
 					name: '',
 					description: ''
@@ -63,30 +64,42 @@
 				if (this.albumInfo.albumName == '') {
 					this.$refs.popup_error.open('top')
 				} else {
-					albumApi.insertAlbum(this.albumInfo).then(data => {
-						if (typeof data === "undefined") {
-							uni.showToast({
-								title: '服务器错误',
-								icon: "error",
-								mask: true,
-								duration: 2000
-							})
-						} else if (data.code != 200) {
-							uni.showToast({
-								title: data.msg,
-								icon: "error",
-								mask: true,
-								duration: 2000
-							})
-						} else {
-							this.$refs.popup_success.open('top')
-							setTimeout(() => {
-								uni.reLaunch({
-									url: `/pages/album/album`
+					if(this.cilck==1)
+					{
+						uni.showToast({
+							title: '你点击的太快了，请稍等',
+							icon: "error",
+							mask: true,
+							duration: 2000
+						})
+					}
+					else{
+						this.cilck=1;
+						albumApi.insertAlbum(this.albumInfo).then(data => {
+							if (typeof data === "undefined") {
+								uni.showToast({
+									title: '服务器错误',
+									icon: "error",
+									mask: true,
+									duration: 2000
 								})
-							}, config.waitTime)
-						}
-					})
+							} else if (data.code != 200) {
+								uni.showToast({
+									title: data.msg,
+									icon: "error",
+									mask: true,
+									duration: 2000
+								})
+							} else {
+								this.$refs.popup_success.open('top')
+								setTimeout(() => {
+									uni.reLaunch({
+										url: `/pages/album/album`
+									})
+								}, config.waitTime)
+							}
+						})
+					}
 				}
 			},
 		}
