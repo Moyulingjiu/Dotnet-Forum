@@ -199,7 +199,7 @@ namespace CampusForum.Controllers
                 //State对象
                 State state = _coreDbContext.Set<State>().Find(state_id);
                 if (state == null) return new Code(404, "没有记录", false);
-                if (state.share_state == 0 && state_id != id) return new Code(404, "状态不可见", false);
+                if (state.share_state == 0 && state.user_id != id) return new Code(404, "状态不可见", false);
                 if(state.disable == 1) return new Code(404,"状态已被删除",false);
 
                 //StateText对象
