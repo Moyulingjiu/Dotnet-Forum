@@ -3,9 +3,9 @@
 		<button type="primary" @click="chooseAndUploadPic()">请选择图片</button>
 
 		<view class="container" :style="{'--picWidth':this.picWidth}">
-			<view v-for="(item,index) in this.picture.Item">
+			<view v-for="(item,index) in this.picture.item">
 				<template>
-					<image :src="item.url" mode="aspectFill" class="text" @click="clickPic(index)"></image>
+					<image :src="item.url" mode="aspectFill" class="text" @click="clickPic(index, item.url)"></image>
 				</template>
 			</view>
 		</view>
@@ -34,13 +34,10 @@
 				picWidthNum: 0,
 				picWidth: "",
 				picRowNum: 0,
-				pageInfo: {
-					page: 0,
-					pageSize: 20
-				},
 				picture: {
-					Totle: 3,
-					Item: [{
+					total: 3,
+					page: 0,
+					item: [{
 							"Id": "1",
 							"Name": "asd",
 							"url": "https://ns-strategy.cdn.bcebos.com/ns-strategy/upload/fc_big_pic/part-00563-2872.jpg"
@@ -56,7 +53,8 @@
 							"url": "https://ns-strategy.cdn.bcebos.com/ns-strategy/upload/fc_big_pic/part-00563-2872.jpg"
 						}
 					]
-				}
+				},
+				loadLock: false
 			}
 		},
 		onNavigationBarButtonTap: function(e) {
@@ -79,30 +77,15 @@
 			}
 
 		},
-		onLoad(prop) {
-			//获取picture数据，还要传page和pagesize
-			let len
-			this.albumId = prop.albumId;
-			this.picture = pictureApi.getPictureByAlbumId(this.albumId, this.pageInfo).then(data => {
-				len = data.data.item.length
-				this.picture = {
-					totle: 0,
-					Item: []
-				};
-				for (let i = 0; i < len; i++) {
-					let temp = {
-						"id": data.data.item[i].id,
-						"name": data.data.item[i].name,
-						"url": data.data.item[i].url
-					}
-					this.picture.Item.push(temp);
-					this.picture.Item[i].url = "/api" + String(this.picture.Item[i].url).replace(/\\/g, "/");
-				}
-			});
+		onLoad(options) {
+			this.albumId = options.id
+			if (typeof this.albumId == 'undefined' || this.albumId == 0) {
+				uni.switchTab({
+					url: '../album/album'
+				})
+			}
 
-
-
-			var that = this;
+			let that = this
 			uni.getSystemInfo({
 				success: function(res) {
 					that.windowWidth = res.windowWidth;
@@ -110,48 +93,73 @@
 					that.picWidthNum = (that.windowWidth - 1) / that.picRowNum;
 					that.picWidth = that.picWidthNum + "px";
 				}
-			});
+			})
 		},
-
+		onShow() {
+			this.refresh()
+		},
+		onReachBottom() {
+			if (!this.loadLock) { // 加锁
+				this.loadLock = true
+				if (this.picture.page < this.picture.total - 1) {
+					this.picture.page++
+					this.loadData()
+				}
+				this.loadLock = false
+			}
+		},
 		methods: {
 			refresh() {
 				if (config.checkToken()) {
-					let len
-					pictureApi.getPictureByAlbumId(this.albumId, this.pageInfo).then(data => {
-						len = data.data.item.length
-						this.picture = {
-							totle: 0,
-							Item: []
-						};
-						console.log(String(data.data.item[0].url).replace(/\\/g, "/"))
-						if (len > 0) {
-							albumApi.updateAlbum(this.albumId, String(data.data.item[0].url).replace(/\\/g, "/"))
-						}
-						for (let i = 0; i < len; i++) {
-							let temp = {
-								"id": data.data.item[i].id,
-								"name": data.data.item[i].name,
-								"url": data.data.item[i].url
-							}
-							this.picture.Item.push(temp);
-
-							this.picture.Item[i].url = "/api" + String(this.picture.Item[i].url).replace(/\\/g,
-								"/");
-						}
-
-					})
+					this.picture.page = 0
+					this.picture.item = []
+					this.loadData()
 				} else {
 					uni.redirectTo({
 						url: '../login/login'
 					})
 				}
 			},
-			clickPic(index) {
+			loadData(page = this.picture.page) {
+				pictureApi.getPictureByAlbumId(this.albumId, page).then(data => {
+					if (typeof data === "undefined") {
+						uni.showToast({
+							title: '服务器错误',
+							icon: "error",
+							mask: true,
+							duration: 2000
+						})
+					} else if (data.code != 200) {
+						uni.showToast({
+							title: data.msg,
+							icon: "error",
+							mask: true,
+							duration: 2000
+						})
+					} else {
+						this.picture.total = data.data.total
+						for (let key in data.data.item) {
+							let temp = {
+								id: data.data.item[key].id,
+								name: data.data.item[key].name,
+								url: data.data.item[key].url,
+							}
+							temp.url = "/api" + String(temp.url).replace(/\\/g,"/")
+							this.picture.item.push(temp)
+						}
+						if (data.data.item.length > 0) {
+							albumApi.updateAlbum(this.albumId, String(data.data.item[0].url).replace(/\\/g,"/"))
+						}
+					}
+				})
+			},
+			clickPic(index, url='') {
 				let that = this
 				if (this.delete == 0) {
-					window.location.href = String(this.picture.Item[index].url).replace(/\/api/g, "http://localhost:20673")
+					console.log(url)
+					window.location.href = String(url).replace(/\/api/g, "http://localhost:20673")
 					uni.navigateTo({
-						url: String(this.picture.Item[index].url).replace(/\/api/g, "http://localhost:20673")
+						url: String(url).replace(/\/api/g, "http://localhost:20673")
 					});
 				} else {
 					uni.showModal({
@@ -159,7 +167,7 @@
 						content: ' ',
 						success: function(res) {
 							if (res.confirm) {
-								pictureApi.deletePicture(that.picture.Item[index].id).then(data => {
+								pictureApi.deletePicture(that.picture.item[index].id).then(data => {
 									if (typeof data === "undefined") {
 										uni.showToast({
 											title: '服务器错误',
@@ -185,40 +193,44 @@
 				}
 			},
 			chooseAndUploadPic() {
-				let that = this;
-				uni.chooseImage({
-					count: 1,
-					sizeType: ['copressed'],
-					success(res) {
-						//因为有一张图片， 输出下标[0]， 直接输出地址
-						var imgFiles = res.tempFilePaths[0]
-						// 上传图片
-						// 做成一个上传对象
-						var uper = uni.uploadFile({
-							// 需要上传的地址
-							url: '/api/picture/insert/' + that.albumId,
-							header: {
-								'token': config.getToken(),
-							},
-							// filePath  需要上传的文件
-							filePath: imgFiles,
-							name: 'file',
-							success(res1) {
-								// 显示上传信息
-								that.refresh()
-								// uni.navigateTo({	
-								//             url: '/pages/albumDetail/albumDetail?albumId='+String(that.albumId),
-								// });
-							}
-
-						});
-						// uper.onProgressUpdate(function(res){
-						//     // 进度条等于 上传到的进度
-						//     that.percent = res.progress
-						//     console.log('上传进度' + res.progress)
-						//     console.log('已经上传的数据长度' + res.totalBytesSent)
-						//     console.log('预期需要上传的数据总长度' + res.totalBytesExpectedToSend)
-						// })
+				new Promise((resolve, reject) => {
+					uni.chooseImage({
+						count: 1,
+						sizeType: ['copressed'],
+						success(res) {
+							resolve(res)
+						}
+					})
+				}).then(data => {
+					if (typeof data != 'undefined') {
+						return new Promise((resolve, reject) => {
+							//因为有一张图片， 输出下标[0]， 直接输出地址
+							let imgFiles = data.tempFilePaths[0]
+							console.log(this.albumId)
+							// 上传图片
+							// 做成一个上传对象
+							uni.uploadFile({
+								// 需要上传的地址
+								url: `http://localhost:20673/picture/insert/${this.albumId}`,
+								header: {
+									'token': config.getToken(),
+								},
+								// filePath  需要上传的文件
+								filePath: imgFiles,
+								name: 'file',
+								success(res) {
+									resolve(res)
+								},
+								fail(err) {
+									console.log(err)
+								}
+							})
+						})
+					}
+				}).then(data => {
+					if (typeof data != 'undefined') {
+						this.refresh()
+						console.log(data)
 					}
 				})
 

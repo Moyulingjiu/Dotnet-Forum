@@ -127,7 +127,7 @@
 			},
 			clickAlbum(albumId) {
 				uni.navigateTo({
-					url: `/pages/albumDetail/albumDetail?albumId=${albumId}`
+					url: `/pages/albumDetail/albumDetail?id=${albumId}`
 				})
 			},
 			clickToAddAlbum() {
@@ -141,12 +141,14 @@
 
 <style>
 	.album_box {
+		padding: 10rpx;
 		margin-top: 10rpx;
 		margin-bottom: 10rpx;
 		width: 90%;
 		margin-left: 5%;
 		display: flex;
 		height: 200rpx;
+		border-bottom: 3rpx solid #F0F0F0;
 	}
 
 	.cover {

@@ -28,7 +28,15 @@ namespace CampusForum.Controllers
         {
             string token = HttpContext.Request.Headers["token"];
             string album_idStr = RouteData.Values["album_id"].ToString();
-            long album_id = long.Parse(album_idStr);
+            long album_id;
+            try
+            {
+                album_id = long.Parse(album_idStr);
+            }
+            catch (FormatException)
+            {
+                return new Code(404, "没有这个相册", null);
+            }
             long user_id = JwtToid(token);
             if (user_id == 0) return new Code(404, "token错误", null);
 
@@ -94,8 +102,11 @@ namespace CampusForum.Controllers
             if (album == null) return new Code(404, "没有这个相册", null);
             if (album.user_id != user_id) return new Code(403, "没有使用权限", null);
             var picture = _coreDbContext.Album_picture.Where(c => c.album_id == album_id).Skip(page * pageSize).Take(pageSize).Select(b => new { id = b.id, name = b.name, url = b.url });
+            int total = _coreDbContext.Album_picture.Where(c => c.album_id == album_id).Select(b => new { id = b.id, name = b.name, url = b.url }).Count();
+            int pages = total / pageSize;
+            if (total % pageSize != 0) pages += 1;
             if (picture == null) return new Code(404, "这页没有图片", null);
-            return new Code(200, "成功", new { item = picture });
+            return new Code(200, "成功", new { total = pages, item = picture });
         }
 
         private long JwtToid(string token)
