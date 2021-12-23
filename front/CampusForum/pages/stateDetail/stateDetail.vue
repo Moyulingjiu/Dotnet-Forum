@@ -27,7 +27,7 @@
 					<view class="comment_button">
 						<text>{{ item.gmtCreate }}</text>
 						<text class="comment_reply" @click="showReplyBox(index, item.id)">回复</text>
-						<text class="comment_delete" @click="deleteComment(item.id)" v-if="item.userId = userId">删除</text>
+						<text class="comment_delete" @click="deleteComment(item.id)" v-if="item.userId == userId">删除</text>
 					</view>
 					<view class="subcomment" v-for="(subitem , subindex) in item.subcomment">
 						<view class="comment_avater" @click="userdetail(subitem.userId)">
@@ -42,7 +42,7 @@
 							<view class="comment_button">
 								<text>{{ subitem.gmtCreate }}</text>
 								<text class="comment_reply" @click="showReplyBox(index, subitem.id)">回复</text>
-								<text class="comment_delete" @click="deleteComment(subitem.id)" v-if="subitem.userId = userId">删除</text>
+								<text class="comment_delete" @click="deleteComment(subitem.id)" v-if="subitem.userId == userId">删除</text>
 							</view>
 						</view>
 					</view>
@@ -300,7 +300,7 @@
 											}
 											subCommentItem.userAvater = "/api" + String(subCommentItem.userAvater).replace(/\\/g, "/")
 											if (subCommentItem.replyId != subCommentItem.fatherId) {
-												commentApi.select(subCommentItem.id).then(data3 => {
+												commentApi.select(subCommentItem.replyId).then(data3 => {
 													if (typeof data3 != 'undefined' && data3.code == 200) {
 														subCommentItem.reply = '@' + data3.data.userName
 														subCommentItem.replyUserId = data3.data.userId
@@ -351,7 +351,7 @@
 							}
 							subCommentItem.userAvater = "/api" + String(subCommentItem.userAvater).replace(/\\/g, "/")
 							if (subCommentItem.replyId != subCommentItem.fatherId) {
-								commentApi.select(subCommentItem.id).then(data3 => {
+								commentApi.select(subCommentItem.replyId).then(data3 => {
 									if (typeof data3 != 'undefined' && data3.code == 200) {
 										subCommentItem.reply = '@' + data3.data.userName
 										subCommentItem.replyUserId = data3.data.userId
@@ -533,6 +533,7 @@
 										reply: '',
 										replyUserId: 0
 									}
+									subCommentItem.userAvater = "/api" + String(subCommentItem.userAvater).replace(/\\/g, "/")
 									if (subCommentItem.replyId != subCommentItem.fatherId) {
 										commentApi.select(subCommentItem.id).then(data3 => {
 											if (typeof data3 != 'undefined' && data3.code == 200) {

@@ -6,3 +6,4 @@ back/CampusForum/CampusForum/wwwroot
 
 # 忽略word的临时文件
 ~*.docx
+~*.pptx
