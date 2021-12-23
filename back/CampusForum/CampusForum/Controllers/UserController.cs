@@ -34,8 +34,8 @@ namespace WebApi.Controllers
         [HttpPost("register")]
         public Code register(UserReq userReq)
         {
-
-            using (CoreDbContext coreDbContext = new CoreDbContext())
+            
+            using(CoreDbContext coreDbContext = new CoreDbContext())
             {
                 //查询数据库是否已有当前用户
                 User existUser = _coreDbContext.Set<User>().Where(d => d.student_id == userReq.studentId).FirstOrDefault();
@@ -77,7 +77,7 @@ namespace WebApi.Controllers
                 }
 
                 return new Code(403, "用户已存在", null);
-
+            
             }
         }
 
@@ -88,9 +88,9 @@ namespace WebApi.Controllers
         /// <param name="pageSize"></param>
         /// <returns></returns>
         [HttpGet("selectAll/UnsignedUsers")]
-        public Code getAllUnsignedUsers(int page = 0, int pageSize = 10)
+        public Code getAllUnsignedUsers(int page=0, int pageSize=10)
         {
-            using (CoreDbContext _coreDbContext = new CoreDbContext())
+            using(CoreDbContext _coreDbContext=new CoreDbContext())
             {
                 string token = HttpContext.Request.Headers["token"];
 
@@ -99,7 +99,7 @@ namespace WebApi.Controllers
 
                 User user = _coreDbContext.Set<User>().Find(id);
                 if (user.admin == 0) return new Code(403, "没有管理员权限", false);
-
+                
                 int total = _coreDbContext.Set<User>().Count(d => d.sign_state == 0);
                 int pages = total / pageSize;
                 if (total % pageSize != 0) pages += 1;
@@ -107,7 +107,7 @@ namespace WebApi.Controllers
 
                 List<User> userList = _coreDbContext.Set<User>().OrderByDescending(d => d.gmt_create).Where(d => d.sign_state == 0).ToList();
                 List<UserRet> userRetList = new List<UserRet>();
-                foreach (User everyUser in userList)
+                foreach(User everyUser in userList)
                 {
                     int follower = 0;
                     int following = 0;
@@ -130,7 +130,7 @@ namespace WebApi.Controllers
         [HttpPost("access/{userId}")]
         public Code access(long userId)
         {
-            using (CoreDbContext _coreDbContext = new CoreDbContext())
+            using(CoreDbContext _coreDbContext = new CoreDbContext())
             {
                 string token = HttpContext.Request.Headers["token"];
 
@@ -212,11 +212,11 @@ namespace WebApi.Controllers
         [HttpGet("login")]
         public Code login(long studentId, string password)
         {
-            using (CoreDbContext _coreDbContext = new CoreDbContext())
+            using(CoreDbContext _coreDbContext = new CoreDbContext())
             {
 
                 User user = _coreDbContext.Set<User>().Where(d => d.student_id == studentId).FirstOrDefault();
-
+                
                 if (user != null)
                 {
                     if (user.disable == 1) return new Code(404, "用户已被删除", false);
@@ -224,7 +224,7 @@ namespace WebApi.Controllers
                     if (user.sign_state != 1) return new Code(400, "注册尚未通过审核", false);
                     //密码加密
                     RSAKey.createRSAKey();
-
+                    
                     string decryptPassword = RSAKey.RSADecrypt(user.password);
                     if (decryptPassword == password)
                     {
@@ -234,9 +234,9 @@ namespace WebApi.Controllers
                     else return new Code(403, "密码错误", null);
                 }
                 else return new Code(404, "用户不存在", null);
-
+                
             }
-
+            
         }
 
         /// <summary>
@@ -256,7 +256,7 @@ namespace WebApi.Controllers
                 jwtSecurityToken.Payload.GetValueOrDefault("ID").ToString();
                 studentIdStr = jwtSecurityToken.Payload.GetValueOrDefault("ID").ToString();
             }
-            catch (Exception)
+            catch(Exception)
             {
                 return new Code(404, "token错误", false);
             }
@@ -280,19 +280,19 @@ namespace WebApi.Controllers
             if (id == 0) return new Code(404, "token错误", null);
 
             string user_idStr = RouteData.Values["userId"].ToString();
-
+            
             long userId = long.Parse(user_idStr);
 
             //修改自己的信息
-            if (userId == 0)
+            if(userId == 0)
             {
                 User tokenUser = _coreDbContext.Set<User>().Find(id);
 
                 tokenUser.modifyUser(userModifiedReq);
                 bool nameChange = tokenUser.name == userModifiedReq.name;
-
+                
                 Hobby existHobby = _coreDbContext.Set<Hobby>().Where(d => d.user_id == id).FirstOrDefault();
-
+                
                 //修改爱好
                 existHobby.changeHobby(userModifiedReq.hobbyReq);
                 existHobby.gmt_modified = DateTime.Now;
@@ -304,14 +304,14 @@ namespace WebApi.Controllers
                 tokenUser.gmt_modified = DateTime.Now;
                 _coreDbContext.Set<User>().Update(tokenUser);
                 _coreDbContext.SaveChanges();
-
-                if (nameChange == true)
+                
+                if(nameChange == true)
                 {
                     string newToken = generateToken(id, userModifiedReq.name);
                     return new Code(200, "成功", new { token = newToken });
                 }
                 return new Code(200, "成功", new { token = token });
-
+           
             }
 
             User user = _coreDbContext.Set<User>().Find(userId);
@@ -371,7 +371,7 @@ namespace WebApi.Controllers
         [HttpPost("delete/{userId}")]
         public Code delete()
         {
-            using (CoreDbContext _coreDbContext = new CoreDbContext())
+            using(CoreDbContext _coreDbContext = new CoreDbContext())
             {
                 string token = HttpContext.Request.Headers["token"];
 
@@ -384,8 +384,8 @@ namespace WebApi.Controllers
                 long user_id = long.Parse(user_idStr);
                 if (id != user_id) return new Code(403, "不能删除他人信息", false);
                 //逻辑删除
-                user.disable = 1;
-
+                user.disable = 1;  
+      
                 _coreDbContext.Set<User>().Update(user);
                 _coreDbContext.SaveChanges();
                 return new Code(200, "成功", true);
@@ -501,7 +501,7 @@ namespace WebApi.Controllers
 
                 if (page > ((pages - 1) > 0 ? (pages - 1) : 0)) return new Code(400, "页码超过记录数", null);
                 List<Follow> followList = _coreDbContext.Set<Follow>().Where(d => d.user_id == id).Skip(page * pageSize).Take(pageSize).ToList();
-
+                
                 int follower, following;
                 List<UserRet> userRetList = new List<UserRet>();
 
@@ -534,7 +534,7 @@ namespace WebApi.Controllers
         /// <param name="pageSize"></param>
         /// <returns></returns>
         [HttpGet("selectCondition")]
-        public Code getUserByCondition(long studentId, string name, string college, int gender, int page = 0, int pageSize = 10)
+        public Code getUserByCondition(long studentId,string name,string college,int gender, int page=0, int pageSize=10)
         {
             using (CoreDbContext _coreDbContext = new CoreDbContext())
             {
@@ -545,10 +545,10 @@ namespace WebApi.Controllers
 
                 var queryResult = _coreDbContext.Set<User>().Select(d => d);
                 //if(user.id!=null) queryResult = _coreDbContext.Set<User>().Select(d => d);
-                if (studentId != 0) queryResult = queryResult.Where(d => d.student_id == studentId);
-                if (name != null) queryResult = queryResult.Where(d => d.name.Contains(name) || d.name.StartsWith(name) || d.name.EndsWith(name));
-                if (college != null) queryResult = queryResult.Where(d => d.college.Contains(college) || d.college.StartsWith(college) || d.college.EndsWith(college));
-                if (gender == 0 || gender == 1 || gender == 2) queryResult = queryResult.Where(d => d.gender == gender);
+                if (studentId!= 0) queryResult = queryResult.Where(d => d.student_id == studentId);
+                if (name != null) queryResult = queryResult.Where(d => d.name.Contains(name)||d.name.StartsWith(name)||d.name.EndsWith(name));
+                if (college != null) queryResult = queryResult.Where(d => d.college.Contains(college)||d.college.StartsWith(college)||d.college.EndsWith(college));
+                if (gender== 0|| gender == 1|| gender == 2) queryResult = queryResult.Where(d => d.gender == gender);
                 List<User> queryUser = queryResult.ToList();
 
                 int total = queryUser.Count();
@@ -556,12 +556,12 @@ namespace WebApi.Controllers
                 int pages = total / pageSize;
                 if (total % pageSize != 0) pages += 1;
                 if (page > ((pages - 1) > 0 ? (pages - 1) : 0)) return new Code(400, "页码超过记录数", null);
-
+                
                 int follower, following;
                 List<UserRet> userRetList = new List<UserRet>();
+       
 
-
-                for (int i = page * pageSize; i < total; i++)
+                for(int i = page * pageSize; i < total; i++)
                 {
                     User user = _coreDbContext.Set<User>().Find(queryUser[i].id);
 
@@ -604,7 +604,7 @@ namespace WebApi.Controllers
                 int follower, following;
                 List<UserRet> userRetList = new List<UserRet>();
 
-                foreach (Follow follow in followList)
+                foreach(Follow follow in followList)
                 {
                     User user = _coreDbContext.Set<User>().Find(follow.user_id);
 
@@ -629,7 +629,7 @@ namespace WebApi.Controllers
         [HttpPost("follow/{userId}")]
         public Code follow()
         {
-            using (CoreDbContext _coreDbContext = new CoreDbContext())
+            using(CoreDbContext _coreDbContext = new CoreDbContext())
             {
                 string token = HttpContext.Request.Headers["token"];
 
@@ -641,7 +641,7 @@ namespace WebApi.Controllers
 
                 //user_id是否存在
                 User user = _coreDbContext.Set<User>().Find(user_id);
-                if (user == null)
+                if(user == null)
                 {
                     return new Code(404, "用户不存在", false);
                 }
@@ -652,7 +652,7 @@ namespace WebApi.Controllers
                 int count = _coreDbContext.Set<Follow>().Count(d => d.follower_id == id && d.user_id == user_id);
 
                 //未关注
-                if (count == 0)
+                if(count == 0)
                 {
                     Follow follow = new Follow();
                     follow.follower_id = id;
@@ -678,7 +678,7 @@ namespace WebApi.Controllers
         [HttpPost("unfollow/{userId}")]
         public Code unfollow()
         {
-            using (CoreDbContext _coreDbContext = new CoreDbContext())
+            using(CoreDbContext _coreDbContext = new CoreDbContext())
             {
                 string token = HttpContext.Request.Headers["token"];
 
@@ -754,7 +754,6 @@ namespace WebApi.Controllers
             {
                 long studentId = long.Parse(studentIdStr);
                 id = _coreDbContext.Set<User>().Where(d => d.student_id == studentId).FirstOrDefault().id;
-
             }
             catch (Exception)
             {

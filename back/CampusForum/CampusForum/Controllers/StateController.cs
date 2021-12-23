@@ -271,6 +271,12 @@ namespace CampusForum.Controllers
             }
         }
 
+        /// <summary>
+        /// 查询用户所有已分享的状态
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
         [HttpGet("selectAll/{userId}")]
         public Code getAllStatesById(int page = 0, int pageSize = 10)
         {
@@ -370,16 +376,15 @@ namespace CampusForum.Controllers
         }
 
         /// <summary>
-        /// 条件查询状态 未测试
+        /// 条件查询状态
         /// </summary>
         /// <param name="userId"></param>
-        /// <param name="userName"></param>
         /// <param name="title"></param>
         /// <param name="page"></param>
         /// <param name="pageSize"></param>
         /// <returns></returns>
         [HttpGet("selectCondition")]
-        public Code getStateByCondition(long userId,string userName,string title,int page,int pageSize)
+        public Code getStateByCondition(long userId/*,string userName*/,string title,int page,int pageSize)
         {
             using (CoreDbContext _coreDbContext = new CoreDbContext())
             {
@@ -389,8 +394,9 @@ namespace CampusForum.Controllers
                 if (id == 0) return new Code(404, "token错误", null);
 
                 var queryResult = _coreDbContext.Set<State>().Select(d => d);
-                if(userId!=0) queryResult = queryResult.Where(d => d.user_id == userId);
-                //if (userName != null) queryResult = queryResult.Join(User,).Where(d => d.name.Contains(name) || d.name.StartsWith(name) || d.name.EndsWith(name));
+                if (userId != 0) queryResult = queryResult.Where(d => d.user_id == userId);
+
+                //if (userName != null) queryResult = queryResult.Where(d => d.name.Contains(name) || d.name.StartsWith(name) || d.name.EndsWith(name));
                 if (title != null) queryResult = queryResult.Where(d => d.title.Contains(title) || d.title.StartsWith(title) || d.title.EndsWith(title));
                 List<State> queryUser = queryResult.ToList();
 
@@ -436,30 +442,29 @@ namespace CampusForum.Controllers
             long user_id = JwtToid(token);
             if (user_id == 0) return new Code(404, "token错误", null);
 
-            List<State> states = _coreDbContext.Set<State>().Where(b => b.user_id != user_id && b.share_state != 0).OrderByDescending(d => d.gmt_create).Skip(page * pageSize).Take(pageSize).ToList();
+            List<State> states = _coreDbContext.Set<State>().Where(b => b.user_id != user_id && b.share_state != 0).Skip(page * pageSize).Take(pageSize).ToList();
             int size = states.Count;
             if (size == 0) return new Code(404, "目前无状态可推荐", null);
-
-            int total = _coreDbContext.Set<State>().Where(b => b.user_id != user_id && b.share_state != 0).Count();
+            int total = _coreDbContext.Set<State>().Where(b => b.user_id != user_id).Count();
             int pages = total / pageSize;
             if (total % pageSize != 0) pages += 1;
 
             List<StateRet> stateRetList = new List<StateRet>();
             int likenum, userlike;
             bool like;
-
             foreach (State state in states)
             {
                 StateText stateText = _coreDbContext.Set<StateText>().Where(d => d.state_id == state.id).ToList().First();
                 User user = _coreDbContext.Set<User>().Find(state.user_id);
                 likenum = _coreDbContext.Set<Like>().Count(d => d.state_id == state.id && d.disable == 0);
-                userlike = _coreDbContext.Set<Like>().Count(d => d.state_id == state.id && d.user_id == user_id && d.disable == 0);
+                userlike = _coreDbContext.Set<Like>().Count(d => d.state_id == state.id && d.user_id == state.user_id && d.disable == 0);
                 if (userlike == 0) like = false;
                 else like = true;
 
                 StateRet stateRet = new StateRet(state, stateText, user, likenum, like);
                 stateRetList.Add(stateRet);
             }
+
             return new Code(200, "成功", new { total = pages, items = stateRetList });
         }
 
