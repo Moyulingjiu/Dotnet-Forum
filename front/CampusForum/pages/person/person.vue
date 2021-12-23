@@ -48,7 +48,7 @@
 						<text>系</text>
 					</view>
 					<view class="information_text">
-						<text>{{ user.departmet }}</text>
+						<text>{{ user.department }}</text>
 					</view>
 				</view>
 				<view @click="updateUser()">
@@ -278,7 +278,7 @@
 					studentId: 22920191234,
 					name: '墨羽翎玖',
 					college: '信息学院',
-					departmet: '',
+					department: '',
 					gender: 1,
 					avater: '../../static/avater.jpg',
 					description: '来时山有雪，归时雪满山。',
@@ -321,7 +321,7 @@
 							this.user.studentId = data.data.studentId
 							this.user.name = data.data.name
 							this.user.college = data.data.college
-							this.user.departmet = data.data.department
+							this.user.department = data.data.department
 							this.user.gender = data.data.gender
 
 							this.user.avater = "/api" + String(data.data.avater).replace(/\\/g, "/")

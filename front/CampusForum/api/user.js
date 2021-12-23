@@ -7,7 +7,8 @@ export function register({
 	studentId, 
 	password, 
 	name, 
-	college, 
+	college,
+	department,
 	gender, 
 	avater, 
 	description, 
@@ -21,6 +22,7 @@ export function register({
 		password: password,
 		name: name,
 		college: college,
+		department: department,
 		gender: gender,
 		avater: avater,
 		description: description,
@@ -64,7 +66,7 @@ export function updateById(id, {
 	studentId,
 	name,
 	college,
-	departmet,
+	department,
 	gender,
 	avater,
 	description,
@@ -84,7 +86,7 @@ export function updateById(id, {
 	let data={
 		name: name,
 		college: college,
-		departmet: departmet,
+		department: department,
 		gender: gender,
 		avater: avater,
 		description: description,
@@ -104,6 +106,9 @@ export function updateById(id, {
 			comic: hobby.comic,
 			sport: hobby.sport
 		}
+	}
+	if (data.avater.substr(0, 4) == '/api') {
+		data.avater = data.avater.substr(4)
 	}
 	// 请求
 	return request.service({

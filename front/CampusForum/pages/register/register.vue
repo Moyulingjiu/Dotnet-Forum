@@ -51,6 +51,19 @@
 			</view>
 			<view class="information_card flex_box">
 				<view>
+					<image class="information_edit" src="../../static/college.png" mode="aspectFill"></image>
+				</view>
+				<view class="information_container">
+					<view class="information_title">
+						<text>系别</text>
+					</view>
+					<view class="information_text">
+						<input maxlength=20 type="text" placeholder="请输入系" v-model="user.department" />
+					</view>
+				</view>
+			</view>
+			<view class="information_card flex_box">
+				<view>
 					<image class="information_edit" src="../../static/gender.png" mode="aspectFill"></image>
 				</view>
 				<view class="information_container">
@@ -149,6 +162,7 @@
 					phone: '',
 					email: '',
 					college: '',
+					department: '',
 					description: '这个人没有个性签名',
 					birthday: this.getToday(),
 				}

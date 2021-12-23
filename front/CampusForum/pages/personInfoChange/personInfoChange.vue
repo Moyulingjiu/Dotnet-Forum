@@ -30,7 +30,7 @@
 						<text>系别</text>
 					</view>
 					<view class="information_text">
-						<input maxlength=20 type="text" placeholder="请输入系" v-model="user.departmet" />
+						<input maxlength=20 type="text" placeholder="请输入系" v-model="user.department" />
 					</view>
 				</view>
 			</view>
@@ -281,7 +281,7 @@
 					studentId: 22920191234,
 					name: '墨羽翎玖',
 					college: '信息学院',
-					departmet: '',
+					department: '',
 					gender: 1,
 					avater: '../../static/avater.jpg',
 					description: '来时山有雪，归时雪满山。',
@@ -329,7 +329,7 @@
 						this.user.studentId = data.data.studentId
 						this.user.name = data.data.name
 						this.user.college = data.data.college
-						this.user.departmet = data.data.department
+						this.user.department = data.data.department
 						this.user.gender = data.data.gender
 						this.user.avater = "/api"+String(data.data.avater).replace(/\\/g, "/")
 						this.user.description = data.data.description
@@ -348,6 +348,14 @@
 						this.user.juniorHighSchool = data.data.juniorHighSchool
 						this.user.highSchool = data.data.highSchool
 						this.user.university = data.data.university
+						
+						this.user.hobby.other = data.data.hobby.other
+						this.user.hobby.music = data.data.hobby.music
+						this.user.hobby.book = data.data.hobby.book
+						this.user.hobby.movie = data.data.hobby.movie
+						this.user.hobby.game = data.data.hobby.game
+						this.user.hobby.comic = data.data.hobby.comic
+						this.user.hobby.sport = data.data.hobby.sport
 					}
 				})
 			} else {
