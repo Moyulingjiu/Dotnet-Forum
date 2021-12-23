@@ -221,7 +221,7 @@ namespace WebApi.Controllers
                 {
                     if (user.disable == 1) return new Code(404, "用户已被删除", false);
 
-                    if (user.sign_state != 1) return new Code(400, "注册尚未通过审核", false);
+                    if (user.sign_state != 1 && user.admin != 1) return new Code(400, "注册尚未通过审核", false);
                     //密码加密
                     RSAKey.createRSAKey();
 

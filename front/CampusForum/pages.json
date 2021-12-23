@@ -115,7 +115,7 @@
 			"path": "pages/manage/manage",
 			"style": {
 				"navigationBarTitleText": "管理页面",
-				"enablePullDownRefresh": false
+				"enablePullDownRefresh": true
 			}
 
 		}, 

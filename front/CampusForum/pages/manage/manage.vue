@@ -8,303 +8,362 @@
 				用户
 			</view>
 		</view>
-		<swiper :current="curr" @change="setCurr" style="height: 700px;">
-			<swiper-item>
+		<swiper class="container" :current="curr" @change="setCurr" style="min-height:100vh;">
+			<swiper-item style="height: 100%;">
 				<scroll-view>
-					<view v-for="(item,index) in applicationList.data">
+					<view v-for="(item,index) in checkUser.data">
 						<view class="person_container">
-							<view class="user">
+							<image class="user_avater" :src="item.avater" @click="enterUser(item.id)"></image>
+							<view class="user" @click="enterUser(item.id)">
 								<text class="user_name">{{ item.name }}</text>
 								<br />
 								<text class="user_description">{{ item.description }}</text>
 							</view>
-							<view :class="item.sign_state?'follow':'unfollow'" @click="cilckPass(index)">
-								{{ item.sign_state?'已通过':'通过' }}
-							</view>
-							<view :class="item.sign_state?'follow':'unfollow'" @click="cilckCancel(index)">
-								{{ item.sign_state?'拒绝':'已拒绝' }}
+							<image class="user_check" src="../../static/allow.png" @click="cilckPass(index)"></image>
+							<image class="user_check2" src="../../static/deny.png" @click="cilckDeny(index)"></image>
+							<view v-if="item.pass!=0" :class="item.pass==1?'follow':'unfollow'">
+								{{ item.pass==1?'已通过':'已拒绝' }}
 							</view>
 						</view>
 					</view>
+					<view class="bottom_tips">
+						<text>{{ (checkUser.page >= checkUser.total - 1) ? bottomTipsNoMore : bottomTips }}</text>
+					</view>
 				</scroll-view>
 			</swiper-item>
-			<swiper-item>
+			<swiper-item style="height: 100%;">
 				<scroll-view>
-					<view v-for="(item,index) in userList.data">
-						<view class="person_container" @click="enterUser(item.id)">
-							<image class="user_avater" :src="item.avater"></image>
-							<view class="user">
+					<view v-for="(item,index) in allUser.data">
+						<view class="person_container">
+							<image class="user_avater" :src="item.avater" @click="enterUser(item.id)"></image>
+							<view class="user" @click="enterUser(item.id)">
 								<text class="user_name">{{ item.name }}</text>
 								<br />
 								<text class="user_description">{{ item.description }}</text>
 							</view>
-							<view :class="item.isBanned?'follow':'unfollow'" @click="clickBan()">
-								{{ item.isBanned?'封禁':'已封禁' }}
-							</view>
+							<!-- <view :class="item.disbale?'follow':'unfollow'" @click="clickBan()">
+								{{ item.disbale?'封禁':'已封禁' }}
+							</view> -->
 						</view>
+					</view>
+					<view class="bottom_tips">
+						<text>{{ (allUser.page >= allUser.total - 1) ? bottomTipsNoMore : bottomTips }}</text>
 					</view>
 				</scroll-view>
 			</swiper-item>
 		</swiper>
+		
+		<uni-popup ref="popup_success_allow" type="message">
+			<uni-popup-message type="success" message="已通过注册" :duration="1000"></uni-popup-message>
+		</uni-popup>
+		<uni-popup ref="popup_success_deny" type="message">
+			<uni-popup-message type="info" message="已拒绝注册" :duration="1000"></uni-popup-message>
+		</uni-popup>
+		<uni-popup ref="popup_success_refresh" type="message">
+			<uni-popup-message type="success" message="刷新成功" :duration="1000"></uni-popup-message>
+		</uni-popup>
 	</view>
 </template>
 
 <script>
 	import * as userApi from "../../api/user.js"
+	import * as config from "../../utils/config.js"
+	
 	export default {
 		data() {
 			return {
-				curr:0,
-				windowWidth:'',
-				applicationList:{
-					"totle":"50",
-					"page":"1",
-					"pageSize":"10",
-					"data":[
+				bottomTips: '- 上拉加载更多 -', // 底部提示
+				bottomTipsNoMore: '- 到底了 -', // 底部提示
+				curr: 0,
+				checkUser: {
+					page: 0,
+					total: 1,
+					data: [
 						{
-							"id":"1",
-							"username":"facedawn",
-							"isPassed":0,
-							"description":"???"
-						},
-						{
-							"id":"2",
-							"username":"s",
-							"isPassed":1
-						},
-						{
-							"id":"3",
-							"username":"b",
-							"isPassed":0
-						},
-						
-					]
-				},
-				userList:{
-					"totle":"50",
-					"page":"1",
-					"pageSize":"10",
-					"data":[
-						{
-							"id":"21313",
-							"username":"xxxx",
-							"avater":"",
-							"description":"asdasdsad",
-							"isbanned":0,
+							id: 1,
+							name: "facedawn",
+							avater: '',
+							pass: 0,
+							description: '这个人没有个性签名'
 						}
 					]
 				},
-				 tabIndex:0,
-				    tabBars:[
-				        { name:"审核注册",id:"application"},
-				        { name:"查看用户",id:"user"},
-				    ]
+				allUser: {
+					page: 0,
+					total: 1,
+					data: [
+						{
+							id: 1,
+							name: "facedawn",
+							avater: '',
+							pass: 0,
+							description: '这个人没有个性签名'
+						}
+					]
+				},
+				loadLock: false
 			}
 		},
 		onLoad() {
-			//获取applicationList数据，还要传page和pagesize
-			
-			console.log(123);
-			var that=this;
-			uni.getSystemInfo({
-			    success: function (res) {
-					that.windowWidth=res.windowWidth+'px';	
-			    }
-			});
-			
-			userApi.selectAllRegisterUser().then(data=>{
-				console.log(data)
-				if (typeof data === "undefined") {
-					uni.showToast({
-						title: '服务器错误',
-						icon: "error",
-						mask: true,
-						duration: 2000
-					})
-				} else if (data.code != 200) {
-					uni.showToast({
-						title: data.msg,
-						icon: "error",
-						mask: true,
-						duration: 2000
-					})
+		},
+		onShow() {
+			this.refresh()
+		},
+		onPullDownRefresh() {
+			this.refresh()
+			uni.stopPullDownRefresh();
+			this.$refs.popup_success_refresh.open('top')
+		},
+		onReachBottom() {
+			if (!this.loadLock) { // 加锁
+				this.loadLock = true
+				if (this.curr == 0) {
+					if (this.checkUser.page < this.checkUser.total - 1) {
+						this.loadData(this.checkUser.page + 1, this.allUser.page)
+					}
 				} else {
-					this.applicationList.data=data.data.items
-					for(let i=0;i<data.data.items.length;i++)
-					{
-						this.applicationList.data[i].sign_state=0
+					if (this.allUser.page < this.allUser.total - 1) {
+						this.loadData(this.checkUser.page, this.allUser.page + 1)
 					}
 				}
-			})
-			
-			userApi.selectAll().then(data=>{
-				console.log(data)
-				if (typeof data === "undefined") {
-					uni.showToast({
-						title: '服务器错误',
-						icon: "error",
-						mask: true,
-						duration: 2000
-					})
-				} else if (data.code != 200) {
-					uni.showToast({
-						title: data.msg,
-						icon: "error",
-						mask: true,
-						duration: 2000
-					})
-				} else {
-					this.userList.data=data.data.items
-				}
-			})
+				this.loadLock = false
+			}
 		},
 		methods: {
-			enterUser(userId){
-				console.log(userId)
+			refresh() {
+				if (!config.checkToken()) {
+					uni.redirectTo({
+						url: '../login/login'
+					})
+				}
+				this.checkUser = {
+					page: -1,
+					total: 1,
+					data: []
+				}
+				this.allUser = {
+					page: -1,
+					total: 1,
+					data: []
+				}
+				this.loadData(0,0)
+			},
+			loadData(checkPage, allPage) {
+				if (checkPage != this.checkUser.page) {
+					this.checkUser.page = checkPage
+					userApi.selectAllRegisterUser().then(data => {
+						if (typeof data === "undefined") {
+							uni.showToast({
+								title: '服务器错误',
+								icon: "error",
+								mask: true,
+								duration: 2000
+							})
+						} else if (data.code != 200) {
+							uni.showToast({
+								title: data.msg,
+								icon: "error",
+								mask: true,
+								duration: 2000
+							})
+						} else {
+							this.checkUser.total = data.data.total
+							for (let key in data.data.items) {
+								let item = {
+									id: data.data.items[key].id,
+									name: data.data.items[key].name,
+									avater: data.data.items[key].avater,
+									description: data.data.items[key].description,
+									pass: 0
+								}								
+								item.avater = "/api" + String(item.avater).replace(/\\/g, "/")
+								this.checkUser.data.push(item)
+							}
+						}
+					})
+				}
+				if (allPage != this.allUser.page) {
+					this.allUser.page = allPage
+					userApi.selectAll().then(data => {
+						if (typeof data === "undefined") {
+							uni.showToast({
+								title: '服务器错误',
+								icon: "error",
+								mask: true,
+								duration: 2000
+							})
+						} else if (data.code != 200) {
+							uni.showToast({
+								title: data.msg,
+								icon: "error",
+								mask: true,
+								duration: 2000
+							})
+						} else {
+							this.allUser.total = data.data.total
+							for (let key in data.data.items) {
+								let item = {
+									id: data.data.items[key].id,
+									name: data.data.items[key].name,
+									avater: data.data.items[key].avater,
+									description: data.data.items[key].description,
+									disbale: false
+								}								
+								item.avater = "/api" + String(item.avater).replace(/\\/g, "/")
+								this.allUser.data.push(item)
+							}
+						}
+					})
+				}
+			},
+			enterUser(userId) {
 				uni.navigateTo({
-				    url: `/pages/otherUsers/otherUsers?id=${userId}`
+					url: `/pages/otherUsers/otherUsers?id=${userId}`
 				})
 			},
 			setCurr(e) {
 				let thisCurr = e.detail.current || e.currentTarget.dataset.index || 0;
 				this.curr = thisCurr;
 			},
-			clickBan(id){
-				console.log(id+"ban")
+			clickBan(id) {
+				console.log(id + "ban")
 			},
-			cilckPass(index){
-				if(this.applicationList.data[index].sign_state==0){
-					userApi.passRegister(this.applicationList.data[index].id).then(data=>{
-						if (typeof data === "undefined") {
-							uni.showToast({
-								title: '服务器错误',
-								icon: "error",
-								mask: true,
-								duration: 2000
-							})
-						} else if (data.code != 200) {
-							uni.showToast({
-								title: data.msg,
-								icon: "error",
-								mask: true,
-								duration: 2000
-							})
-						} else {
-							console.log("ok")
-							this.applicationList.data[index].sign_state=1;
-						}
-					
-					})
-				}
+			cilckPass(index) {
+				userApi.passRegister(this.checkUser.data[index].id).then(data => {
+					if (typeof data === "undefined") {
+						uni.showToast({
+							title: '服务器错误',
+							icon: "error",
+							mask: true,
+							duration: 2000
+						})
+					} else if (data.code != 200) {
+						uni.showToast({
+							title: data.msg,
+							icon: "error",
+							mask: true,
+							duration: 2000
+						})
+					} else {
+						this.checkUser.data[index].pass = 1
+						this.$refs.popup_success_allow.open('top')
+					}
+				})
 			},
-			cilckCancel(index){
-				if(this.applicationList.data[index].sign_state==0){
-					userApi.rejectRegister(this.applicationList.data[index].id).then(data=>{
-						if (typeof data === "undefined") {
-							uni.showToast({
-								title: '服务器错误',
-								icon: "error",
-								mask: true,
-								duration: 2000
-							})
-						} else if (data.code != 200) {
-							uni.showToast({
-								title: data.msg,
-								icon: "error",
-								mask: true,
-								duration: 2000
-							})
-						} else {
-							console.log("ok")
-							this.applicationList.data[index].sign_state=2;
-						}
-					
-					})
-				}
+			cilckDeny(index) {
+				userApi.rejectRegister(this.checkUser.data[index].id).then(data => {
+					if (typeof data === "undefined") {
+						uni.showToast({
+							title: '服务器错误',
+							icon: "error",
+							mask: true,
+							duration: 2000
+						})
+					} else if (data.code != 200) {
+						uni.showToast({
+							title: data.msg,
+							icon: "error",
+							mask: true,
+							duration: 2000
+						})
+					} else {
+						this.checkUser.data[index].pass = 2
+						this.$refs.popup_success_deny.open('top')
+					}
+
+				})
 			},
-			pageChange(e){
+			pageChange(e) {
 				//重新加载applicationList
-				this.applicationList.page=e.current;
+				this.applicationList.page = e.current;
 				console.log(this.applicationList.page);
 			},
-			 tabtap(index){
-			        this.tabIndex=index;
-			    }
+			tabtap(index) {
+				this.tabIndex = index;
+			}
 		}
 	}
 </script>
 
 <style>
-	.idRow{
-		width: 10%;
-	}
-	.usernameRow{
-		width: 49%;
-	}
-	.passButton{
-		background-color: #18BC37;
-	}
-	.cancelButton{
-		background-color: #E43D33;
-	}
-	.tabs {
-	    flex: 1;
-	    flex-direction: column;
-	    overflow: hidden;
-	    background-color: #ffffff;
-	    /* #ifdef MP-ALIPAY || MP-BAIDU */
-	    height: 100vh;
-	    /* #endif */
+	.container {
+		/* height: 700rpx; */
 	}
 	
+	.idRow {
+		width: 10%;
+	}
+
+	.usernameRow {
+		width: 49%;
+	}
+
+	.passButton {
+		background-color: #18BC37;
+	}
+
+	.cancelButton {
+		background-color: #E43D33;
+	}
+
+	.tabs {
+		flex: 1;
+		flex-direction: column;
+		overflow: hidden;
+		background-color: #ffffff;
+		/* #ifdef MP-ALIPAY || MP-BAIDU */
+		height: 100vh;
+		/* #endif */
+	}
+
 	.scroll-h {
-	    width: 750upx;
-	    height: 80upx;
-	    flex-direction: row;
-	    /* #ifndef APP-PLUS */
-	    white-space: nowrap;
-	    /* #endif */
-	    /* flex-wrap: nowrap; */
-	    /* border-color: #cccccc;
+		width: 750upx;
+		height: 80upx;
+		flex-direction: row;
+		/* #ifndef APP-PLUS */
+		white-space: nowrap;
+		/* #endif */
+		/* flex-wrap: nowrap; */
+		/* border-color: #cccccc;
 	    border-bottom-style: solid;
 	    border-bottom-width: 1px; */
 	}
-	
+
 	.line-h {
-	    height: 1upx;
-	    background-color: #cccccc;
+		height: 1upx;
+		background-color: #cccccc;
 	}
-	
+
 	.uni-tab-item {
-	    /* #ifndef APP-PLUS */
-	    display: inline-block;
-	    /* #endif */
-	    flex-wrap: nowrap;
-	    padding-left: 34upx;
-	    padding-right: 34upx;
+		/* #ifndef APP-PLUS */
+		display: inline-block;
+		/* #endif */
+		flex-wrap: nowrap;
+		padding-left: 34upx;
+		padding-right: 34upx;
 	}
-	
+
 	.uni-tab-item-title {
-	    color: #555;
-	    font-size: 30upx;
-	    height: 80upx;
-	    line-height: 80upx;
-	    flex-wrap: nowrap;
-	    /* #ifndef APP-PLUS */
-	    white-space: nowrap;
-	    /* #endif */
+		color: #555;
+		font-size: 30upx;
+		height: 80upx;
+		line-height: 80upx;
+		flex-wrap: nowrap;
+		/* #ifndef APP-PLUS */
+		white-space: nowrap;
+		/* #endif */
 	}
-	
+
 	.uni-tab-item-title-active {
-	    color: #007AFF;
+		color: #007AFF;
 	}
-	
+
 	.trade {
 		margin-top: 30rpx;
 		width: 100%;
 		overflow: auto;
 	}
-	
+
 	.trade view {
 		text-align: center;
 		width: 50%;
@@ -313,38 +372,54 @@
 		font-weight: bold;
 		padding-bottom: 10rpx;
 	}
-	
+
 	.trade .texts.active {
 		border-bottom: 8rpx solid #00A1D6;
 	}
-	
+
 	.person_container {
 		margin-bottom: 20rpx;
 		padding: 10rpx;
 		display: flex;
 	}
-	
+
 	.user_avater {
 		width: 100rpx;
 		height: 100rpx;
 		border-radius: 50%;
 	}
-	
+
 	.user {
 		margin-left: 15rpx;
 	}
-	
+
 	.user_name {
 		font-size: 45rpx;
 		font-weight: bold;
 	}
-	
+
 	.user_description {
 		font-size: 35rpx;
 		color: #555555;
 	}
 	
-	.unfollow {
+	.user_check {
+		position: absolute;
+		right: 100rpx;
+		margin-top: 30rpx;
+		height: 60rpx;
+		width: 60rpx;
+	}
+	
+	.user_check2 {
+		position: absolute;
+		right: 30rpx;
+		margin-top: 30rpx;
+		height: 60rpx;
+		width: 60rpx;
+	}
+
+	.follow {
 		position: absolute;
 		right: 30rpx;
 		font-size: 40rpx;
@@ -355,8 +430,8 @@
 		text-align: center;
 		background: #83cbac;
 	}
-	
-	.follow {
+
+	.unfollow {
 		position: absolute;
 		right: 30rpx;
 		font-size: 40rpx;
@@ -365,7 +440,17 @@
 		width: 200rpx;
 		height: 60rpx;
 		text-align: center;
-		background: #b5aa90;
-		/* box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); */
+		background: #ed5a65;
+	}
+	
+	.bottom_tips {
+		margin-top: 30rpx;
+		text-align: center;
+		height: 200rpx;
+	}
+
+	.bottom_tips text {
+		color: #A8A8A8;
+		bottom: 0;
 	}
 </style>

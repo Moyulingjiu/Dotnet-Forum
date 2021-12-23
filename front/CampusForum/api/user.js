@@ -248,6 +248,7 @@ export function passRegister(userId){
 	let url=modelUrl+`/access/${userId}`
 	return request.service({
 		url: url,
+		data: {},
 		method: 'POST'
 	})
 }
@@ -256,6 +257,7 @@ export function rejectRegister(userId){
 	let url=modelUrl+`/deny/${userId}`
 	return request.service({
 		url:url,
+		data: {},
 		method:'POST'
 	})
 }

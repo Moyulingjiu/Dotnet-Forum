@@ -123,6 +123,28 @@
             <param name="userReq"></param>
             <returns></returns>
         </member>
+        <member name="M:WebApi.Controllers.UserController.getAllUnsignedUsers(System.Int32,System.Int32)">
+            <summary>
+            查找所有注册未审核用户
+            </summary>
+            <param name="page"></param>
+            <param name="pageSize"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.UserController.access(System.Int64)">
+            <summary>
+            同意注册
+            </summary>
+            <param name="userId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.UserController.deny(System.Int64)">
+            <summary>
+            拒绝注册
+            </summary>
+            <param name="userId"></param>
+            <returns></returns>
+        </member>
         <member name="M:WebApi.Controllers.UserController.login(System.Int64,System.String)">
             <summary>
             登录
@@ -179,7 +201,7 @@
         </member>
         <member name="M:WebApi.Controllers.UserController.getUserByCondition(System.Int64,System.String,System.String,System.Int32,System.Int32,System.Int32)">
             <summary>
-            模糊条件查询用户 测试查询姓名“张”正确返回 其余未测试
+            模糊条件查询用户
             </summary>
             <param name="studentId"></param>
             <param name="name"></param>

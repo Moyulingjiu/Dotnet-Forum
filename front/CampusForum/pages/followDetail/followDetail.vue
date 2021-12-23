@@ -8,7 +8,7 @@
 				粉丝
 			</view>
 		</view>
-		<swiper :current="curr" @change="setCurr">
+		<swiper :current="curr" @change="setCurr" style="min-height:100vh;">
 			<swiper-item>
 				<scroll-view>
 					<view v-for="(item,index) in following">

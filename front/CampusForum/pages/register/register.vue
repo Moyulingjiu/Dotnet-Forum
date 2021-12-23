@@ -191,17 +191,17 @@
 							})
 						} else {
 							if (data.code == 200) {
-								let token = data.data.token
-								config.saveTokenFroce(token)
+								// let token = data.data.token
+								// config.saveTokenFroce(token)
 								uni.showToast({
-									title: '注册成功！',
+									title: '注册成功！请耐心等待审核',
 									icon: "success",
 									mask: true,
 									duration: 2000
 								})
 								setTimeout(() => {
 									uni.reLaunch({
-										url: '../index/index'
+										url: '../login/login'
 									})
 								}, config.waitTime)
 							} else {
