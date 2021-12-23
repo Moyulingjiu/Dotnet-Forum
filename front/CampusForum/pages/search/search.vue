@@ -168,7 +168,7 @@
 		onLoad(prop){
 			this.searchCondition="";
 			this.searchCondition=prop.searchCondition;
-			console.log(this.searchCondition);
+			// console.log(this.searchCondition);
 			stateApi.selectCondition(this.page,this.pageSize,null,null,this.searchCondition).then(data => {
 				if (typeof data === "undefined") {
 					uni.showToast({
@@ -191,7 +191,7 @@
 					{
 						this.comprehensiveInfo[i].userAvater='/api'+String(this.comprehensiveInfo[i].userAvater).replace(/\\/g, "/")
 					}
-					console.log(data)
+					// console.log(data)
 					// setTimeout(() => {
 					// 	uni.reLaunch({
 					// 		url: `/pages/album/album`
@@ -223,8 +223,6 @@
 					{
 						this.userInfo[i].avater='/api'+String(this.userInfo[i].avater).replace(/\\/g, "/")
 					}
-					console.log(this.userInfo)
-					console.log(this.applicationList)
 					// setTimeout(() => {
 					// 	uni.reLaunch({
 					// 		url: `/pages/album/album`

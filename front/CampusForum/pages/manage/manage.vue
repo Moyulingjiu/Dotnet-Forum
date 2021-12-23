@@ -8,7 +8,7 @@
 				用户
 			</view>
 		</view>
-		<swiper class="container" :current="curr" @change="setCurr" style="min-height:100vh;">
+		<swiper class="container" :current="curr" @change="setCurr" id="container" style="min-height: 100vh;">
 			<swiper-item style="height: 100%;">
 				<scroll-view>
 					<view v-for="(item,index) in checkUser.data">
@@ -72,6 +72,7 @@
 	export default {
 		data() {
 			return {
+				cloneHeight: 0,
 				bottomTips: '- 上拉加载更多 -', // 底部提示
 				bottomTipsNoMore: '- 到底了 -', // 底部提示
 				curr: 0,
@@ -211,6 +212,7 @@
 								}								
 								item.avater = "/api" + String(item.avater).replace(/\\/g, "/")
 								this.allUser.data.push(item)
+								this.getHeight()
 							}
 						}
 					})
@@ -280,6 +282,9 @@
 			},
 			tabtap(index) {
 				this.tabIndex = index;
+			},
+			getHeight() {
+				document.getElementById("container").style.height = Math.max(this.allUser.data.length, this.checkUser.data.length)*1150
 			}
 		}
 	}

@@ -1,13 +1,11 @@
 <template>
 	<view class="laugh">
-		<!-- <button type="primary" @click="getImg">请选择图片</button> -->
 		<uni-list>
-			<!-- title、note设置标题和小文字 -->
-			<uni-list-item direction="row" title="新增相册" @click="clickToAddAlbum()" link>
-				<template v-slot:header>
-					<image class="image-1" mode="aspectFill"></image>
-				</template>
-			</uni-list-item>
+			<view v-for="(item,index) in albumArr">
+				<image :src="item.cover"></image>
+				<text>{{ item.name }}</text>
+				<text>{{ item.description }}</text>
+			</view>
 			<uni-list-item direction="row" v-for="(item,index) in albumArr" :key="index" :title="item.name"
 				:note="item.description" @click="clickAlbum(item.id)" link>
 				<!-- 通过v-slot:header插槽定义列表左侧的图片显示，其他内容通过List组件内置属性实现-->
@@ -17,6 +15,12 @@
 				</template>
 			</uni-list-item>
 		</uni-list>
+		
+		<view class="newstate" @tap="clickToAddAlbum()">
+			<view class="circle"></view>
+			<view class="plus">+</view>
+		</view>
+		
 		<uni-popup ref="popup_success" type="message">
 			<uni-popup-message type="success" message="删除成功" :duration="3000"></uni-popup-message>
 		</uni-popup>
@@ -175,5 +179,25 @@
 		border-radius: 6px;
 		overflow: hidden;
 		border: 1px #f5f5f5 solid;
+	}
+
+	.newstate {
+		position: fixed;
+		right: 20rpx;
+		bottom: 200rpx;
+	}
+
+	.circle {
+		width: 50px;
+		height: 50px;
+		background-color: #2979FF;
+		border-radius: 50%;
+	}
+
+	.plus {
+		position: absolute;
+		top: 3px;
+		right: 14px;
+		font-size: 30px;
 	}
 </style>
