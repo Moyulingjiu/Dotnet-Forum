@@ -230,3 +230,32 @@ export function updatePassword(oldpassword,newpassword){
 		method: 'POST'
 	})
 }
+
+export function selectAllRegisterUser(page=0,pageSize=10){
+	let url=modelUrl+'/selectAll/UnsignedUsers'
+	let data={
+		page:page,
+		pageSize:pageSize
+	}
+	return request.service({
+		url: url,
+		data: data,
+		method: 'GET'
+	})
+}
+
+export function passRegister(userId){
+	let url=modelUrl+`/access/${userId}`
+	return request.service({
+		url: url,
+		method: 'POST'
+	})
+}
+
+export function rejectRegister(userId){
+	let url=modelUrl+`/deny/${userId}`
+	return request.service({
+		url:url,
+		method:'POST'
+	})
+}

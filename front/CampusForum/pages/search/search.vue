@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<view v-if="tabIndex!=2" class="search_box">
+		<view class="search_box">
 			<image class="search_icon" src="../../static/search.png"></image>
 			<input class="search_area" type="text" v-model="searchCondition" confirm-type="search" @confirm="search()"
 				placeholder="搜索用户状态等" />
@@ -82,7 +82,7 @@
 					用户
 				</view>
 			</view>
-			<swiper :current="curr" @change="setCurr">
+			<swiper :current="curr" @change="setCurr" style="height: 1000px;">
 				<swiper-item>
 					<scroll-view>
 						<view v-for="(item,index) in comprehensiveInfo">
@@ -189,7 +189,7 @@
 					this.comprehensiveInfo=data.data.items;
 					for(let i=0;i<data.data.items.length;i++)
 					{
-						this.comprehensiveInfo[i].avater='/api'+String(this.comprehensiveInfo[i].avater).replace(/\\/g, "/")
+						this.comprehensiveInfo[i].userAvater='/api'+String(this.comprehensiveInfo[i].userAvater).replace(/\\/g, "/")
 					}
 					console.log(data)
 					// setTimeout(() => {
@@ -223,7 +223,8 @@
 					{
 						this.userInfo[i].avater='/api'+String(this.userInfo[i].avater).replace(/\\/g, "/")
 					}
-					console.log(data)
+					console.log(this.userInfo)
+					console.log(this.applicationList)
 					// setTimeout(() => {
 					// 	uni.reLaunch({
 					// 		url: `/pages/album/album`
@@ -252,83 +253,14 @@
 				this.searchCondition = ''
 			},
 			search(){
-				console.log("search")
-				stateApi.selectCondition(this.page,this.pageSize,null,null,this.searchCondition).then(data => {
-					if (typeof data === "undefined") {
-						uni.showToast({
-							title: '服务器错误',
-							icon: "error",
-							mask: true,
-							duration: 2000
-						})
-					} else if (data.code != 200) {
-						
-						uni.showToast({
-							title: data.msg,
-							icon: "error",
-							mask: true,
-							duration: 2000
-						})
-					} else {
-						this.comprehensiveInfo=data.data.items;
-						for(let i=0;i<data.data.items.length;i++)
-						{
-							this.comprehensiveInfo[i].avater='/api'+String(this.comprehensiveInfo[i].avater).replace(/\\/g, "/")
-						}
-						console.log(data)
-						// setTimeout(() => {
-						// 	uni.reLaunch({
-						// 		url: `/pages/album/album`
-						// 	})
-						// }, config.waitTime)
-					}
-					
-				})
-				
-				userApi.selectCondition(this.page,this.pageSize,null,null,this.searchCondition,null,null,null,null).then(data =>{
-					if (typeof data === "undefined") {
-						uni.showToast({
-							title: '服务器错误',
-							icon: "error",
-							mask: true,
-							duration: 2000
-						})
-					} else if (data.code != 200) {
-						
-						uni.showToast({
-							title: data.msg,
-							icon: "error",
-							mask: true,
-							duration: 2000
-						})
-					} else {
-						this.userInfo=data.data.items;
-						for(let i=0;i<data.data.items.length;i++)
-						{
-							this.userInfo[i].avater='/api'+String(this.userInfo[i].avater).replace(/\\/g, "/")
-						}
-						console.log(data)
-						// setTimeout(() => {
-						// 	uni.reLaunch({
-						// 		url: `/pages/album/album`
-						// 	})
-						// }, config.waitTime)
-					}
-				})
+				uni.navigateTo({
+					url: `/pages/search/search?searchCondition=`+this.searchCondition
+				});
 			},
 			pageChange(e){
 				//重新加载applicationList
 				this.applicationList.page=e.current;
 				console.log(this.applicationList.page);
-			},
-			 tabtap(index){
-			    this.tabIndex=index;
-			},
-			clickMessage(messageId){
-				//到具体消息页面
-			},
-			clickUser(userId){
-				//到对应用户界面
 			},
 			bindPickerChange: function(e) {		//改变的事件名
 				//console.log('picker发送选择改变，携带值为', e.target.value)   用于输出改变索引值
@@ -336,8 +268,6 @@
 				this.jg=this.array[this.index]		//将array【改变索引】的值赋给定义的jg变量
 				console.log("类型为：",this.jg)		//输出获取的籍贯值，例如：中国
 			},
-			
-				
 		}
 	}
 </script>
