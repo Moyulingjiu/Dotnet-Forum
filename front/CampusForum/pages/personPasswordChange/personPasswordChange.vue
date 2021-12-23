@@ -44,6 +44,9 @@
 		<uni-popup ref="popup_error_diffrent_password" type="message">
 			<uni-popup-message type="error" message="两次输入的新密码不相同" :duration="3000"></uni-popup-message>
 		</uni-popup>
+		<uni-popup ref="popup_error_blank_new_password" type="message">
+			<uni-popup-message type="error" message="新密码不能为空" :duration="3000"></uni-popup-message>
+		</uni-popup>
 		<uni-popup ref="popup_success" type="message">
 			<uni-popup-message type="success" message="修改成功" :duration="3000"></uni-popup-message>
 		</uni-popup>
@@ -94,6 +97,14 @@
 					//this.$popup_error_diffrent_password.open('top')
 					uni.showToast({
 						title: '两次输入的新密码不相同',
+						icon: 'error',
+						duration: 2000,
+						position: 'top'
+					});
+				}else if(this.password.newPassword=="")
+				{
+					uni.showToast({
+						title: '新密码不能为空',
 						icon: 'error',
 						duration: 2000,
 						position: 'top'

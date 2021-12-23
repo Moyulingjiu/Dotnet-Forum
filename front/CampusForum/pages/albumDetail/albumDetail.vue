@@ -10,11 +10,6 @@
 			</view>
 		</view>
 
-		<view class="newstate" @tap="newState()">
-			<view class="circle"></view>
-			<view class="plus">√</view>
-		</view>
-
 		<uni-popup ref="popup_success" type="message">
 			<uni-popup-message type="success" message="删除成功" :duration="3000"></uni-popup-message>
 		</uni-popup>
