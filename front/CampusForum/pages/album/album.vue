@@ -1,31 +1,28 @@
 <template>
 	<view class="laugh">
-		<uni-list>
-			<view v-for="(item,index) in albumArr">
-				<image :src="item.cover"></image>
-				<text>{{ item.name }}</text>
-				<text>{{ item.description }}</text>
+		<view class="album_box" v-for="(item,index) in albumArr">
+			<image class="cover" :src="item.cover" mode="aspectFill" @click="clickAlbum(item.id)"></image>
+			<view class="album_information" @click="clickAlbum(item.id)">
+				<text class="album_name">{{ item.name }}</text>
+				<br />
+				<text class="album_description">{{ item.description }}</text>
 			</view>
-			<uni-list-item direction="row" v-for="(item,index) in albumArr" :key="index" :title="item.name"
-				:note="item.description" @click="clickAlbum(item.id)" link>
-				<!-- 通过v-slot:header插槽定义列表左侧的图片显示，其他内容通过List组件内置属性实现-->
-				<template v-slot:header>
-					<!-- 当前判断长度只为简单判断类型，实际业务中，根据逻辑直接渲染即可 -->
-					<image class="image-1" :src="item.cover" mode="aspectFill"></image>
-				</template>
-			</uni-list-item>
-		</uni-list>
-		
+			<view class="album_button">
+				<view class="album_button_edit" @click="editAlbum(item.id)">修改</view>
+				<view class="album_button_delete" @click="deleteAlbum(item.id)">删除</view>
+			</view>
+		</view>
+
 		<view class="newstate" @tap="clickToAddAlbum()">
 			<view class="circle"></view>
 			<view class="plus">+</view>
 		</view>
-		
+
 		<uni-popup ref="popup_success" type="message">
-			<uni-popup-message type="success" message="删除成功" :duration="3000"></uni-popup-message>
+			<uni-popup-message type="success" message="删除成功" :duration="1000"></uni-popup-message>
 		</uni-popup>
 		<uni-popup ref="popup_success_refresh" type="message">
-			<uni-popup-message type="success" message="刷新成功" :duration="2000"></uni-popup-message>
+			<uni-popup-message type="success" message="刷新成功" :duration="1000"></uni-popup-message>
 		</uni-popup>
 	</view>
 </template>
@@ -38,38 +35,16 @@
 	export default {
 		data() {
 			return {
-				delete:0,
+				delete: 0,
 				albumArr: [{
-						"id": "1",
-						"name": "1",
-						"description": "testaaaaaaaaaaaaaaaaaaaaaaaa",
-						"cover": "https://ns-strategy.cdn.bcebos.com/ns-strategy/upload/fc_big_pic/part-00563-2872.jpg"
-					},
-				],
+					"id": "1",
+					"name": "1",
+					"description": "testaaaaaaaaaaaaaaaaaaaaaaaa",
+					"cover": "https://ns-strategy.cdn.bcebos.com/ns-strategy/upload/fc_big_pic/part-00563-2872.jpg"
+				}, ],
 			}
 		},
-		onLoad() {
-		},
-		onNavigationBarButtonTap:function(e){
-			if(this.delete==0){
-				this.delete=1
-				uni.showToast({
-					title: '进入删除模式，点击相册删除，再次点击删除按钮退出删除模式',
-					icon: "error",
-					mask: true,
-					duration: 2000
-				})
-			}
-			else {
-				this.delete=0
-				uni.showToast({
-					title: '退出删除模式',
-					icon: "error",
-					mask: true,
-					duration: 2000
-				})
-			}
-		},
+		onLoad() {},
 		onShow() {
 			this.refresh()
 		},
@@ -80,13 +55,34 @@
 		},
 		methods: {
 			refresh() {
+				this.albumArr = []
 				if (config.checkToken()) {
 					albumApi.getAlbumByUserId().then(data => {
-						this.albumArr = data.data.item;
-						let len=this.albumArr.length
-						for(let i=0;i<len;i++)
-						{
-							this.albumArr[i].cover="/api"+String(this.albumArr[i].cover).replace(/\\/g, "/")
+						if (typeof data === "undefined") {
+							uni.showToast({
+								title: '服务器错误',
+								icon: "error",
+								mask: true,
+								duration: 2000
+							})
+						} else if (data.code != 200) {
+							uni.showToast({
+								title: data.msg,
+								icon: "error",
+								mask: true,
+								duration: 2000
+							})
+						} else {
+							for (let key in data.data.item) {
+								let albumItem = {
+									id: data.data.item[key].id,
+									name: data.data.item[key].name,
+									description: data.data.item[key].description,
+									cover: data.data.item[key].cover
+								}
+								albumItem.cover = "/api" + String(albumItem.cover).replace(/\\/g, "/")
+								this.albumArr.push(albumItem)
+							}
 						}
 					})
 				} else {
@@ -95,90 +91,110 @@
 					})
 				}
 			},
-			clickAlbum(albumId) {
-				var that = this
-				if(this.delete==0)
-				{
-					uni.navigateTo({
-						url: `/pages/albumDetail/albumDetail?albumId=${albumId}`
-					});
-				}
-				else
-				{
+			deleteAlbum(albumId) {
+				new Promise((resolve, reject) => {
 					uni.showModal({
-					    title: '确定要删除此相册吗?',
-					    content: ' ',
-					    success: function(res) {
-					        if (res.confirm) {
-					           
-								albumApi.deleteAlbum(albumId).then(data=>{
-									if (typeof data === "undefined") {
-										uni.showToast({
-											title: '服务器错误',
-											icon: "error",
-											mask: true,
-											duration: 2000
-										})
-									} else if (data.code == 200) {
-										that.$refs.popup_success.open('top')
-										that.refresh();
-									} else {
-										uni.showToast({
-											title: '删除失败:'+ data.msg,
-											icon: "error",
-											mask: true,
-											duration: 2000
-										})
-									}
-								})
-					        }
-				        }
-		            });
-					
-				}
-
+						title: '确定删除此相册吗?',
+						content: ' ',
+						success: function(res) {
+							resolve(res)
+						}
+					})
+				}).then(data => {
+					if (data.confirm) {
+						return albumApi.deleteAlbum(albumId)
+					}
+				}).then(data => {
+					if (typeof data === "undefined") {
+						
+					} else if (data.code == 200) {
+						this.$refs.popup_success.open('top')
+						this.refresh()
+					} else {
+						uni.showToast({
+							title: data.msg,
+							icon: "error",
+							mask: true,
+							duration: 2000
+						})
+					}
+				})
+			},
+			editAlbum(albumId) {
+				uni.navigateTo({
+					url: `../albumAdd/albumEdit?id=${albumId}`
+				})
+			},
+			clickAlbum(albumId) {
+				uni.navigateTo({
+					url: `/pages/albumDetail/albumDetail?albumId=${albumId}`
+				})
 			},
 			clickToAddAlbum() {
 				uni.navigateTo({
 					url: '/pages/albumAdd/albumAdd',
 				});
-			},
-			upload() {
-				uni.uploadFile({
-					url: '', //服务器地址
-					fileType: "image", //ZFB必填,不然报错
-					filePath: this.uploadImgArr[0], //这个就是我们上面拍照返回或者先中照片返回的数组
-					name: 'imgFile',
-					success: (uploadFileRes) => {
-						let imgData = JSON.parse(uploadFileRes.data)
-					}
-				})
-			},
-			getImg() {
-				uni.chooseImage({
-					count: 6, // 最多可以选择的图片张数，默认9
-					sizeType: ['original', 'compressed'], //original 原图，compressed 压缩图，默认二者都有
-					sourceType: ['album', 'camera'], //album 从相册选图，camera 使用相机，默认二者都有。如需直接开相机或直接选相册，请只使用一个选项
-					success: function(res) {
-						this.uploadImgArr = res.tempFilePaths;
-						this.upload();
-					}
-				});
 			}
-
 		}
 	}
 </script>
 
 <style>
-	.image-1 {
-		flex-shrink: 0;
-		margin-right: 10px;
-		width: 25%;
-		height: 125px;
-		border-radius: 6px;
-		overflow: hidden;
-		border: 1px #f5f5f5 solid;
+	.album_box {
+		margin-top: 10rpx;
+		margin-bottom: 10rpx;
+		width: 90%;
+		margin-left: 5%;
+		display: flex;
+		height: 200rpx;
+	}
+
+	.cover {
+		width: 200rpx;
+		height: 200rpx;
+	}
+
+	.album_information {
+		margin-top: 30rpx;
+		margin-left: 30rpx;
+	}
+
+	.album_name {
+		font-size: 50rpx;
+		font-weight: bold;
+	}
+
+	.album_description {
+		font-size: 35rpx;
+		color: #808080;
+	}
+	
+	.album_button {
+		margin-top: 160rpx;
+		right: 40rpx;
+		position: absolute;
+		display: flex;
+	}
+	
+	.album_button_edit {
+		font-size: 30rpx;
+		color: #93b5cf;
+	}
+	
+	.album_button_edit:hover {
+		background-color: #E0E0E0;
+		border-radius: 10rpx;
+	}
+	
+	.album_button_delete {
+		font-size: 30rpx;
+		margin-left: 20rpx;
+		color: #ed556a;
+	}
+	
+	.album_button_delete:hover {
+		background-color: #E0E0E0;
+		border-radius: 10rpx;
 	}
 
 	.newstate {

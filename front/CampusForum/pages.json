@@ -17,29 +17,7 @@
 			"path": "pages/album/album",
 			"style": {
 			    "navigationBarTitleText": "我的相册",
-				"enablePullDownRefresh": true,
-			    "app-plus":{
-			        "titleNView":{
-			            "buttons":[
-			                // {
-			                //     "text":"编辑",
-			                //     "type":"none",
-			                //     "color":"#007AFF",
-			                //     "background":"#000000",
-			                //     "fontSize":"16px"
-			                //     "float":"left"
-			                // }
-							// ,
-			                {
-			                    "text":"删除",
-			                    "type":"none",
-			                    "color":"#FF0000",
-			                    "background":"#000000",
-			                    "fontSize":"16px"
-			                    }
-			                ]
-			        }
-			    }
+				"enablePullDownRefresh": true
 		    }
 		},
 		{
@@ -109,7 +87,13 @@
 				"navigationBarTitleText": "添加相册",
 				"enablePullDownRefresh": false
 			}
-
+		}, 
+		{
+			"path": "pages/albumAdd/albumEdit",
+			"style": {
+				"navigationBarTitleText": "修改相册",
+				"enablePullDownRefresh": false
+			}
 		}, 
 		{
 			"path": "pages/manage/manage",

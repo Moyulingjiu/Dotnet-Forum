@@ -2,6 +2,15 @@ import * as config from '../utils/config.js'
 import * as request from './request.js'
 export const modelUrl = `/album`
 
+export function select(albumId) {
+	let url = modelUrl + `/select/${albumId}`;
+	return request.service({
+		url: url,
+		data: {},
+		method: 'GET'
+	})
+}
+
 // 根据用户id获取其相册
 export function getAlbumByUserId() {
 	let url = modelUrl + "/selectAll";
@@ -15,15 +24,18 @@ export function getAlbumByUserId() {
 }
 
 // 根据相册id获取其图片列表
-export function getPictureByAlbumId(id,{page, pageSize=20}) {
-	let url = modelUrl + "selectAll/"+id;
+export function getPictureByAlbumId(id, {
+	page,
+	pageSize = 20
+}) {
+	let url = modelUrl + "selectAll/" + id;
 	let data = {
 		page: page,
-		pageSize:pageSize
+		pageSize: pageSize
 	}
 	return request.service({
 		url: url,
-		data:data,
+		data: data,
 		method: 'GET'
 	})
 }
@@ -44,24 +56,38 @@ export function insertAlbum({
 	})
 }
 
-export function deleteAlbum(albumId){
-	let url=modelUrl+`/delete/${albumId}`
+export function deleteAlbum(albumId) {
+	let url = modelUrl + `/delete/${albumId}`
 	return request.service({
 		url: url,
 		method: 'DELETE'
 	})
 }
 
-export function updateAlbum(albumId,cover){
-	let url=modelUrl+`/update/${albumId}`
-	let data={
-		name:null,
-		description:null,
-		cover:cover
+export function updateAlbum(albumId, cover) {
+	let url = modelUrl + `/update/${albumId}`
+	let data = {
+		name: null,
+		description: null,
+		cover: cover
 	}
 	return request.service({
 		url: url,
-		data:data,
+		data: data,
+		method: 'PUT'
+	})
+}
+
+export function updateAlbumDetail(albumId, name, description, cover) {
+	let url = modelUrl + `/update/${albumId}`
+	let data = {
+		name: name,
+		description: description,
+		cover: cover
+	}
+	return request.service({
+		url: url,
+		data: data,
 		method: 'PUT'
 	})
 }

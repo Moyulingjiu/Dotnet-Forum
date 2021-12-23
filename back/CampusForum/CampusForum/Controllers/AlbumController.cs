@@ -86,7 +86,15 @@ namespace CampusForum.Controllers
         {
             string token = HttpContext.Request.Headers["token"];
             string album_idStr = RouteData.Values["album_id"].ToString();
-            long album_id = long.Parse(album_idStr);
+            long album_id;
+            try
+            {
+                album_id = long.Parse(album_idStr);
+            }
+            catch (Exception)
+            {
+                return new Code(404, "没有这个相册", null);
+            }
             long user_id = JwtToid(token);
             if (user_id == 0) return new Code(404, "token错误", null);
 
