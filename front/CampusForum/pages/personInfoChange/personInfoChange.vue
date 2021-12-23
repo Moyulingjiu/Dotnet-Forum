@@ -154,7 +154,7 @@
 		<view class="person_card">
 			<view class="information_card flex_box">
 				<view>
-					<image class="information_edit" src="../../static/school.png" mode="aspectFill"></image>
+					<image class="information_edit" src="../../static/other.png" mode="aspectFill"></image>
 				</view>
 				<view class="information_container">
 					<view class="information_title">
@@ -167,7 +167,7 @@
 			</view>
 			<view class="information_card flex_box">
 				<view>
-					<image class="information_edit" src="../../static/school.png" mode="aspectFill"></image>
+					<image class="information_edit" src="../../static/music.png" mode="aspectFill"></image>
 				</view>
 				<view class="information_container">
 					<view class="information_title">
@@ -180,7 +180,7 @@
 			</view>
 			<view class="information_card flex_box">
 				<view>
-					<image class="information_edit" src="../../static/school.png" mode="aspectFill"></image>
+					<image class="information_edit" src="../../static/book.png" mode="aspectFill"></image>
 				</view>
 				<view class="information_container">
 					<view class="information_title">
@@ -193,7 +193,7 @@
 			</view>
 			<view class="information_card flex_box">
 				<view>
-					<image class="information_edit" src="../../static/school.png" mode="aspectFill"></image>
+					<image class="information_edit" src="../../static/movie.png" mode="aspectFill"></image>
 				</view>
 				<view class="information_container">
 					<view class="information_title">
@@ -206,7 +206,7 @@
 			</view>
 			<view class="information_card flex_box">
 				<view>
-					<image class="information_edit" src="../../static/school.png" mode="aspectFill"></image>
+					<image class="information_edit" src="../../static/game.png" mode="aspectFill"></image>
 				</view>
 				<view class="information_container">
 					<view class="information_title">
@@ -219,7 +219,7 @@
 			</view>
 			<view class="information_card flex_box">
 				<view>
-					<image class="information_edit" src="../../static/school.png" mode="aspectFill"></image>
+					<image class="information_edit" src="../../static/comic.png" mode="aspectFill"></image>
 				</view>
 				<view class="information_container">
 					<view class="information_title">
@@ -232,7 +232,7 @@
 			</view>
 			<view class="information_card flex_box">
 				<view>
-					<image class="information_edit" src="../../static/school.png" mode="aspectFill"></image>
+					<image class="information_edit" src="../../static/sport.png" mode="aspectFill"></image>
 				</view>
 				<view class="information_container">
 					<view class="information_title">
