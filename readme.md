@@ -2,6 +2,16 @@
 
 该项目为`dotnet平台技术`课程大作业。
 
+## 实机展示
+
+![image-20220109144155903](images/readme/image-20220109144155903.png)
+
+![image-20220109144201571](images/readme/image-20220109144201571.png)
+
+![image-20220109144222354](images/readme/image-20220109144222354.png)
+
+
+
 
 
 ## 项目说明
